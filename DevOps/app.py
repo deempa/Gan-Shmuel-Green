@@ -23,7 +23,7 @@ def trigger():
             
             
             print("Building....")
-            build(repo_url, repo_name, branch_name)
+            build(repo_name, branch_name)
             print("Finished Building")
             # tests
             
