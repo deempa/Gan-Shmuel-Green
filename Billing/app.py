@@ -3,8 +3,9 @@ import sqlalchemy
 
 app = Flask(__name__)
 
-#engine = sqlalchemy.create_engine("mysql+pymysql://billdbuser:billdbpass@mysql-server/billdb")
-engine = sqlalchemy.create_engine("mysql+pymysql://root:rootpass@localhost:3306/billdb")
+engine = sqlalchemy.create_engine("mysql+pymysql://billdbuser:billdbpass@mysql-server/billdb")
+#for local test (temp)
+#engine = sqlalchemy.create_engine("mysql+pymysql://root:rootpass@localhost:3306/billdb")
 
 def isproviderexist(name):
      conn=engine.connect()
