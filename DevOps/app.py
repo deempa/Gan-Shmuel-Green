@@ -29,14 +29,19 @@ def trigger():
             
             
             print("Building....")
-            build(repo_name, branch_name)
+            # build(repo_name, branch_name)
+            build(repo_name, "Billing")
+            build(repo_name, "Weight")
+            # build(repo_name, "Billing")
             print("Finished Building")
             # tests
             
             print("testing..... Completed")
             
             print("Running...")
-            run(branch_name)
+            # run(branch_name)
+            run("Billing")
+            run("Weight")
             print("Finished Running")
             # if branch_name == "main":
             #     Repo.clone_from(repo_url, "./Gan-Shmuel-Green")
@@ -51,7 +56,7 @@ def clone(repo_url, repo_name):
         
 def build(repo_name, branch_name):
     lower_branch_name = branch_name.lower()
-    client.images.build(path=f"./{repo_name}/{branch_name}/", tag=f"{branch_name.lower_branch_name}_image")
+    client.images.build(path=f"./{repo_name}/{branch_name}/", tag=f"{lower_branch_name}_image")
     
 def run(branch_name):
     lower_branch_name = branch_name.lower()
