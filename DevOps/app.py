@@ -5,7 +5,8 @@ app = Flask(__name__)
 @app.route("/payload", methods=["GET", "POST"])
 def payload():
     if request.method == "POST":
-        return "...."
+        data = request.get_json()
+        return 'success'
 
 if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=8081)
+    app.run(port=8081)
