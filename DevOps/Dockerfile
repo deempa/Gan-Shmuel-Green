@@ -1,10 +1,13 @@
-FROM python:3.10
+FROM docker:20.10.23-dind
+
+RUN apk update && \
+    apk add py3-pip
 
 WORKDIR /devopsapp
 
 COPY requirements.txt .
 
-RUN pip install -r requirements.txt
+RUN pip install --ignore-installed -r requirements.txt
 
 COPY . .
 
