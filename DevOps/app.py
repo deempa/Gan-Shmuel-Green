@@ -1,6 +1,7 @@
 from flask import Flask, request, Response
 import docker
 from git import Repo
+import os
 
 app = Flask(__name__)
 
@@ -16,6 +17,11 @@ def trigger():
             repo_url = data['repository']['clone_url']
             repo_name = data['repository']['name']    
             pusher = data['pusher']['name']
+            
+            try:
+                os.system(f"rm -rf ./{repo_name}")
+            except:
+                pass
             
             print("Cloning....")
             clone(repo_url, repo_name)
