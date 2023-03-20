@@ -14,7 +14,7 @@ def trigger():
             data = request.get_json()
             branch_name = data['ref'].split('/')[-1]
             repo_url = data['repository']['clone_url']
-            repo_name = data['repository']['name']     
+            repo_name = data['repository']['name']    
             pusher = data['pusher']['name']
             
             print("Cloning....")
@@ -41,10 +41,10 @@ def trigger():
             return f"{branch_name}, {repo_url}, {repo_name}"
         
 def clone(repo_url, repo_name):
-    Repo.clone_from(repo_url, f"./{repo_name}")
+    Repo.clone_from(repo_url, f"./{repo_name.lower()}")
         
-def build(repo_url, repo_name, branch_name):
-    client.images.build(path=f"./{repo_name}/{branch_name}/")
+def build(repo_name, branch_name):
+    client.images.build(path=f"./{repo_name.lower()}/{branch_name}/")
     
 def run(branch_name):
     client.containers.run(f"{branch_name}_image", detach=True, hostname=f"{branch_name}_app", ports={'8082': '5000'})
