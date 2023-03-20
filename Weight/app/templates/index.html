@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Weight Hub</title>
+	<style>
+		label {
+			display: inline-block;
+			width: 150px;
+			text-align: right;
+			margin-right: 10px;
+		}
+		input[type="text"], select {
+			width: 200px;
+			padding: 5px;
+			margin-bottom: 10px;
+		}
+		select {
+			margin-left: 10px;
+		}
+		input[type="submit"] {
+			background-color: #4CAF50;
+			color: white;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+		input[type="submit"]:hover {
+			background-color: #45a049;
+		}
+	</style>
+</head>
+<body>
+	<h1>Weight Hub</h1>
+	<form method="post" action="/weight">
+		<label for="direction">Direction:</label>
+		<select id="direction" name="direction">
+			<option value="in">In</option>
+			<option value="out">Out</option>
+			<option value="none">None</option>
+		</select><br>
+
+		<label for="truck_license">Truck License:</label>
+		<input type="text" id="truck_license" name="truck_license"><br>
+
+		<label for="product_delivered">Product Delivered:</label>
+		<input type="text" id="product_delivered" name="product_delivered"><br>
+
+		<label for="weight">Weight:</label>
+		<input type="text" id="weight" name="weight">
+		<select id="unit_of_measure" name="unit_of_measure">
+			<option value="kg">KG</option>
+			<option value="lbs">LBS</option>
+		</select><br>
+
+		<input type="submit" value="Submit">
+	</form>
+</body>
+</html>
