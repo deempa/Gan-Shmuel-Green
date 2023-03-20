@@ -31,7 +31,7 @@ def trigger():
             print("Building....")
             # build(repo_name, branch_name)
             build(repo_name, "Billing")
-            build(repo_name, "Weight")
+            # build(repo_name, "Weight")
             # build(repo_name, "Billing")
             print("Finished Building")
             # tests
@@ -41,7 +41,7 @@ def trigger():
             print("Running...")
             # run(branch_name)
             run("Billing")
-            run("Weight")
+            # run("Weight")
             print("Finished Running")
             # if branch_name == "main":
             #     Repo.clone_from(repo_url, "./Gan-Shmuel-Green")
