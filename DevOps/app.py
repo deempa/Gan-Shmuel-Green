@@ -50,10 +50,12 @@ def clone(repo_url, repo_name):
     Repo.clone_from(repo_url, f"./{repo_name}")
         
 def build(repo_name, branch_name):
-    client.images.build(path=f"./{repo_name}/{branch_name}/", tag=f"{branch_name}_image")
+    lower_branch_name = branch_name.lower()
+    client.images.build(path=f"./{repo_name}/{branch_name}/", tag=f"{branch_name.lower_branch_name}_image")
     
 def run(branch_name):
-    client.containers.run(f"{branch_name}_image", detach=True, hostname=f"{branch_name}_app", ports={'8082': '5000'})
+    lower_branch_name = branch_name.lower()
+    client.containers.run(f"{lower_branch_name}_image", detach=True, hostname=f"{branch_name}_app", ports={'8082': '5000'})
 
         
 @app.route("/health", methods=["GET"])
