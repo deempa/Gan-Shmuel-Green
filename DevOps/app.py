@@ -17,31 +17,42 @@ def trigger():
             repo_name = data['repository']['name']     
             pusher = data['pusher']['name']
             
-            # subprocess.run(['git', 'clone', repo_url])
+            print("Cloning....")
+            clone(repo_url, repo_name)
+            print("Finished Cloning")
             
+            
+            print("Building....")
+            build(repo_url, repo_name, branch_name)
+            print("Finished Building")
+            # tests
+            
+            print("testing..... Completed")
+            
+            print("Running...")
+            run(branch_name)
+            print("Finished Running")
             # if branch_name == "main":
-            #     os.chdir(f"./{repo_name}/")
-            #     subprocess.run(['git', 'checkout', branch_name])
-            #     os.chdir(f"./{branch_name}/")
-            #     # docker_billing_build_command = "docker build -t billing_image ."
-            #     client.images.build(".")
-            #     os.system(docker_billing_build_command)
-            #     docker_billing_run_command = "docker run -d --name billing_app -p 8082:5000 billing_image"
-            #     os.system(docker_billing_run_command)
-            #     os.chdir("../../")
-            
-            if branch_name == "main":
-                Repo.clone_from(repo_url, "./Gan-Shmuel-Green")
-                client.images.build("./Gan-Shmuel-Green/Billing/", tag="billing_image")
-                client.containers.run("billing_image", detach=True, hostname="billing_app", ports={'8082': '5000'})
+            #     Repo.clone_from(repo_url, "./Gan-Shmuel-Green")
+            #     client.images.build(path="./Gan-Shmuel-Green/Billing/")
+            #     client.containers.run("billing_image", detach=True, hostname="billing_app", ports={'8082': '5000'})
                 
                       
             return f"{branch_name}, {repo_url}, {repo_name}"
         
+def clone(repo_url, repo_name):
+    Repo.clone_from(repo_url, f"./{repo_name}")
+        
+def build(repo_url, repo_name, branch_name):
+    client.images.build(path=f"./{repo_name}/{branch_name}/")
+    
+def run(branch_name):
+    client.containers.run(f"{branch_name}_image", detach=True, hostname=f"{branch_name}_app", ports={'8082': '5000'})
+
         
 @app.route("/health", methods=["GET"])
 def health():
     return Response("ok", status=200)
             
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",port=8081)
+    app.run(host="0.0.0.0", port=8081)
