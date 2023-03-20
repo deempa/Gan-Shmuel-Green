@@ -13,8 +13,17 @@ def payload():
             repo_url = data['repository']['clone_url']
             repo_name = data['repository']['name']     
             subprocess.run(['git', 'clone', repo_url])
-            os.chdir("./" + repo_name)
-            subprocess.run(['git', 'checkout', branch_name])        
+            
+            if branch_name == "Billing":
+                os.chdir(f"./{repo_name}/")
+                subprocess.run(['git', 'checkout', branch_name])
+                os.chdir(f"./{branch_name}/")
+                docker_billing_build_command = "docker build -t billing_image ."
+                os.system(docker_billing_build_command)
+                docker_billing_run_command = "docker run -d --name billing_app -p 8082:5000 billing_image"
+                os.system(docker_billing_run_command)
+                os.chdir("../../")
+                      
             return f"{branch_name}, {repo_url}, {repo_name}"
             
 if __name__ == "__main__":
