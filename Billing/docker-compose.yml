@@ -17,7 +17,7 @@ services:
           - ./dbsample:/docker-entrypoint-initdb.d
         environment:
             MYSQL_ROOT_PASSWORD: rootpass 
-            MYSQL_USER: billdb
+            MYSQL_USER: billdbuser
             MYSQL_PASSWORD: billdbpass
             MYSQL_DATABASE: billdb
         networks:
