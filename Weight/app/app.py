@@ -3,8 +3,13 @@ import csv
 import os
 from datetime import datetime,date
 import mysql.connector
+from werkzeug.utils import secure_filename
 
-    
+UPLOAD_FOLDER = './'
+
+ALLOWED_EXTENSIONS = set(['csv'])
+
+
 # db=mysql.connector.connect(
 #     host="localhost",
 #     user="root",
@@ -18,6 +23,12 @@ isconnected = 0
 #     isconnected = 0
 
 app = Flask(__name__)
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def root():
@@ -34,19 +45,23 @@ def post_weight():
         truck_neto_weight = request.form['truck_neto_weight']
         unit_of_measure_neto = request.form['unit_of_measure_2']
         timestamp = datetime.now().strftime(r"%Y%m%d%H%M%S")
-    #     file = request.files['csv_file']
-    #     if 'csv_file' not in request.files:
-    #         return 'No file uploaded', 400
-    #     file = request.files['csv_file']
-    #     if file.filename == '':
-    #         return 'No file selected', 400
+        
+        if 'file' not in request.files:
+            return "no file part"
+        file = request.files['file']
+        if file.filename == '':
+            return "No selected file"
 
-    # # Save the file to the local folder
-    #     folder_path = '/csv_files'
-    #     if not os.path.exists(folder_path):
-    #         os.makedirs(folder_path)
-    #     file_path = os.path.join(folder_path, file.filename)
-    #     file.save(file_path)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            with open(f'./{filename}', 'r') as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    rows = print(row)
+        
         return redirect(url_for('post_weight'))
     elif request.method == 'GET':
         return render_template('index.html')
