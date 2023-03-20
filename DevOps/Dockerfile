@@ -1,22 +1,12 @@
-FROM python:3.10
+FROM docker:dind
 
-RUN apt-get update
-RUN apt-get install -y \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
+ENV DOCKER_HOST=unix:///var/run/docker.sock
 
-RUN mkdir -m 0755 -p /etc/apt/keyrings
-RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-
-RUN echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-RUN apt-get update -y
-
-RUN apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+RUN apk update && \
+    apk add --no-cache curl python3 py3-pip && \
+    pip3 install docker-compose && \
+    curl -fsSL https://get.docker.com -o get-docker.sh && \
+    sh get-docker.sh
 
 WORKDIR /devopsapp
 
