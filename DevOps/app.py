@@ -12,6 +12,7 @@ def payload():
             branch_name = data['ref'].split('/')[-1]
             repo_url = data['repository']['clone_url']
             repo_name = data['repository']['name']     
+            
             subprocess.run(['git', 'clone', repo_url])
             
             if branch_name == "Billing":
