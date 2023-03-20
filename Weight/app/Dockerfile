@@ -5,7 +5,7 @@ WORKDIR /app
 RUN pip install --upgrade pip
 
 RUN pip install flask
-RUN pip install mysql.connector.python
+RUN pip install mysql.connector
 
 COPY . . 
 

@@ -1,8 +1,16 @@
 from flask import Flask, request, make_response, render_template, redirect, url_for
 import csv
-from io import StringIO
 import os
 from datetime import datetime,date
+import mysql.connector
+
+    
+db=mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="123",
+    database="weight"
+)
 
 # comment
 isconnected = 0
