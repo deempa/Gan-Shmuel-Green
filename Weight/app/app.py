@@ -5,15 +5,17 @@ from datetime import datetime,date
 import mysql.connector
 
     
-db=mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="123",
-    database="weight"
-)
-
-# comment
+# db=mysql.connector.connect(
+#     host="localhost",
+#     user="root",
+#     password="123",
+#     database="weight"
+# )
 isconnected = 0
+# if db.isconnected():
+#     isconnected = 1
+# else:
+#     isconnected = 0
 
 app = Flask(__name__)
 
