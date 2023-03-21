@@ -8,7 +8,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-RUN mkidr -p in
+RUN mkdir -p in
 
 EXPOSE 5000
 
