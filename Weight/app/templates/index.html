@@ -1,18 +1,47 @@
-<!DOCTYPE html>
+<!-- <!doctype html>
+    <title>Upload new File</title>
+    <h1>Upload new File</h1>
+    <form method=post enctype=multipart/form-data>
+      <p><input type=file name=file>
+         <input type=submit value=Upload>
+    </form>
+
+ -->
+
+    <!DOCTYPE html>
 <html>
 <head>
 	<title>Weight Hub</title>
 	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f2f2f2;
+		}
+		h1 {
+			text-align: center;
+			margin-top: 20px;
+		}
+		form {
+			background-color: #fff;
+			padding: 20px;
+			border-radius: 5px;
+			box-shadow: 0px 0px 10px #ccc;
+			max-width: 600px;
+			margin: 0 auto;
+		}
 		label {
 			display: inline-block;
-			width: 150px;
+			width: 240px;
 			text-align: right;
 			margin-right: 10px;
 		}
 		input[type="text"], select {
-			width: 200px;
+			width: 150px;
 			padding: 5px;
 			margin-bottom: 10px;
+			border: 1px solid #ccc;
+			border-radius: 3px;
+			box-shadow: inset 0px 1px 3px #ddd;
 		}
 		select {
 			margin-left: 10px;
@@ -24,36 +53,127 @@
 			border: none;
 			border-radius: 4px;
 			cursor: pointer;
+			margin-top: 10px;
+			margin-left: 250px;
 		}
 		input[type="submit"]:hover {
 			background-color: #45a049;
+		}
+		.upload-btn-wrapper {
+			position: relative;
+			overflow: hidden;
+			display: inline-block;
+			margin-top: 20px;
+		}
+		.btn {
+			background-color: #4CAF50;
+			color: white;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+		.upload-btn-wrapper input[type=file] {
+			font-size: 100px;
+			position: absolute;
+			left: 0;
+			top: 0;
+			opacity: 0;
+			cursor: pointer;
+		}
+		.upload-label {
+			font-size: 16px;
+			font-weight: bold;
+			margin-left: 10px;
+		}
+		.file-name {
+			margin-left: 10px;
+		}
+		.separator {
+			margin-top: 50px;
+			margin-bottom: 50px;
+			height: 2px;
+			background-color: #ccc;
+			width: 100%;
+		}
+		.container {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-around;
+		}
+		.section {
+			flex-basis: 45%;
+			margin-bottom: 50px;
+		}
+		@media (max-width: 768px) {
+			.section {
+				flex-basis: 100%;
+			}
 		}
 	</style>
 </head>
 <body>
 	<h1>Weight Hub</h1>
-	<form method="post" action="/weight">
-		<label for="direction">Direction:</label>
-		<select id="direction" name="direction">
-			<option value="in">In</option>
-			<option value="out">Out</option>
-			<option value="none">None</option>
-		</select><br>
+	<div class="container">
+		<div class="section">
+			<h2>Form</h2>
+			<form method="post" enctype="multipart/form-data"  >
+				<label for="direction">Direction:</label>
+				<select id="direction" name="direction">
+					<option value="in">In</option>
+					<option value="out">Out</option>
+					<option value="None">None</option>
+                </select><br>
 
-		<label for="truck_license">Truck License:</label>
-		<input type="text" id="truck_license" name="truck_license"><br>
+				<label for="container_id">Container ID:</label>
+				<input type="text" id="container_id" name="container_id"><br>
 
-		<label for="product_delivered">Product Delivered:</label>
-		<input type="text" id="product_delivered" name="product_delivered"><br>
+				<label for="truck_license">Truck License:</label>
+				<input type="text" id="truck_license" name="truck_license"><br>
 
-		<label for="weight">Weight:</label>
-		<input type="text" id="weight" name="weight">
-		<select id="unit_of_measure" name="unit_of_measure">
-			<option value="kg">KG</option>
-			<option value="lbs">LBS</option>
-		</select><br>
 
-		<input type="submit" value="Submit">
-	</form>
+				<label for="product_delivered">Product Delivered:</label>
+				<input type="text" id="product_delivered" name="product_delivered"><br>
+
+				<label for="truck_bruto_weight">Truck Bruto Weight:</label>
+				<input type="text" id="truck_bruto_weight" name="truck_bruto_weight">
+				<select id="unit_of_measure_1" name="unit_of_measure_1">
+					<option value="kg">KG</option>
+					<option value="lbs">LBS</option>
+				</select>
+
+				<label for="truck_neto_weight">Truck Neto Weight:</label>
+				<input type="text" id="truck_neto_weight" name="truck_neto_weight">
+				<select id="unit_of_measure_2" name="unit_of_measure_2">
+					<option value="kg">KG</option>
+					<option value="lbs">LBS</option>
+					
+				</select><br>
+
+				<label for="force">Force:</label>
+				<select id="force" name="force">
+					<option value="True">True</option>
+					<option value="False">False</option>
+					<input type="submit" name="action" value="submit">
+				</select><br><br> <br>
+
+
+				<div">
+					<h2>CSV Upload</h2>
+					<div class="upload-btn-wrapper">
+					<a href="/batch-weight">Upload files</a>				
+					</div>
+					
+				</div>
+        
+				
+			
+			</form>
+		</div>
+		
+	</div>
+	<div class="separator"></div>
+
 </body>
 </html>
+
