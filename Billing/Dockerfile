@@ -8,6 +8,8 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+RUN mkdir -p /in
+
 EXPOSE 5000
 
 ENTRYPOINT gunicorn --bind 0.0.0.0:5000 app:app

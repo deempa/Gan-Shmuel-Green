@@ -74,8 +74,16 @@ def get_put_truck(id):
         if request.is_json:
             data=request.json
             provider_id=data.get('provider_id')
-            conn=engine.connect()
-            conn.execute(sqlalchemy.text("UPDATE"))
+            if is_provider_id_exist(provider_id):
+               conn=engine.connect()
+               conn.execute(sqlalchemy.text(f"UPDATE Trucks SET provider_id={provider_id} WHERE id={id}"))
+               conn.commit()
+               conn.close()
+               return make_response("Updated truck provider",200)
+            else:
+                return make_response("Provider doesn't exist", 400)
+        else:
+            return make_response("Bad Request", 400)
 
 
 @app.route('/health', methods=["GET"])
