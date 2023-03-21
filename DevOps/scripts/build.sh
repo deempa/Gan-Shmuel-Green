@@ -17,12 +17,8 @@ clone ()
 build ()
 {
     local app_name=$1
-    if [[ $(docker ps -q) ]]; then
-        # Stop and delete all running containers
-        docker stop $(docker ps -aq)
-        docker rm $(docker ps -aq)
-        echo "Stopped and deleted all running containers."
-    fi
+    docker rmi -f billing_image &> /dev/null
+    docker rmi -f weight_image &> /dev/null
     echo "Building..."
 
     if [[ $app_name == "billing" ]]; then
@@ -42,3 +38,4 @@ repo_url=$2
 clone $repo_name $repo_url
 
 build billing
+build weight
