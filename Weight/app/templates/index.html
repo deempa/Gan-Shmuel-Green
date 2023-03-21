@@ -125,8 +125,12 @@
 					<option value="None">None</option>
                 </select><br>
 
+				<label for="container_id">Container ID:</label>
+				<input type="text" id="container_id" name="container_id"><br>
+
 				<label for="truck_license">Truck License:</label>
 				<input type="text" id="truck_license" name="truck_license"><br>
+
 
 				<label for="product_delivered">Product Delivered:</label>
 				<input type="text" id="product_delivered" name="product_delivered"><br>
@@ -143,8 +147,17 @@
 				<select id="unit_of_measure_2" name="unit_of_measure_2">
 					<option value="kg">KG</option>
 					<option value="lbs">LBS</option>
+					
+				</select><br>
+
+				<label for="force">Force:</label>
+				<select id="force" name="force">
+					<option value="True">True</option>
+					<option value="False">False</option>
 					<input type="submit" name="action" value="submit">
-				</select><br><br>
+				</select><br><br> <br>
+
+
 				<div class="section">
 					<h2>CSV Upload</h2>
 					<div class="upload-btn-wrapper">
@@ -156,7 +169,7 @@
 				</div>
         
         
-				<input type="submit" name="action" value="upload">
+				<input  type="submit" name="action" value="upload">
 			</form>
 		</div>
 		
