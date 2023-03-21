@@ -2,4 +2,6 @@
 BillingEnv/
 ## ignore __pycache__/
 __pycache__/
-
+## ignore in contents and keep the folder:
+in/*
+!in/.gitkeep 

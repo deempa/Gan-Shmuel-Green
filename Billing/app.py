@@ -47,21 +47,16 @@ def post_provider():
 @app.route('/provider/<id>', methods=["PUT"])
 def update_provider_name(id):
     if request.is_json:
-      data=request.json
-      provider_name=data.get('name')
-      if isproviderexist(provider_name):
-          return make_response("Provider exists", 400)
-      else:
-           conn=engine.connect()
-           conn.execute(sqlalchemy.text(f"INSERT INTO Provider (name) VALUES ('{provider_name}')"))
-           conn.commit()
-           getid=conn.execute(sqlalchemy.text(f"select id from Provider where name='{provider_name}'"))
-           conn.close()
-           response={"id" : getid.first()[0]}
-           return make_response(jsonify(response), 200)
-    else:
-         return make_response("Bad Request",400)
-
+        data=request.json
+        name_to_update = data.get('name')
+        if not is_provider_id_exist(id):
+            return make_response("id does not exist",400)
+        else:
+            conn=engine.connect()
+            conn.execute(sqlalchemy.text(f"UPDATE Provider SET name='{name_to_update}' WHERE id={id}"))
+            conn.commit()
+            conn.close()
+            return make_response("Provider id updated", 200)
 
 @app.route('/health', methods=["GET"])
 def check_health():
