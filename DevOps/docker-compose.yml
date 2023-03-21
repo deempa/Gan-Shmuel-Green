@@ -1,0 +1,72 @@
+services:
+    app:
+        image: billing_image
+        ports:
+          - "5000"
+        networks:
+          - allnetwork
+        restart: unless-stopped
+        depends_on:
+          mysql:
+              condition: service_healthy
+    mysql:
+        image: mysql:5.7
+        platform: linux/x86_64
+        volumes:
+          - db_data:/var/lib/mysql
+          - ./dbsample:/docker-entrypoint-initdb.d
+        environment:
+            MYSQL_ROOT_PASSWORD: rootpass 
+            MYSQL_USER: billdbuser
+            MYSQL_PASSWORD: billdbpass
+            MYSQL_DATABASE: billdb
+        networks:
+        - allnetwork
+        hostname: mysql-server
+        restart: unless-stopped
+        healthcheck:
+          test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+          timeout: 5s
+          retries: 20
+    nginx:
+        image: nginx:1.23.3-alpine
+        volumes:
+          - ./nginx.conf:/etc/nginx/nginx.conf:ro
+        networks:
+          - allnetwork
+        depends_on:
+          - app
+        ports:
+          - "80:80"
+        restart: unless-stopped
+        
+    flask-app:
+        image: weight_image 
+        ports:
+            - "5000:5000"
+        depends_on:
+            - "db"
+        restart: on-failure
+        networks:
+          - allnetwork
+    
+    db:
+        image: mysql:5.7
+        platform: linux/x86_64
+        volumes:
+            - data:/var/lib/mysql
+            # - ./schemas:/docker-entrypoint-initdb.d
+        environment:
+            MYSQL_DATABASE: billdb
+            MYSQL_ROOT_PASSWORD: 123
+        ports:
+            - "3300:3306"
+        networks:
+          - allnetwork
+
+volumes:
+    data:
+    db_data:
+  
+networks:
+    allnetwork:
