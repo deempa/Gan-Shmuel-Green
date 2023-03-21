@@ -8,8 +8,6 @@ import os
 app = Flask(__name__)
 
 engine = sqlalchemy.create_engine("mysql+pymysql://billdbuser:billdbpass@mysql-server/billdb")
-#for local test (temp)
-#engine = sqlalchemy.create_engine("mysql+pymysql://root:rootpass@localhost:3306/billdb")
 
 def is_provider_exist(name):
      conn=engine.connect()
@@ -38,6 +36,7 @@ def is_truck_id_exist(id):
     else:
         return False
 
+
 @app.route('/provider', methods=["POST"])
 def post_provider():
     if request.is_json and request.method == "POST":
@@ -55,7 +54,8 @@ def post_provider():
            return make_response(jsonify(response), 200)
     else:
          return make_response("Bad Request",400)
-    
+
+
 @app.route('/provider/<id>', methods=["PUT"])
 def update_provider_name(id):
     if request.is_json and request.method=="PUT":
@@ -71,6 +71,7 @@ def update_provider_name(id):
             return make_response("Provider id updated", 200)
     else:
         return make_response("Bad Request",400)
+
 
 @app.route('/truck/<id>', methods=["PUT"])
 def get_put_truck(id):
@@ -90,6 +91,7 @@ def get_put_truck(id):
             return make_response("Bad Request", 400)
     else:
         return make_response("Bad Request", 400)
+
 
 @app.route('/rates', methods=["GET","POST"])
 def rates():
@@ -148,8 +150,6 @@ def rates():
         return make_response("saved", 200)
             
         
-
-
 @app.route('/health', methods=["GET"])
 def check_health():
         try:

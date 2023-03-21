@@ -5,10 +5,10 @@ services:
         ports:
           - "5000"
         networks:
-          - billingnetwork
+          - networkgreen
         restart: unless-stopped
         volumes:
-          - /in-billing:/app/in
+          - /billing-in:/app/in
         depends_on:
           mysql:
               condition: service_healthy
@@ -23,7 +23,7 @@ services:
             MYSQL_PASSWORD: billdbpass
             MYSQL_DATABASE: billdb
         networks:
-          - billingnetwork
+          - networkgreen
         hostname: mysql-server
         restart: unless-stopped
         healthcheck:
@@ -35,7 +35,7 @@ services:
         volumes:
           - ./nginx.conf:/etc/nginx/nginx.conf:ro
         networks:
-          - billingnetwork
+          - networkgreen
         depends_on:
           - app
         ports:
@@ -45,4 +45,4 @@ services:
 volumes:
     db_data:
 networks:
-    billingnetwork:
+    networkgreen:
