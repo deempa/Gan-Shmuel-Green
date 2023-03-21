@@ -17,7 +17,30 @@ clone ()
 
 build ()
 {
+    local app_name=$1
+    if [[ $(docker ps -q) ]]; then
+        # Stop and delete all running containers
+        docker stop $(docker ps -aq)
+        docker rm $(docker ps -aq)
+        echo "Stopped and deleted all running containers."
+    fi
     echo "Building..."
+
+    if [[ $app_name == "billing" ]]; then
+        cd "$repo_name/Billing/"
+        docker build --no-cache -t billing_image .
+        echo "Build Billing"
+    elif [[ $app_name == "weight" ]]; then
+        cd "$repo_name/Weight/app/"
+        docker build --no-cache -t weight_image .
+        echo "Build Weight"
+    fi
 }
 
-clone $1 $2
+repo_name=$1
+repo_url=$2
+
+clone $repo_name $repo_url
+
+build "weight"
+build "billing"
