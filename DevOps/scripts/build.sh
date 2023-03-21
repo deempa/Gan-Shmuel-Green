@@ -12,7 +12,6 @@ clone ()
     fi
     git clone $repo_url
     echo "Cloning Finished"
-    build
 }
 
 build ()
@@ -42,5 +41,4 @@ repo_url=$2
 
 clone $repo_name $repo_url
 
-build "weight"
-build "billing"
+build billing
