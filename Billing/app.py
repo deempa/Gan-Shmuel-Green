@@ -1,13 +1,15 @@
 from flask import Flask, make_response, request, jsonify
 import sqlalchemy
 
+import pandas as pd
+
 app = Flask(__name__)
 
 engine = sqlalchemy.create_engine("mysql+pymysql://billdbuser:billdbpass@mysql-server/billdb")
 #for local test (temp)
 #engine = sqlalchemy.create_engine("mysql+pymysql://root:rootpass@localhost:3306/billdb")
 
-def isproviderexist(name):
+def is_provider_exist(name):
      conn=engine.connect()
      is_exist=conn.execute(sqlalchemy.text(f"select name from Provider where name='{name}'"))
      conn.close()
@@ -92,6 +94,10 @@ def rates():
     if request.method == "GET":
         return "i got your get"
     elif request.method == "POST":
+        filename = 'rates.xlsx'
+        xlfile = pd.read_excel()
+        xlfile.to_sql('Rates',con=engine,if_exists='replace')
+
         
 
 
@@ -104,7 +110,8 @@ def check_health():
               return make_response("OK", 200)
         except:
               return make_response("Failure", 500)
-            
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 
