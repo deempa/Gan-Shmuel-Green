@@ -1,4 +1,4 @@
-from flask import Flask, make_response, request, Response, jsonify
+from flask import Flask, make_response, request, jsonify
 import sqlalchemy
 
 app = Flask(__name__)
@@ -25,10 +25,18 @@ def is_provider_id_exist(id):
     else:
         return False
 
+def is_truck_id_exist(id):
+    conn=engine.connect()
+    is_exist=conn.execute(sqlalchemy.text(f"select id from Trucks where id={id}"))
+    conn.close()
+    if is_exist.first() != None:
+        return True
+    else:
+        return False
 
 @app.route('/provider', methods=["POST"])
 def post_provider():
-    if request.is_json:
+    if request.is_json and request.method == "POST":
       data=request.json
       provider_name=data.get('name')
       if isproviderexist(provider_name):
@@ -46,7 +54,7 @@ def post_provider():
     
 @app.route('/provider/<id>', methods=["PUT"])
 def update_provider_name(id):
-    if request.is_json:
+    if request.is_json and request.method=="PUT":
         data=request.json
         name_to_update = data.get('name')
         if not is_provider_id_exist(id):
@@ -57,6 +65,18 @@ def update_provider_name(id):
             conn.commit()
             conn.close()
             return make_response("Provider id updated", 200)
+    else:
+        return make_response("Bad Request",400)
+
+@app.route('/truck/<id>', methods=["PUT"])
+def get_put_truck(id):
+    if request.method == "PUT" and  is_truck_id_exist(id):
+        if request.is_json:
+            data=request.json
+            provider_id=data.get('provider_id')
+            conn=engine.connect()
+            conn.execute(sqlalchemy.text("UPDATE"))
+
 
 @app.route('/health', methods=["GET"])
 def check_health():
