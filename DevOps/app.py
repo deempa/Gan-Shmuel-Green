@@ -26,29 +26,9 @@ def trigger():
             except:
                 pass
             
-            clone(repo_url)
+            subprocess.run(["./scripts/build.sh", repo_name, repo_url])
             
-            # Build for Weight
-            path_weight_dockerfile_app = f"{repo_name}/Weight/app/"
-            path_weight_dockerfile_db = f"{repo_name}/Weight/schemas/"
-            build(path_weight_dockerfile_db, "weight_db")
-            build(path_weight_dockerfile_app, "weight_app")          
-            # Build for Billing
-        
-            path_billing_dockerfile_app = f"{repo_name}/Billing/"
-            build(path_billing_dockerfile_app, "billing_app")
-
-
-def clone(repo_url, repo_name):
-    Repo.clone_from(repo_url, f"./{repo_name}/")
-    
-def build(dockerfile_path, image_name):
-    client.images.build(path=dockerfile_path, tag=image_name)
-    
-# def run(branch_name):
-#     lower_branch_name = branch_name.lower()
-#     client.containers.run(f"{lower_branch_name}_image", detach=True, hostname=f"{branch_name}_app", ports={'8082': '5000'})
- 
+            
 def mailing_Feature():
     pass
 
