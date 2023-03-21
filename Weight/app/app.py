@@ -1,13 +1,14 @@
 from flask import Flask, request, make_response, render_template, redirect, url_for
 import csv
-import os
+import os, json
 from datetime import datetime, date
 import mysql.connector
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = './'
+UPLOAD_FOLDER = '../in'
 
-ALLOWED_EXTENSIONS = set(['csv'])
+ALLOWED_EXTENSIONS = set(['csv','json'])
+
 
 
 # db=mysql.connector.connect(
@@ -51,15 +52,24 @@ def bw():
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            ext=filename.split(".")[-1]
+        
 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-            with open(f'./{filename}', 'r') as file:
-                reader = csv.reader(file)
-                for row in reader:
-                    rows = print(row)
-        return (f"{rows}")
+            if ext =='csv':
 
+                with open(f'./{filename}', 'r') as file:
+                    reader = csv.reader(file)
+                    for row in reader:
+                        rows = print(row)
+                return (f"{rows}")
+            elif ext=='json':
+                with open(f'./{filename}', 'r') as file:
+                    data=json.load(file)  
+                return (f"{data}")    
+        else:
+                return "Invalid file type"
 
 @app.route("/weight", methods=["GET", "POST"])
 def post_weight():
