@@ -38,6 +38,29 @@ def root():
     pass
 
 
+@app.route("/batch-weight", methods=["GET", "POST"])
+def bw():
+    if request.method == 'GET':
+        return render_template("bw.html")
+    elif request.method == 'POST':
+        if 'file' not in request.files:
+            return "no file part"
+        file = request.files['file']
+        if file.filename == '':
+            return "No selected file"
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            with open(f'./{filename}', 'r') as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    rows = print(row)
+        return (f"{rows}")
+
+
 @app.route("/weight", methods=["GET", "POST"])
 def post_weight():
     if request.method == 'POST':
@@ -52,25 +75,7 @@ def post_weight():
             unit_of_measure_neto = request.form['unit_of_measure_2']
             timestamp = datetime.now().strftime(r"%Y%m%d%H%M%S")
             return (f"{direction},{truck_license},{product_delivered},{truck_bruto_weight},{unit_of_measure_bruto},{truck_neto_weight},{unit_of_measure_neto},{timestamp}")
-        
-        elif request.form['action'] == 'upload':
-            if 'file' not in request.files:
-                return "no file part"
-            file = request.files['file']
-            if file.filename == '':
-                return "No selected file"
 
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-                with open(f'./{filename}', 'r') as file:
-                    reader = csv.reader(file)
-                    for row in reader:
-                        rows = print(row)
-
-            return redirect(url_for('post_weight'))
     elif request.method == 'GET':
         return render_template('index.html')
 
