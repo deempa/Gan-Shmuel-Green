@@ -14,8 +14,7 @@ clone ()
     echo "Cloning Finished"
 }
 
-build ()
-{
+build (
     local app_name=$1
     docker rmi -f billing_image &> /dev/null
     docker rmi -f weight_image &> /dev/null
@@ -30,7 +29,7 @@ build ()
         docker build --no-cache -t weight_image .
         echo "Build Weight"
     fi
-}
+)
 
 repo_name=$1
 repo_url=$2
