@@ -5,13 +5,14 @@ services:
         ports:
           - "5000"
         networks:
-          - billingnetwork
+          - allnetwork
         restart: unless-stopped
         depends_on:
           mysql:
               condition: service_healthy
     mysql:
         image: mysql:5.7
+        platform: linux/x86_64
         volumes:
           - db_data:/var/lib/mysql
           - ./dbsample:/docker-entrypoint-initdb.d
@@ -50,18 +51,17 @@ services:
             - "db"
         restart: on-failure
         networks:
-        - allnetwork
+          - allnetwork
     
     db:
         build:
-            context: ./schemas
-            dockerfile: dockerfile
+            context: ./Gan-Shmuel-Green/Weight/schemas/.
         volumes:
             - data:/var/lib/mysql
         ports:
             - "3300:3306"
         networks:
-        - allnetwork
+          - allnetwork
 
 volumes:
     data:
