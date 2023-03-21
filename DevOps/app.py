@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import Flask, request, Response, render_template
 import docker
 from git import Repo
 import os
@@ -50,6 +50,11 @@ def mailing_Feature():
         server.quit()
 
     pass
+
+
+@app.route("/monitoring", methods=["GET"])
+def monitor():
+    return render_template('index.html'), Response("ok", status=200)
 
         
 @app.route("/health", methods=["GET"])
