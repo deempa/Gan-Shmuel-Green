@@ -37,7 +37,7 @@ services:
         depends_on:
           - app
         ports:
-          - "80:80"
+          - "8082:80"
         restart: unless-stopped
         
 volumes:
