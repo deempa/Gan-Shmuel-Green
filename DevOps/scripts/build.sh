@@ -4,6 +4,8 @@ clone ()
 {
     local repo_name=$1
     local repo_url=$2
+    echo $repo_name
+    echo $repo_url
     if [ -d $repo_name ]; then
         echo "Folder 'repo' exists. Deleting..."
         rm -rf $repo_name

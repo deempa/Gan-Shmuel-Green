@@ -1,7 +1,7 @@
 FROM docker:20.10.23-dind
 
 RUN apk update && \
-    apk add py3-pip git
+    apk add py3-pip git bash
 
 WORKDIR /devopsapp
 

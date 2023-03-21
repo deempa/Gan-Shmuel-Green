@@ -26,7 +26,7 @@ def trigger():
             except:
                 pass
             
-            subprocess.run(["./scripts/build.sh", repo_name, repo_url])
+            subprocess.call(['bash', './scripts/build.sh', repo_name, repo_url])
             
             
 def mailing_Feature():
