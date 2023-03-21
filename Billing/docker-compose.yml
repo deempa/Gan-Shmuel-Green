@@ -23,7 +23,7 @@ services:
         networks:
           - billingnetwork
         hostname: mysql-server
-        restart: unless stopped
+        restart: unless-stopped
         healthcheck:
           test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
           timeout: 5s

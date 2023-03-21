@@ -1,2 +1,5 @@
 ## ignore virutal env
 BillingEnv/
+## ignore __pycache__/
+__pycache__/
+
