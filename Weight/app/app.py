@@ -6,9 +6,8 @@ import mysql.connector
 from werkzeug.utils import secure_filename
 import re
 
-def is_positive_number(s):
-    pattern = r'^\d+(\.\d+)?$'
-    return bool(re.match(pattern, s))
+def has_numbers(inputString):
+    return any(char.isdigit() for char in inputString)
 #8083
 UPLOAD_FOLDER = './'
 
@@ -43,6 +42,29 @@ def root():
     return redirect(url_for('post_weight'))
 
 
+@app.route("/batch-weight", methods=["GET", "POST"])
+def bw():
+    if request.method == 'GET':
+        return render_template("bw.html")
+    elif request.method == 'POST':
+        if 'file' not in request.files:
+            return "no file part"
+        file = request.files['file']
+        if file.filename == '':
+            return "No selected file"
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            with open(f'./{filename}', 'r') as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    rows = print(row)
+        return (f"{rows}")
+
+
 @app.route("/weight", methods=["GET", "POST"])
 def post_weight():
     if request.method == 'POST':
@@ -55,27 +77,18 @@ def post_weight():
             truck_neto_weight = request.form['truck_neto_weight']
             unit_of_measure_neto = request.form['unit_of_measure_2']
             container_id = request.form['container_id']
-            force = request.form['Force']
+            force = request.form['force']
             timestamp = datetime.now().strftime(r"%Y%m%d%H%M%S")
+            if truck_license is None or truck_license is "":
+                return "Truck license plate is empty, please insert a truck license number"
+            if product_delivered.isnumeric() or has_numbers(product_delivered):
+                return "Invalid product! you cnnot have numbers in product's names"
+            if re.search('[a-zA-Z]', truck_bruto_weight) or truck_bruto_weight is None or truck_bruto_weight is "":
+                return "Invalid weight inserted to bruto weight"
+            if re.search('[a-zA-Z]', truck_neto_weight) or truck_neto_weight is None or truck_neto_weight is "":
+                return "Invalid weight inserted to neto weight"
             
-        
-        if request.form['action'] == 'upload':
-            if 'file' not in request.files:
-                return "no file part"
-            file = request.files['file']
-            if file.filename == '':
-                return "No selected file"
 
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-                with open(f'./{filename}', 'r') as file:
-                    reader = csv.reader(file)
-                    for row in reader:
-                        rows = print(row)
-            return redirect(url_for('post_weight'))
     elif request.method == 'GET':
         return render_template('index.html')
 

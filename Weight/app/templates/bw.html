@@ -1,0 +1,177 @@
+<!-- <!doctype html>
+    <title>Upload new File</title>
+    <h1>Upload new File</h1>
+    <form method=post enctype=multipart/form-data>
+      <p><input type=file name=file>
+         <input type=submit value=Upload>
+    </form>
+
+ -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Weight Hub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px #ccc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: inline-block;
+            width: 240px;
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        input[type="text"],
+        select {
+            width: 150px;
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-shadow: inset 0px 1px 3px #ddd;
+        }
+
+        select {
+            margin-left: 10px;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-left: 250px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .upload-btn-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .file-name {
+            margin-left: 10px;
+        }
+
+        .separator {
+            margin-top: 50px;
+            margin-bottom: 50px;
+            height: 2px;
+            background-color: #ccc;
+            width: 100%;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .section {
+            flex-basis: 45%;
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                flex-basis: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>File upload</h1>
+    <div class="container">
+        <div class="section">
+            <h2>Form</h2>
+            <form method="post" enctype="multipart/form-data">
+                <div class="section">
+                    <h2>CSV Upload</h2>
+                    <div class="upload-btn-wrapper">
+                        <button class="btn">Upload a CSV file</button>
+                        <input type="file" name="file">
+                        <span class="upload-label">No file selected</span>
+                        <span class="file-name"></span>
+                    </div>
+                </div>
+
+
+                <input type="submit" name="action" value="upload">
+                <a href="/weight">Back to manual form</a>
+            </form>
+        </div>
+
+    </div>
+    <div class="separator"></div>
+    <script>
+        // Show the selected file name
+        const fileInput = document.querySelector('input[type="file"]');
+        const uploadLabel = document.querySelector('.upload-label');
+        const fileName = document.querySelector('.file-name');
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.value) {
+                const name = fileInput.value.split('\\').pop();
+                uploadLabel.textContent = 'File selected:';
+                fileName.textContent = name;
+            } else {
+                uploadLabel.textContent = 'No file selected';
+                fileName.textContent = '';
+            }
+        });
+    </script>
+</body>
+
+</html>

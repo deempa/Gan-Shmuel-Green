@@ -158,40 +158,22 @@
 				</select><br><br> <br>
 
 
-				<div class="section">
+				<div">
 					<h2>CSV Upload</h2>
 					<div class="upload-btn-wrapper">
-						<button class="btn">Upload a CSV file</button>
-						<input type="file" name="file" >
-						<span class="upload-label">No file selected</span>
-						<span class="file-name"></span>
+					<a href="/batch-weight">Upload files</a>				
 					</div>
+					
 				</div>
         
-        
-				<input  type="submit" name="action" value="upload">
+				
+			
 			</form>
 		</div>
 		
 	</div>
 	<div class="separator"></div>
-	<script>
-		// Show the selected file name
-		const fileInput = document.querySelector('input[type="file"]');
-		const uploadLabel = document.querySelector('.upload-label');
-		const fileName = document.querySelector('.file-name');
 
-		fileInput.addEventListener('change', () => {
-			if (fileInput.value) {
-				const name = fileInput.value.split('\\').pop();
-				uploadLabel.textContent = 'File selected:';
-				fileName.textContent = name;
-			} else {
-				uploadLabel.textContent = 'No file selected';
-				fileName.textContent = '';
-			}
-		});
-	</script>
 </body>
 </html>
 
