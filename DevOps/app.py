@@ -40,7 +40,7 @@ def trigger():
 
 
 def clone(repo_url, repo_name):
-    Repo.clone_from(repo_url)
+    Repo.clone_from(repo_url, f"./{repo_name}/")
     
 def build(dockerfile_path, image_name):
     client.images.build(path=dockerfile_path, tag=image_name)
