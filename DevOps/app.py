@@ -3,7 +3,8 @@ import docker
 from git import Repo
 import os
 import subprocess
-
+import smtplib
+from email.mime.text import MIMEText
 
 app = Flask(__name__)
 
@@ -50,6 +51,22 @@ def build(dockerfile_path, image_name):
 #     client.containers.run(f"{lower_branch_name}_image", detach=True, hostname=f"{branch_name}_app", ports={'8082': '5000'})
  
 def mailing_Feature():
+    def send_email(subject, message):
+        # Set up the connection to the Gmail SMTP server
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login('ganshmuelgreen@gmail.com', 'ganshmuel13!')
+
+        # Create the message and set the recipient
+        msg = MIMEText(message)
+        msg['Subject'] = subject
+        msg['From'] = 'ganshmuelgreen@gmail.com'
+        msg['To'] = 'michal.dikun13@gmail.com'
+
+        # Send the email
+        server.sendmail('ganshmuelgreen@gmail.com', 'michal.dikun13@gmail.com', msg.as_string())
+        server.quit()
+
     pass
 
         
