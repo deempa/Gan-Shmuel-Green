@@ -35,10 +35,6 @@ cleaning ()
     docker rmi -f weight_image &> /dev/null
 }
 
-compose()(
-
-)
-
 repo_name=$1
 repo_url=$2
 
