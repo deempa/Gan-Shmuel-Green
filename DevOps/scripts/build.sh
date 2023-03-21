@@ -14,7 +14,7 @@ clone ()
     echo "Cloning Finished"
 }
 
-build (
+build() (
     local app_name=$1
     docker rmi -f billing_image &> /dev/null
     docker rmi -f weight_image &> /dev/null
@@ -32,7 +32,7 @@ build (
 )
 
 compose()(
-    
+
 )
 
 repo_name=$1
