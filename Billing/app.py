@@ -1,7 +1,9 @@
 from flask import Flask, make_response, request, jsonify
 import sqlalchemy
+from openpyxl import Workbook, load_workbook
+from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData
+import os
 
-import pandas as pd
 
 app = Flask(__name__)
 
@@ -89,15 +91,42 @@ def get_put_truck(id):
     else:
         return make_response("Bad Request", 400)
 
-@app.route('/rates', methods=["GET" "POST"])
+@app.route('/rates', methods=["GET","POST"])
 def rates():
-    if request.method == "GET":
-        return "i got your get"
-    elif request.method == "POST":
-        filename = 'rates.xlsx'
-        xlfile = pd.read_excel()
-        xlfile.to_sql('Rates',con=engine,if_exists='replace')
+    # define database metadata
+    metadata = MetaData()
 
+    # define Rates table schema
+    rates_table = Table('Rates', metadata,
+        Column('product_id', String),
+        Column('rate', Integer),
+        Column('scope', String)
+        )
+    
+    if request.method == "GET":
+        return make_response("haha", 200)
+
+    elif request.method == "POST":
+        # load Excel file from the "in" folder
+        folder_path = "in"
+        filename = os.path.join(folder_path, "Rates.xlsx")
+        wb = load_workbook(filename=filename, read_only=True)
+
+        # delete all records from Rates table
+        with engine.connect() as conn:
+            conn.execute(rates_table.delete())
+        
+        # insert records from Excel file to Rates table
+        ws = wb.active
+        for row in ws.iter_rows(min_row=2):
+            product_id = row[0].value
+            rate = row[1].value
+            scope = row[2].value
+            with engine.connect() as conn:
+                conn.execute(rates_table.insert().values(product_id=product_id, rate=rate, scope=scope))
+        
+        return make_response("saved", 200)
+            
         
 
 
