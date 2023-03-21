@@ -59,13 +59,13 @@ def bw():
 
             if ext =='csv':
 
-                with open(f'./{filename}', 'r') as file:
+                with open(f'../in/{filename}', 'r') as file:
                     reader = csv.reader(file)
                     for row in reader:
                         rows = print(row)
                 return (f"{rows}")
             elif ext=='json':
-                with open(f'./{filename}', 'r') as file:
+                with open(f'../in/{filename}', 'r') as file:
                     data=json.load(file)  
                 return (f"{data}")    
         else:
