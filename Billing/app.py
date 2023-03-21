@@ -71,6 +71,35 @@ def update_provider_name(id):
             return make_response("Provider id updated", 200)
     else:
         return make_response("Bad Request",400)
+    
+
+@app.route('/truck', methods=["POST"])
+def post_truck():
+    if request.is_json:
+        data=request.json
+        provider_id = data.get('provider')
+        truck_id = data.get('id')
+        if not provider_id or not truck_id:
+            return make_response("Missing provider or truck ID", 400)
+        conn=engine.connect()
+        provider_exists = conn.execute(sqlalchemy.text(f"select id from Provider id={provider_id}")).first()
+        if not provider_exists:
+            conn.close()
+            return make_response("Provider not found", 404)
+        truck_exists = conn.execute(sqlalchemy.text(f"select id from truck license_plate='{truck_id}'")).first()
+        if truck_exists:
+            conn.close()
+            return make_response("Truck already registered", 400)
+        conn.execute(sqlalchemy.text(f"Insert into truck (provider_id, license_plate) VALUES ('{provider_id}', '{truck_id}')"))
+        conn.commit()
+        getid=conn.execute(sqlalchemy.text(f"Select id from Truck license_plate='{truck_id}'"))
+        truck_id = getid.first()[0]
+        conn.close()
+        response={"id" : truck_id}
+        return make_response(jsonify(response), 200)
+    else:
+        return make_response("Bad Request",400)
+
 
 
 @app.route('/truck/<id>', methods=["PUT"])
