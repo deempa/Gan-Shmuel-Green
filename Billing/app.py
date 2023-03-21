@@ -87,6 +87,14 @@ def get_put_truck(id):
     else:
         return make_response("Bad Request", 400)
 
+@app.route('/rates', methods=["GET" "POST"])
+def rates():
+    if request.method == "GET":
+        return "i got your get"
+    elif request.method == "POST":
+        
+
+
 @app.route('/health', methods=["GET"])
 def check_health():
         try:
