@@ -7,6 +7,8 @@ services:
         networks:
           - billingnetwork
         restart: unless-stopped
+        volumes:
+          - /in-billing:/app/in
         depends_on:
           mysql:
               condition: service_healthy
