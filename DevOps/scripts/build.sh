@@ -29,10 +29,15 @@ build() (
     fi
 )
 
-cleaning ()
+cleaning()
 {
     docker rmi -f billing_image &> /dev/null
     docker rmi -f weight_image &> /dev/null
+}
+
+compose()
+{
+    docker-compose up -d
 }
 
 repo_name=$1
@@ -44,3 +49,5 @@ cleaning
 
 build billing
 build weight
+
+compose
