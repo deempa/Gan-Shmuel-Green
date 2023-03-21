@@ -1,7 +1,7 @@
 from flask import Flask, make_response, request, jsonify
 import sqlalchemy
 from openpyxl import Workbook, load_workbook
-from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData
+from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, select
 import os
 
 
@@ -104,12 +104,32 @@ def rates():
         )
     
     if request.method == "GET":
-        return make_response("haha", 200)
+        # load all records from Rates table
+        with engine.connect() as conn:
+            select_stmt = select(rates_table)
+            result = conn.execute(select_stmt)
+            data = result.fetchall()
+
+        # create a new Excel workbook and worksheet
+        wb = Workbook()
+        ws = wb.active
+
+        # write the data to the worksheet
+        ws.append(['product_id', 'rate', 'scope'])
+        for row in data:
+            ws.append(list(row))
+
+        # save the workbook to the "in" folder
+        folder_path = "in"
+        filename = os.path.join(folder_path, "export_rates.xlsx")
+        wb.save(filename=filename)
+        
+        return make_response("see your data in/export_rates.xlsx", 200)
 
     elif request.method == "POST":
         # load Excel file from the "in" folder
         folder_path = "in"
-        filename = os.path.join(folder_path, "Rates.xlsx")
+        filename = os.path.join(folder_path, "rates.xlsx")
         wb = load_workbook(filename=filename, read_only=True)
 
         # delete all records from Rates table
