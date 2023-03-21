@@ -5,7 +5,7 @@ from datetime import datetime, date
 import mysql.connector
 from werkzeug.utils import secure_filename
 import re
-
+import connections
 UPLOAD_FOLDER = '../in'
 
 ALLOWED_EXTENSIONS = set(['csv','json'])
@@ -15,17 +15,12 @@ def has_numbers(inputString):
 #8083
 
 
-# db=mysql.connector.connect(
-#     host="localhost",
-#     user="root",
-#     password="123",
-#     database="weight"
-# )
-isconnected = 0
-# if db.isconnected():
-#     isconnected = 1
-# else:
-#     isconnected = 0
+isconnected=0
+try:
+    db=connections.get_connection()
+except Exception:
+    db=None
+
 
 app = Flask(__name__)
 
@@ -88,6 +83,7 @@ def post_weight():
             truck_neto_weight = request.form['truck_neto_weight']
             unit_of_measure_neto = request.form['unit_of_measure_2']
             timestamp = datetime.now().strftime(r"%Y%m%d%H%M%S")
+            container_id=request.form['container_id']
             if truck_license is None or truck_license is "":
                 return "Truck license plate is empty, please insert a truck license number"
             if product_delivered.isnumeric() or has_numbers(product_delivered):
@@ -98,6 +94,12 @@ def post_weight():
                 return "Invalid weight inserted to neto weight"
             if direction == "In":
                 pass
+            
+            connections.register_truck(container_id=container_id,wieght=truck_bruto_weight,unit=unit_of_measure_bruto)
+                
+            return redirect(url_for("post_weight"))
+            
+                
 
     elif request.method == 'GET':
         return render_template('index.html')
@@ -105,9 +107,10 @@ def post_weight():
 
 @app.route("/health")
 def healthcheck():
-    if isconnected == 1:
+    try:
+        db.is_connected
         return "The Server Is Healthy", 200
-    else:
+    except Exception:
         return "Could Not Connect To The Database", 500
 
 
