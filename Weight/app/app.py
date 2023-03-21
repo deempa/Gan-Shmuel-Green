@@ -4,7 +4,12 @@ import os
 from datetime import datetime, date
 import mysql.connector
 from werkzeug.utils import secure_filename
+import re
 
+def is_positive_number(s):
+    pattern = r'^\d+(\.\d+)?$'
+    return bool(re.match(pattern, s))
+#8083
 UPLOAD_FOLDER = './'
 
 ALLOWED_EXTENSIONS = set(['csv'])
@@ -35,14 +40,13 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def root():
-    pass
+    return redirect(url_for('post_weight'))
 
 
 @app.route("/weight", methods=["GET", "POST"])
 def post_weight():
     if request.method == 'POST':
         if request.form['action'] == 'submit':
-
             direction = request.form['direction']
             truck_license = request.form['truck_license']
             product_delivered = request.form['product_delivered']
@@ -50,10 +54,12 @@ def post_weight():
             unit_of_measure_bruto = request.form['unit_of_measure_1']
             truck_neto_weight = request.form['truck_neto_weight']
             unit_of_measure_neto = request.form['unit_of_measure_2']
+            container_id = request.form['container_id']
+            force = request.form['Force']
             timestamp = datetime.now().strftime(r"%Y%m%d%H%M%S")
-            return (f"{direction},{truck_license},{product_delivered},{truck_bruto_weight},{unit_of_measure_bruto},{truck_neto_weight},{unit_of_measure_neto},{timestamp}")
+            
         
-        elif request.form['action'] == 'upload':
+        if request.form['action'] == 'upload':
             if 'file' not in request.files:
                 return "no file part"
             file = request.files['file']
@@ -69,7 +75,6 @@ def post_weight():
                     reader = csv.reader(file)
                     for row in reader:
                         rows = print(row)
-
             return redirect(url_for('post_weight'))
     elif request.method == 'GET':
         return render_template('index.html')
