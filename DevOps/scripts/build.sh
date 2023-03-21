@@ -37,7 +37,8 @@ cleaning()
 
 compose()
 {
-    docker-compose up -d
+    docker-compose -f "${repo_name}/Weight/Docker-compose.yaml" up -d
+    docker-compose -f "${repo_name}/Billing/docker-compose.yml" up -d
 }
 
 repo_name=$1

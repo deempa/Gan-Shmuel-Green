@@ -43,7 +43,7 @@ services:
     flask-app:
         image: weight_image 
         ports:
-            - "5000:5000"
+            - "8083:5000"
         depends_on:
             - "db"
         restart: on-failure
