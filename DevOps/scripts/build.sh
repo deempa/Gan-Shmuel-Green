@@ -16,8 +16,6 @@ clone ()
 
 build() (
     local app_name=$1
-    docker rmi -f billing_image &> /dev/null
-    docker rmi -f weight_image &> /dev/null
     echo "Building..."
 
     if [[ $app_name == "billing" ]]; then
@@ -31,6 +29,12 @@ build() (
     fi
 )
 
+cleaning ()
+{
+    docker rmi -f billing_image &> /dev/null
+    docker rmi -f weight_image &> /dev/null
+}
+
 compose()(
 
 )
@@ -39,6 +43,8 @@ repo_name=$1
 repo_url=$2
 
 clone $repo_name $repo_url
+
+cleaning
 
 build billing
 build weight
