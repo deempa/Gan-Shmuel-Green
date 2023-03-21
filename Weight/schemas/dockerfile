@@ -3,4 +3,4 @@ FROM mysql
 ENV MYSQL_DATABASE=weight
 ENV MYSQL_ROOT_PASSWORD=123
 
-COPY ./schema.sql /docker-entrypoint-initdb.d/
+COPY . /docker-entrypoint-initdb.d/
