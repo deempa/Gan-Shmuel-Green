@@ -84,7 +84,8 @@ def get_put_truck(id):
                 return make_response("Provider doesn't exist", 400)
         else:
             return make_response("Bad Request", 400)
-
+    else:
+        return make_response("Bad Request", 400)
 
 @app.route('/health', methods=["GET"])
 def check_health():
