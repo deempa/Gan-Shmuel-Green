@@ -2,6 +2,8 @@ from flask import Flask, request, Response
 import docker
 from git import Repo
 import os
+import subprocess
+
 
 app = Flask(__name__)
 
@@ -24,8 +26,13 @@ def trigger():
             except:
                 pass
             
-            clone(repo_url, repo_name)                    
-            build(repo_name, branch_name)           
+            clone(repo_url, repo_name) 
+                               
+            # build(repo_name, branch_name)   
+            
+            print("Docker compose up.")
+            subprocess.call(['./docker-compose.sh'])
+                    
             # tests          
             print("testing..... Completed")
             
@@ -36,14 +43,14 @@ def trigger():
         
 def clone(repo_url, repo_name):
     Repo.clone_from(repo_url, f"./{repo_name}")
-        
+    
 def build(repo_name, branch_name):
     lower_branch_name = branch_name.lower()
     client.images.build(path=f"./{repo_name}/{branch_name}/", tag=f"{lower_branch_name}_image")
     
 def run(branch_name):
     lower_branch_name = branch_name.lower()
-    client.containers.run(f"{lower_branch_name}_image", detach=True, hostname=f"{branch_name}_app", ports={'8082': '5000'}, entrypoint="python3 app.py")
+    client.containers.run(f"{lower_branch_name}_image", detach=True, hostname=f"{branch_name}_app", ports={'8082': '5000'})
  
 def mailing_Feature():
     pass
