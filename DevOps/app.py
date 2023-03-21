@@ -29,6 +29,8 @@ def trigger():
             
             subprocess.call(['bash', './scripts/build.sh', repo_name, repo_url])
             
+            return "ok"
+            
             
 def mailing_Feature():
     def send_email(subject, message):
