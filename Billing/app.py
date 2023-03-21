@@ -16,6 +16,15 @@ def isproviderexist(name):
      else:
           return False
 
+def is_provider_id_exist(id):
+    conn=engine.connect()
+    is_exist=conn.execute(sqlalchemy.text(f"select id from Provider where id={id}"))
+    conn.close()
+    if is_exist.first() != None:
+        return True
+    else:
+        return False
+
 
 @app.route('/provider', methods=["POST"])
 def post_provider():
@@ -34,6 +43,20 @@ def post_provider():
            return make_response(jsonify(response), 200)
     else:
          return make_response("Bad Request",400)
+    
+@app.route('/provider/<id>', methods=["PUT"])
+def update_provider_name(id):
+    if request.is_json:
+        data=request.json
+        name_to_update = data.get('name')
+        if not is_provider_id_exist(id):
+            return make_response("id does not exist",400)
+        else:
+            conn=engine.connect()
+            conn.execute(sqlalchemy.text(f"UPDATE Provider SET name='{name_to_update}' WHERE id={id}"))
+            conn.commit()
+            conn.close()
+            return make_response("Provider id updated", 200)
 
 
 @app.route('/health', methods=["GET"])
@@ -45,6 +68,9 @@ def check_health():
               return make_response("OK", 200)
         except:
               return make_response("Failure", 500)
-        
+            
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
