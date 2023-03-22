@@ -27,14 +27,15 @@ def trigger():
             try:
                 os.system(f"rm -rf ./{repo_name}")
             except:
-                pass
-            
-            # ci test env
-            # if branch_name in branches:
-            #     subprocess.call(['bash', './scripts/ci_test_env.sh', repo_name, repo_url, branch_name])      
+                pass     
                    
             if branch_name == "main":
-                result = subprocess.run(['bash', './scripts/build.sh', repo_name, repo_url])            
+                result = subprocess.run(['bash', './scripts/build.sh', repo_name, repo_url]) 
+                if result.returncode == 0:
+                    print("Deployed to production.")
+                else:
+                    print("Something in ci got wrong. ")
+                    print("senting email!")            
             return "ok"
             
             
