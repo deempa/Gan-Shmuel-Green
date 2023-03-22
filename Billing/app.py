@@ -38,12 +38,6 @@ def is_truck_id_exist(id):
 
 @app.route('/provider', methods=["POST"])
 def post_provider():
-<<<<<<< HEAD
-    if request.is_json and request.method == "POST":
-      data=request.json
-      provider_name=data.get('name')
-      if is_provider_exist(provider_name):
-=======
     if not request.is_json and request.method != "POST":
            return make_response("Bad Request",400)
     data=request.json
@@ -51,7 +45,6 @@ def post_provider():
     if provider_name==None:
          return make_response("Bad Request",400)
     if is_provider_exist(provider_name):
->>>>>>> 7cdb42f (changed starcture of if statements)
           return make_response("Provider exists", 400)
     conn=engine.connect()
     conn.execute(sqlalchemy.text(f"INSERT INTO Provider (name) VALUES ('{provider_name}')"))
@@ -66,7 +59,17 @@ def post_provider():
 def update_provider_name(id):
     if not request.is_json and request.method!="PUT":
         return make_response("Bad Request",400)
-<<<<<<< HEAD
+    data=request.json
+    name_to_update = data.get('name')
+    if name_to_update==None:
+         return make_response("Bad Request",400)
+    if not is_provider_id_exist(id):
+        return make_response("id does not exist",400)
+    conn=engine.connect()
+    conn.execute(sqlalchemy.text(f"UPDATE Provider SET name='{name_to_update}' WHERE id={id}"))
+    conn.commit()
+    conn.close()
+    return make_response("Provider id updated", 200)
     
 
 @app.route('/truck', methods=["POST"])
@@ -75,11 +78,10 @@ def post_truck():
         data=request.json
         provider_id = data.get('provider')
         truck_id = data.get('id')
-        if not provider_id or not truck_id:
+        if provider_id==None or truck_id==None:
             return make_response("Missing provider or truck ID", 400)
         if not is_provider_id_exist(provider_id) :
             return make_response("Provider not found", 404)
-        truck_exists = conn.execute(sqlalchemy.text(f"select id from truck license_plate='{truck_id}'")).first()
         if not is_truck_id_exist(truck_id):
             return make_response("Truck already registered", 400)
         conn=engine.connect()
@@ -92,23 +94,7 @@ def post_truck():
         return make_response(jsonify(response), 200)
     else:
         return make_response("Bad Request",400)
-
-
-
-=======
-    data=request.json
-    name_to_update = data.get('name')
-    if name_to_update==None:
-         return make_response("Bad Request",400)
-    if not is_provider_id_exist(id):
-        return make_response("id does not exist",400)
-    conn=engine.connect()
-    conn.execute(sqlalchemy.text(f"UPDATE Provider SET name='{name_to_update}' WHERE id={id}"))
-    conn.commit()
-    conn.close()
-    return make_response("Provider id updated", 200)
         
->>>>>>> 7cdb42f (changed starcture of if statements)
 @app.route('/truck/<id>', methods=["PUT"])
 def get_put_truck(id):
     if request.method != "PUT" and not is_truck_id_exist(id):
