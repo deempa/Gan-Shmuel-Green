@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 client = docker.from_env()
 
-#user_dict = {"AvihaiZiv": "avihai40@gmail.com", "OfirAviv": "ofiraviv@gmail.com"}
+#user_dict = {"AvihaiZiv": "avihai40@gmail.com", "OfirAviv": "ofir851@gmail.com"}
 
 # devops_mails = ["masrab11@gmail.com", "Michal.dikun13@gmail.com", "theoneandonlypeleg@gmail.com"]
 
