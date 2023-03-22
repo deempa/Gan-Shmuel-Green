@@ -2,13 +2,13 @@ FROM python:3.10-alpine3.17
 
 WORKDIR /app
 
+RUN mkdir -p ./in && mkdir -p ./out
+
 COPY ./requirements.txt .
 
 RUN pip install -r requirements.txt
 
 COPY . .
-
-RUN mkdir -p ./in
 
 EXPOSE 5000
 
