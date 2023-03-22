@@ -1,0 +1,4 @@
+##ignore BillingEnv
+./BillingEnv/
+## ignore __pycache__
+./__pycache__/

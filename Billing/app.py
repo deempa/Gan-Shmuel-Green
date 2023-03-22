@@ -1,4 +1,4 @@
-from flask import Flask, make_response, request, jsonify
+from flask import Flask, make_response, request, jsonify, send_from_directory
 import sqlalchemy
 from openpyxl import Workbook, load_workbook
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, select
@@ -7,7 +7,7 @@ import os
 
 app = Flask(__name__)
 
-engine = sqlalchemy.create_engine("mysql+pymysql://billdbuser:billdbpass@mysql-server/billdb")
+engine = sqlalchemy.create_engine("mysql+pymysql://billdbuser:billdbpass@mysql-server:3306/billdb")
 
 def is_provider_exist(name):
      conn=engine.connect()
@@ -36,41 +36,34 @@ def is_truck_id_exist(id):
     else:
         return False
 
-
 @app.route('/provider', methods=["POST"])
 def post_provider():
+<<<<<<< HEAD
     if request.is_json and request.method == "POST":
       data=request.json
       provider_name=data.get('name')
       if is_provider_exist(provider_name):
+=======
+    if not request.is_json and request.method != "POST":
+           return make_response("Bad Request",400)
+    data=request.json
+    provider_name=data.get('name')
+    if is_provider_exist(provider_name):
+>>>>>>> 7cdb42f (changed starcture of if statements)
           return make_response("Provider exists", 400)
-      else:
-           conn=engine.connect()
-           conn.execute(sqlalchemy.text(f"INSERT INTO Provider (name) VALUES ('{provider_name}')"))
-           conn.commit()
-           getid=conn.execute(sqlalchemy.text(f"select id from Provider where name='{provider_name}'"))
-           conn.close()
-           response={"id" : getid.first()[0]}
-           return make_response(jsonify(response), 200)
-    else:
-         return make_response("Bad Request",400)
-
+    conn=engine.connect()
+    conn.execute(sqlalchemy.text(f"INSERT INTO Provider (name) VALUES ('{provider_name}')"))
+    conn.commit()
+    getid=conn.execute(sqlalchemy.text(f"select id from Provider where name='{provider_name}'"))
+    conn.close()
+    response={"id" : getid.first()[0]}
+    return make_response(jsonify(response), 200)
 
 @app.route('/provider/<id>', methods=["PUT"])
 def update_provider_name(id):
-    if request.is_json and request.method=="PUT":
-        data=request.json
-        name_to_update = data.get('name')
-        if not is_provider_id_exist(id):
-            return make_response("id does not exist",400)
-        else:
-            conn=engine.connect()
-            conn.execute(sqlalchemy.text(f"UPDATE Provider SET name='{name_to_update}' WHERE id={id}"))
-            conn.commit()
-            conn.close()
-            return make_response("Provider id updated", 200)
-    else:
+    if not request.is_json and request.method!="PUT":
         return make_response("Bad Request",400)
+<<<<<<< HEAD
     
 
 @app.route('/truck', methods=["POST"])
@@ -99,24 +92,33 @@ def post_truck():
 
 
 
+=======
+    data=request.json
+    name_to_update = data.get('name')
+    if not is_provider_id_exist(id):
+        return make_response("id does not exist",400)
+    conn=engine.connect()
+    conn.execute(sqlalchemy.text(f"UPDATE Provider SET name='{name_to_update}' WHERE id={id}"))
+    conn.commit()
+    conn.close()
+    return make_response("Provider id updated", 200)
+        
+>>>>>>> 7cdb42f (changed starcture of if statements)
 @app.route('/truck/<id>', methods=["PUT"])
 def get_put_truck(id):
-    if request.method == "PUT" and  is_truck_id_exist(id):
-        if request.is_json:
-            data=request.json
-            provider_id=data.get('provider_id')
-            if is_provider_id_exist(provider_id):
-               conn=engine.connect()
-               conn.execute(sqlalchemy.text(f"UPDATE Trucks SET provider_id={provider_id} WHERE id={id}"))
-               conn.commit()
-               conn.close()
-               return make_response("Updated truck provider",200)
-            else:
-                return make_response("Provider doesn't exist", 400)
-        else:
-            return make_response("Bad Request", 400)
-    else:
+    if request.method != "PUT" and not is_truck_id_exist(id):
         return make_response("Bad Request", 400)
+    elif not request.is_json:
+            return make_response("Bad Request: Content is not json", 400)
+    data=request.json
+    provider_id=data.get('provider_id')
+    if not is_provider_id_exist(provider_id):
+        return make_response("Specified provider doesn't exist", 400)
+    conn=engine.connect()
+    conn.execute(sqlalchemy.text(f"UPDATE Trucks SET provider_id={provider_id} WHERE id={id}"))
+    conn.commit()
+    conn.close()
+    return make_response("Updated truck provider",200)
 
 
 @app.route('/rates', methods=["GET","POST"])
@@ -148,16 +150,21 @@ def rates():
             ws.append(list(row))
 
         # save the workbook to the "in" folder
-        folder_path = "in"
+        folder_path = "out"
         filename = os.path.join(folder_path, "export_rates.xlsx")
         wb.save(filename=filename)
-        
-        return make_response("see your data in/export_rates.xlsx", 200)
+        return send_from_directory(os.path.join(app.root_path,"out"),"export_rates.xlsx", as_attachment=True)
 
     elif request.method == "POST":
         # load Excel file from the "in" folder
+        if not request.is_json:
+            return make_response("Bad Request: Content isn't json", 400)
+        data=request.json
+        file=data.get('file')
         folder_path = "in"
-        filename = os.path.join(folder_path, "rates.xlsx")
+        filename = os.path.join(folder_path, file)
+        if not os.path.isfile(filename):
+            return make_response("Bad Request: specified file doesn't exist", 400)
         wb = load_workbook(filename=filename, read_only=True)
 
         # delete all records from Rates table
@@ -185,7 +192,6 @@ def check_health():
               return make_response("OK", 200)
         except:
               return make_response("Failure", 500)
-
 
 if __name__ == "__main__":
     app.run(debug=True)
