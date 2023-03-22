@@ -53,4 +53,6 @@ cleaning
 build billing
 build weight
 
+echo $(pwd)
+
 compose
