@@ -38,10 +38,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
+
 <body>
     <div class="border">
         <h1>Weight Server Status</h1>
-        {% if service1_status == 'active' %}<h1 class="statusGreen"><span class="dotGreen"></span>Active</h1>
+        {% if {{service1_status}} == 'active' %}<h1 class="statusGreen"><span class="dotGreen"></span>Active</h1>
         {% else %}<h1 class="statusRed"><span class="dotRed"></span>Inactive</h1>
         {% endif %}
         <!-- <h1>Response {{code}}</h1> -->
@@ -49,7 +51,7 @@
 
     <div class="border">
         <h1>Billing Server Status</h1>
-        {% if service2_status == 'active' %}<h1 class="statusGreen"><span class="dotGreen"></span>Active</h1>
+        {% if {{service2_status}} == 'active' %}<h1 class="statusGreen"><span class="dotGreen"></span>Active</h1>
         {% else %}<h1 class="statusRed"><span class="dotRed"></span>Inactive</h1>
         {% endif %}
         <!-- <h1>Response {{code}}</h1> -->

@@ -80,8 +80,8 @@ def monitor():
 @app.route('/monitoring2')
 def index():
     # Check status of services
-    service1_status = check_service_status('http://3.76.109.165:8082/health')
-    service2_status = check_service_status('http://3.76.109.165:8083/health')
+    service1_status = check_service_status('http://localhost:8082/health')
+    service2_status = check_service_status('http://localhost:8083/health')
 
     # Render HTML template with status information
     return render_template('index.html', service1_status=service1_status, service2_status=service2_status)
