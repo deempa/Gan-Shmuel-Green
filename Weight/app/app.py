@@ -35,7 +35,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def root():
-    pass
+    return redirect(url_for('post_weight'))
 
 
 @app.route("/batch-weight", methods=["GET", "POST"])
@@ -83,8 +83,8 @@ def post_weight():
             truck_neto = request.form['truck_neto_weight']
             unit_of_measure_neto = request.form['unit_of_measure_2']
             date_time = datetime.now().strftime(r"%Y%m%d%H%M%S")
-            containers=request.form['container_id']
-            
+            containers=request.form['container_id'].split(',')
+            force=request.form['force']
             # if truck is None or truck is "":
             #     return "Truck license plate is empty, please insert a truck license number"
             # if product_delivered.isnumeric() or has_numbers(product_delivered):
@@ -97,7 +97,11 @@ def post_weight():
             #     pass
             
             
-            connections.insert_transaction_in(direction=direction,truck=truck,containers=containers,truck_bruto=truck_bruto,unit_of_measure_bruto=unit_of_measure_bruto,produce=produce,datetime=date_time)
+            connections.insert_transaction(direction=direction,truck=truck,containers=containers,
+                                           truck_bruto=truck_bruto,
+                                           unit_of_measure_bruto=unit_of_measure_bruto,
+                                           produce=produce,datetime=date_time,
+                                           force=force)
 
             return redirect(url_for("post_weight"))
             
@@ -107,6 +111,8 @@ def post_weight():
         return render_template('index.html')
 
 
+
+
 @app.route("/health")
 def healthcheck():
     try:
@@ -114,6 +120,11 @@ def healthcheck():
         return "The Server Is Healthy", 200
     except Exception:
         return "Could Not Connect To The Database", 500
+
+@app.route("/unknown")
+def show_unknown():
+   conts= connections.unknown()
+   return conts
 
 
 if __name__ == "__main__":
