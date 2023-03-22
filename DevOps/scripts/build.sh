@@ -10,22 +10,23 @@ clone ()
         echo "Folder 'repo' exists. Deleting..."
         rm -rf $repo_name
     fi
-    git clone $repo_url
+    git clone --quiet $repo_url
     echo "Cloning Finished"
 }
 
 build() (
     local app_name=$1
-    echo "Building..."
+    echo "Start Building"
 
     if [[ $app_name == "billing" ]]; then
+        echo "Building Billing Image"
         cd "$repo_name/Billing/"
-        docker build --no-cache -t billing_image .
-        echo "Build Billing"
+        docker build --quiet --no-cache -t billing_image .
+
     elif [[ $app_name == "weight" ]]; then
+        echo "Building Weight Image"
         cd "$repo_name/Weight/app/"
-        docker build --no-cache -t weight_image .
-        echo "Build Weight"
+        docker build --quiet --no-cache -t weight_image .    
     fi
 )
 
@@ -35,9 +36,10 @@ cleaning()
     docker rmi -f weight_image &> /dev/null
 }
 
-compose()
+compose_to_production()
 {
-    docker-compose up -d
+    echo "Delpoying to production"
+    docker-compose --project-name production --env-file ./config/.env up -d
 }
 
 repo_name=$1
@@ -50,4 +52,4 @@ cleaning
 build billing
 build weight
 
-compose
+compose_to_production
