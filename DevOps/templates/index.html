@@ -12,15 +12,25 @@
             text-align: center;
             font-size: larger;
         }
-        .dot {
+        .dotGreen {
             height: 25px;
             width: 25px;
             background-color: #09c240;
             border-radius: 50%;
             display: inline-block;
         }
-        .statusText{
+        .statusGreen{
             color: green;
+        }
+        .dotRed {
+            height: 25px;
+            width: 25px;
+            background-color: #eb0909;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .statusRed{
+            color: red;
         }
     </style>
     <meta charset="UTF-8">
@@ -32,8 +42,10 @@
     
     <div class="border">
         <h1>Server status</h1>
-        <h1 class="statusText"><span class="dot"></span>  Active</h1>
-        <h1>Response 200</h1>
+        {% if status == 'active' %}<h1 class="statusGreen"><span class="dotGreen"></span>Active</h1>
+        {% else %}<h1 class="statusRed"><span class="dotRed"></span>Inactive</h1>
+        {% endif %}
+        <h1>Response {{code}}</h1>
     </div>
 
 </body>
