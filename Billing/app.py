@@ -48,6 +48,8 @@ def post_provider():
            return make_response("Bad Request",400)
     data=request.json
     provider_name=data.get('name')
+    if provider_name==None:
+         return make_response("Bad Request",400)
     if is_provider_exist(provider_name):
 >>>>>>> 7cdb42f (changed starcture of if statements)
           return make_response("Provider exists", 400)
@@ -58,6 +60,7 @@ def post_provider():
     conn.close()
     response={"id" : getid.first()[0]}
     return make_response(jsonify(response), 200)
+
 
 @app.route('/provider/<id>', methods=["PUT"])
 def update_provider_name(id):
@@ -95,6 +98,8 @@ def post_truck():
 =======
     data=request.json
     name_to_update = data.get('name')
+    if name_to_update==None:
+         return make_response("Bad Request",400)
     if not is_provider_id_exist(id):
         return make_response("id does not exist",400)
     conn=engine.connect()
@@ -108,10 +113,12 @@ def post_truck():
 def get_put_truck(id):
     if request.method != "PUT" and not is_truck_id_exist(id):
         return make_response("Bad Request", 400)
-    elif not request.is_json:
+    if not request.is_json:
             return make_response("Bad Request: Content is not json", 400)
     data=request.json
     provider_id=data.get('provider_id')
+    if provider_id==None:
+         return make_response('Bad request',400)
     if not is_provider_id_exist(provider_id):
         return make_response("Specified provider doesn't exist", 400)
     conn=engine.connect()
@@ -162,6 +169,8 @@ def rates():
         data=request.json
         file=data.get('file')
         folder_path = "in"
+        if file==None:
+             return make_response("Bad Request", 400)
         filename = os.path.join(folder_path, file)
         if not os.path.isfile(filename):
             return make_response("Bad Request: specified file doesn't exist", 400)
