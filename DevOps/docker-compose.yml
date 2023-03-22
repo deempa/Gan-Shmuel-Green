@@ -27,10 +27,8 @@ services:
           retries: 20
         
     weight-app:
-        # image: weight_image 
-        build:
-          context: ./schemas
-          dockerfile: dockerfile
+        image: weight_image 
+
         ports:
             - "${WEIGHT_PORT}:5000"
         depends_on:
@@ -44,7 +42,7 @@ services:
             - data:/var/lib/mysql
             - ./schemas:/docker-entrypoint-initdb.d
         environment:
-            MYSQL_DATABASE: billdb
+            MYSQL_DATABASE: weight
             MYSQL_ROOT_PASSWORD: 123
 
 volumes:
