@@ -2,3 +2,5 @@
 ./BillingEnv/
 ## ignore __pycache__
 ./__pycache__/
+## ignore test.py
+./tests/
