@@ -78,6 +78,25 @@ def monitor():
         status = "inactive"
     return render_template('index.html', code=code, status=status)
 
+@app.route('/monitoring2')
+def index():
+    # Check status of services
+    service1_status = check_service_status('http://localhost:8082/health')
+    service2_status = check_service_status('http://localhost:8083/health')
+
+    # Render HTML template with status information
+    return render_template('index.html', service1_status=service1_status, service2_status=service2_status)
+
+def check_service_status(url):
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            return 'active'
+        else:
+            return 'inactive'
+    except requests.exceptions.RequestException:
+        return 'Error'
+
 
 @app.route("/health", methods=["GET"])
 def health():
