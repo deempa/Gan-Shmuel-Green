@@ -85,13 +85,10 @@ def post_truck():
         if is_truck_id_exist(truck_id):
             return make_response("Truck already registered", 400)
         conn=engine.connect()
-        conn.execute(sqlalchemy.text(f"Insert into truck (provider_id, license_plate) VALUES ('{provider_id}', '{truck_id}')"))
+        conn.execute(sqlalchemy.text(f"INSERT INTO Trucks (id, provider_id) VALUES ('{truck_id}', {provider_id})"))
         conn.commit()
-        getid=conn.execute(sqlalchemy.text(f"Select id from Truck license_plate='{truck_id}'"))
-        truck_id = getid.first()[0]
         conn.close()
-        response={"id" : truck_id}
-        return make_response(jsonify(response), 200)
+        return make_response("Truck added successfully", 200)
     else:
         return make_response("Bad Request",400)
         
