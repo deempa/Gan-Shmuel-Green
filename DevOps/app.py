@@ -66,30 +66,17 @@ def send_email(recipient, subject, message):
      # Send the email
     server.sendmail(email, recipient, msg.as_string())
     server.quit()
-    
-# @app.route("/monitoring", methods=["GET"])
-# def monitor():
-#     res = requests.get('http://3.76.109.165:8081/health')
-#     code = res.status_code
-#     if res:
-#         status = "active"
-#     else:    
-#         status = "inactive"
-#     return render_template('index.html', code=code, status=status)
 
 @app.route('/monitoring')
 def index():
     # Check status of services
     service1_status = check_service_status("http://3.76.109.165:8082/health")
     service2_status = check_service_status("http://3.76.109.165:8083/health")
-    print(service1_status, service2_status)
     # Render HTML template with status information
     return render_template('index.html', service1_status=service1_status, service2_status=service2_status)
 
 def check_service_status(service_url):
-    print(service_url)
     response = requests.get(service_url)
-    print(response.status_code)
     if response.status_code == 200:
         return 'active'
     else:
