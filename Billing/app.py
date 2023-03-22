@@ -93,7 +93,7 @@ def post_truck():
         return make_response("Bad Request",400)
         
 @app.route('/truck/<id>', methods=["PUT"])
-def get_put_truck(id):
+def put_truck(id):
     if request.method != "PUT" and not is_truck_id_exist(id):
         return make_response("Bad Request", 400)
     if not request.is_json:
@@ -139,7 +139,7 @@ def rates():
         for row in data:
             ws.append(list(row))
 
-        # save the workbook to the "in" folder
+        # save the workbook to the "out" folder
         folder_path = "out"
         filename = os.path.join(folder_path, "export_rates.xlsx")
         wb.save(filename=filename)
@@ -177,13 +177,15 @@ def rates():
         
 @app.route('/health', methods=["GET"])
 def check_health():
-        try:
-              conn=engine.connect()
-              conn.execute(sqlalchemy.text("select 1"))
-              conn.close()
-              return make_response("OK", 200)
-        except:
-              return make_response("Failure", 500)
+    try:
+        conn=engine.connect()
+        conn.execute(sqlalchemy.text("select 1"))
+        conn.close()
+    except:
+        return make_response("Failure", 500)
+
+
+    return make_response("OK", 200)
 
 if __name__ == "__main__":
     app.run(debug=True)
