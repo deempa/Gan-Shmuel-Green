@@ -15,7 +15,7 @@ def has_numbers(inputString):
 #8083
 
 #test comment1
-
+#test comment 2
 isconnected=0
 try:
     db=connections.get_connection()
