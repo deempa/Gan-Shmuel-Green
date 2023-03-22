@@ -33,27 +33,38 @@ def trigger():
                 result = subprocess.run(['bash', './scripts/build.sh', repo_name, repo_url]) 
                 if result.returncode == 0:
                     print("Deployed to production.")
+                        #recipient_email = 
+                        #email_subject = 'My Function Has Completed'
+                        #email_message = 'Hello, deployment executed successfully!.'
+                        #send_email(recipient_email, email_subject, email_message)
+                        #return 'Function executed successfully!'
                 else:
                     print("Something in ci got wrong. ")
                     print("senting email!")            
             return "ok"
             
             
-def send_email(subject, message, to_mail):
+def send_email(recipient, subject, message):
     # Set up the connection to the Gmail SMTP server
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
-    server.login('ganshmuelgreen@gmail.com', 'ganshmuel13!')
+ #setting up the email env + app_pswd
+    email = 'ganshmuelgreen@gmail.com'
+    password = lbpncwxiuyolntwp
+    server.login(email, password)
 
     # Create the message and set the recipient
     msg = MIMEText(message)
     msg['Subject'] = subject
-    msg['From'] = 'ganshmuelgreen@gmail.com'
-    msg['To'] = to_mail
+    msg['From'] = email
+    msg['To'] = recipient
     
-        # Send the email
-    server.sendmail('ganshmuelgreen@gmail.com', to_mail, msg.as_string())
+     # Send the email
+    server.sendmail(email, recipient, msg.as_string())
     server.quit()
+
+    return 'Email sent successfully!'
+
 
 
 @app.route("/monitoring", methods=["GET"])
