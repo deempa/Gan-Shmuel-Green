@@ -14,11 +14,8 @@ clone ()
     echo "Cloning Finished"
 }
 
-build ()
-{
+build() (
     local app_name=$1
-    docker rmi -f billing_image &> /dev/null
-    docker rmi -f weight_image &> /dev/null
     echo "Building..."
 
     if [[ $app_name == "billing" ]]; then
@@ -30,6 +27,20 @@ build ()
         docker build --no-cache -t weight_image .
         echo "Build Weight"
     fi
+)
+
+cleaning()
+{
+    docker rmi -f billing_image &> /dev/null
+    docker rmi -f weight_image &> /dev/null
+}
+
+
+compose()
+{
+    # docker-compose -f "${repo_name}/Weight/Docker-compose.yaml" up -d
+    # docker-compose -f "${repo_name}/Billing/docker-compose.yml" up -d
+    docker-compose --env-file ./config/.env up -d
 }
 
 repo_name=$1
@@ -37,5 +48,9 @@ repo_url=$2
 
 clone $repo_name $repo_url
 
+cleaning
+
 build billing
 build weight
+
+compose
