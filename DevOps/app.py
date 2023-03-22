@@ -33,6 +33,7 @@ def trigger():
                 result = subprocess.run(['bash', './scripts/build.sh', repo_name, repo_url]) 
                 if result.returncode == 0:
                     print("Deployed to production.")
+                    
                 else:
                     print("Something in ci got wrong. ")
                     print("senting email!")            
