@@ -82,7 +82,7 @@ def post_truck():
             return make_response("Missing provider or truck ID", 400)
         if not is_provider_id_exist(provider_id) :
             return make_response("Provider not found", 404)
-        if not is_truck_id_exist(truck_id):
+        if is_truck_id_exist(truck_id):
             return make_response("Truck already registered", 400)
         conn=engine.connect()
         conn.execute(sqlalchemy.text(f"Insert into truck (provider_id, license_plate) VALUES ('{provider_id}', '{truck_id}')"))
