@@ -38,11 +38,15 @@ def is_truck_id_exist(id):
 
 @app.route('/provider', methods=["POST"])
 def post_provider():
-    if not request.is_json and request.method != "POST":
+    if request.method != "POST":
+        return make_response("Method not allowed",405)
+    if not request.is_json:
         return make_response("Bad Request",400)
     data=request.json
+    if not isinstance(data,dict):
+        return make_response("Bad Request",400)
     provider_name=data.get('name')
-    if provider_name==None:
+    if provider_name==None or provider_name=="":
         return make_response("Bad Request",400)
     if is_provider_exist(provider_name):
         return make_response("Provider exists", 400)
@@ -57,11 +61,15 @@ def post_provider():
 
 @app.route('/provider/<id>', methods=["PUT"])
 def update_provider_name(id):
-    if not request.is_json and request.method!="PUT":
-        return make_response("Bad Request",400)
+    if request.method!="PUT":
+        return make_response("Method not allowed",405)
+    if not request.is_json:
+         return make_response("Bad Request",400)
     data=request.json
+    if not isinstance(data,dict):
+        return make_response("Bad Request",400)
     name_to_update = data.get('name')
-    if name_to_update==None:
+    if name_to_update==None or name_to_update=="":
         return make_response("Bad Request",400)
     if not is_provider_id_exist(id):
         return make_response("id does not exist",400)
@@ -74,11 +82,15 @@ def update_provider_name(id):
 
 @app.route('/truck', methods=["POST"])
 def post_truck():
-    if request.is_json and request.method == "POST":
+    if request.method == "POST":
+        if not request.is_json:
+            return make_response("Bad Request",400)
         data=request.json
+        if not isinstance(data,dict):
+            return make_response("Bad Request",400)
         provider_id = data.get('provider')
         truck_id = data.get('id')
-        if provider_id==None or truck_id==None:
+        if provider_id==None or truck_id==None or provider_id=="" or truck_id=="":
             return make_response("Missing provider or truck ID", 400)
         if not is_provider_id_exist(provider_id) :
             return make_response("Provider not found", 404)
@@ -90,17 +102,21 @@ def post_truck():
         conn.close()
         return make_response("Truck added successfully", 200)
     else:
-        return make_response("Bad Request",400)
+        return make_response("Method not allowed",405)
         
 @app.route('/truck/<id>', methods=["PUT"])
 def put_truck(id):
-    if request.method != "PUT" and not is_truck_id_exist(id):
-        return make_response("Bad Request", 400)
+    if request.method != "PUT":
+        return make_response("Method not allowed", 405)
+    if not is_truck_id_exist(id):
+        return make_response("Bad Request: truck doesn't exist", 400)
     if not request.is_json:
         return make_response("Bad Request: Content is not json", 400)
     data=request.json
-    provider_id=data.get('provider_id')
-    if provider_id==None:
+    if not isinstance(data,dict):
+        return make_response("Bad Request",400)
+    provider_id=data.get('provider')
+    if provider_id==None or provider_id=="":
          return make_response('Bad request',400)
     if not is_provider_id_exist(provider_id):
         return make_response("Specified provider doesn't exist", 400)
@@ -150,9 +166,11 @@ def rates():
         if not request.is_json:
             return make_response("Bad Request: Content isn't json", 400)
         data=request.json
+        if not isinstance(data,dict):
+            return make_response("Bad Request",400)
         file=data.get('file')
         folder_path = "in"
-        if file==None:
+        if file==None or file == "":
              return make_response("Bad Request", 400)
         filename = os.path.join(folder_path, file)
         if not os.path.isfile(filename):
@@ -173,6 +191,8 @@ def rates():
                 conn.execute(rates_table.insert().values(product_id=product_id, rate=rate, scope=scope))
         
         return make_response("saved", 200)
+    else:
+        return make_response("Method is not allowed", 405)
             
         
 @app.route('/health', methods=["GET"])
@@ -183,7 +203,6 @@ def check_health():
         conn.close()
     except:
         return make_response("Failure", 500)
-
 
     return make_response("OK", 200)
 

@@ -1,6 +1,12 @@
 ## ignore virutal env
 BillingEnv/
+testenv/
 ## ignore __pycache__/
 __pycache__/
+tests/__pycache__/
 ## ignore in contents and keep the folder:
 /in
+## ignore .pytest_cache
+.pytest_cache/
+## ignore del_vol
+del_vol
