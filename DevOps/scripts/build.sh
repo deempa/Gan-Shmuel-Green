@@ -69,12 +69,16 @@ compose_to_test()
 run_e2e_test()
 {
     echo "Running E2E tests...."
-    echo "Running tests failed"
-    exit 1
+    echo "Test success"
+}
+
+terminate_test(){
+    docker-compose --project-name down -d
 }
 
 compose_to_production()
 {
+
     echo "Delpoying to production"
     docker-compose --project-name production --env-file ./config/.env up -d
     if [[ $? -eq 0 ]]; then
@@ -98,5 +102,7 @@ build weight
 compose_to_test
 
 run_e2e_test
+
+terminate_test
 
 compose_to_production

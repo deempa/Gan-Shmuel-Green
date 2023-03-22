@@ -11,7 +11,8 @@ app = Flask(__name__)
 
 client = docker.from_env()
 
-branches = ("main", "Billing", "Weight")
+devops_mails = ["masrab11@gmail.com"]
+
 
 @app.route("/trigger", methods=["GET", "POST"])
 def trigger():
@@ -34,10 +35,14 @@ def trigger():
                 result = subprocess.run(['bash', './scripts/build.sh', repo_name, repo_url]) 
                 if result.returncode == 0:
                     print("Deployed to production.")
-                    
+                    send_email(committer_email, "CI / CD Success.", "Everything is good with your commit.")  
+                    for mail in devops_mails:
+                        send_email(mail, "CI / CD Success.", "Everything is good with your commit.")  
                 else:
                     print("Something in ci got wrong. ")
-                    send_email(com)            
+                    send_email(committer_email, "CI / CD Failed.", "Something broke with your commit.")  
+                    for mail in devops_mails:
+                       send_email(committer_email, "CI / CD Failed.", "Something broke with your commit.")           
             return "ok"
             
             
@@ -59,8 +64,6 @@ def send_email(recipient, subject, message):
      # Send the email
     server.sendmail(email, recipient, msg.as_string())
     server.quit()
-
-    return 'Email sent successfully!'
     
 
 @app.route("/monitoring", methods=["GET"])

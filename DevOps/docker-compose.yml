@@ -28,7 +28,6 @@ services:
         
     weight-app:
         image: weight_image 
-
         ports:
             - "${WEIGHT_PORT}:5000"
         depends_on:
