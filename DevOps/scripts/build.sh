@@ -35,10 +35,12 @@ cleaning()
     docker rmi -f weight_image &> /dev/null
 }
 
+
 compose()
 {
-    docker-compose -f "${repo_name}/Weight/Docker-compose.yaml" up -d
-    docker-compose -f "${repo_name}/Billing/docker-compose.yml" up -d
+    # docker-compose -f "${repo_name}/Weight/Docker-compose.yaml" up -d
+    # docker-compose -f "${repo_name}/Billing/docker-compose.yml" up -d
+    docker-compose --env-file ./config/.env up -d
 }
 
 repo_name=$1

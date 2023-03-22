@@ -10,6 +10,8 @@ app = Flask(__name__)
 
 client = docker.from_env()
 
+branches = ("main", "Billing", "Weight")
+
 @app.route("/trigger", methods=["GET", "POST"])
 def trigger():
     if request.method == "POST":
@@ -27,13 +29,17 @@ def trigger():
             except:
                 pass
             
-            subprocess.call(['bash', './scripts/build.sh', repo_name, repo_url])
-            
+            # ci test env
+            # if branch_name in branches:
+            #     subprocess.call(['bash', './scripts/ci_test_env.sh', repo_name, repo_url, branch_name])      
+                   
+            if branch_name == "main":
+                subprocess.call(['bash', './scripts/build.sh', repo_name, repo_url])                   
             return "ok"
             
             
 def mailing_Feature():
-    def send_email(subject, message):
+    def send_email(subject, message, to_mail):
         # Set up the connection to the Gmail SMTP server
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
@@ -43,10 +49,10 @@ def mailing_Feature():
         msg = MIMEText(message)
         msg['Subject'] = subject
         msg['From'] = 'ganshmuelgreen@gmail.com'
-        msg['To'] = 'michal.dikun13@gmail.com'
+        msg['To'] = to_mail
 
         # Send the email
-        server.sendmail('ganshmuelgreen@gmail.com', 'michal.dikun13@gmail.com', msg.as_string())
+        server.sendmail('ganshmuelgreen@gmail.com', to_mail, msg.as_string())
         server.quit()
 
     pass
