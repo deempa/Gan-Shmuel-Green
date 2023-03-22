@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker build -t devops_app_image --no-cache .
+docker build --quiet -t devops_app_image --no-cache .
 
 docker rm -f devops_app
 

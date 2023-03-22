@@ -1,7 +1,8 @@
-from flask import Flask, request, Response
+from flask import Flask, request, Response, render_template
 import docker
 from git import Repo
 import os
+import requests
 import subprocess
 import smtplib
 from email.mime.text import MIMEText
@@ -10,7 +11,10 @@ app = Flask(__name__)
 
 client = docker.from_env()
 
-branches = ("main", "Billing", "Weight")
+#user_dict = {"AvihaiZiv": "avihai40@gmail.com", "OfirAviv": "ofiraviv@gmail.com"}
+
+devops_mails = ["masrab11@gmail.com", "Michal.dikun13@gmail.com", "theoneandonlypeleg@gmail.com"]
+
 
 @app.route("/trigger", methods=["GET", "POST"])
 def trigger():
@@ -27,37 +31,58 @@ def trigger():
             try:
                 os.system(f"rm -rf ./{repo_name}")
             except:
-                pass
-            
-            # ci test env
-            # if branch_name in branches:
-            #     subprocess.call(['bash', './scripts/ci_test_env.sh', repo_name, repo_url, branch_name])      
+                pass     
                    
             if branch_name == "main":
-                subprocess.call(['bash', './scripts/build.sh', repo_name, repo_url])                   
+                result = subprocess.run(['bash', './scripts/build.sh', repo_name, repo_url]) 
+                if result.returncode == 0:
+                    print("Deployed to production.")
+                    send_email(committer_email, "CI / CD Success.", "Everything is good with your commit.")  
+                    for mail in devops_mails:
+                        send_email(mail, "CI / CD Success.", "Everything is good with your commit.")  
+                else:
+                    print("Something in ci got wrong. ")
+                    send_email(committer_email, "CI / CD Failed.", "Something broke with your commit.")  
+                    for mail in devops_mails:
+                       send_email(mail, "CI / CD Failed.", "Something broke with your commit.")           
             return "ok"
             
             
-def mailing_Feature():
-    def send_email(subject, message, to_mail):
-        # Set up the connection to the Gmail SMTP server
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login('ganshmuelgreen@gmail.com', 'ganshmuel13!')
+def send_email(recipient, subject, message):
+    # Set up the connection to the Gmail SMTP server
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+ #setting up the email env + app_pswd
+    email = 'ganshmuelgreen@gmail.com'
+    password = "lbpncwxiuyolntwp"
+    server.login(email, password)
 
-        # Create the message and set the recipient
-        msg = MIMEText(message)
-        msg['Subject'] = subject
-        msg['From'] = 'ganshmuelgreen@gmail.com'
-        msg['To'] = to_mail
+    # Create the message and set the recipient
+    msg = MIMEText(message)
+    msg['Subject'] = subject
+    msg['From'] = email
+    msg['To'] = recipient
+    
+     # Send the email
+    server.sendmail(email, recipient, msg.as_string())
+    server.quit()
 
-        # Send the email
-        server.sendmail('ganshmuelgreen@gmail.com', to_mail, msg.as_string())
-        server.quit()
+@app.route('/monitoring')
+def index():
+    # Check status of services
+    service1_status = check_service_status("http://3.76.109.165:8082/health")
+    service2_status = check_service_status("http://3.76.109.165:8083/health")
+    # Render HTML template with status information
+    return render_template('index.html', service1_status=service1_status, service2_status=service2_status)
 
-    pass
+def check_service_status(service_url):
+    response = requests.get(service_url)
+    if response.status_code == 200:
+        return 'active'
+    else:
+        return 'inactive'
 
-        
+
 @app.route("/health", methods=["GET"])
 def health():
     return Response("ok", status=200)
