@@ -13,8 +13,9 @@ client = docker.from_env()
 
 #user_dict = {"AvihaiZiv": "avihai40@gmail.com", "OfirAviv": "ofiraviv@gmail.com"}
 
-devops_mails = ["masrab11@gmail.com", "Michal.dikun13@gmail.com", "theoneandonlypeleg@gmail.com"]
+# devops_mails = ["masrab11@gmail.com", "Michal.dikun13@gmail.com", "theoneandonlypeleg@gmail.com"]
 
+devops_mails = ["masrab11@gmail.com"]
 
 @app.route("/trigger", methods=["GET", "POST"])
 def trigger():

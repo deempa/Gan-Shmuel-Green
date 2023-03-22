@@ -71,7 +71,7 @@ run_e2e_test()
     echo "Running E2E tests...."
     echo "Billing Testing"
     cd "${repo_name}/Billing/"
-    pytest test.py
+    python3 -m pytest test.py
     echo $?
     exit 1
     echo "Billing Tests success"
@@ -93,6 +93,7 @@ compose_to_production()
     fi
 }
 
+
 repo_name=$1
 repo_url=$2
 
@@ -103,29 +104,16 @@ fi
 
 cleaning
 
-build billing
-if [[ $? -eq 1 ]]; then
-    exit 1
-fi
+build billing || exit $?
 
-build weight
-if [[ $? -eq 1 ]]; then
-    exit 1
-fi
+build weight || exit $?
 
-compose_to_test
-if [[ $? -eq 1 ]]; then
-    exit 1
-fi
+compose_to_test || exit $?
 
-run_e2e_test
-if [[ $? -eq 1 ]]; then
-    exit 1
-fi
+run_e2e_test || exit $?
 
-terminate_test
+terminate_test || exit $?
 
-compose_to_production
-if [[ $? -eq 1 ]]; then
-    exit 1
-fi
+compose_to_production || exit $?
+
+
