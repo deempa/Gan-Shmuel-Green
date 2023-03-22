@@ -15,10 +15,10 @@ services:
           - db_data:/var/lib/mysql
           - ./dbsample:/docker-entrypoint-initdb.d
         environment:
-            MYSQL_ROOT_PASSWORD: rootpass 
-            MYSQL_USER: billdbuser
-            MYSQL_PASSWORD: billdbpass
-            MYSQL_DATABASE: billdb
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_BILLING} 
+            MYSQL_USER: ${MYSQL_USER_BILLING}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD_BILLING}
+            MYSQL_DATABASE: ${MYSQL_DATABASE_BILLING}
         hostname: mysql-server
         restart: unless-stopped
         healthcheck:
@@ -41,8 +41,8 @@ services:
             - data:/var/lib/mysql
             - ./schemas:/docker-entrypoint-initdb.d
         environment:
-            MYSQL_DATABASE: weight
-            MYSQL_ROOT_PASSWORD: 123
+            MYSQL_DATABASE: ${MYSQL_DATABASE_WEIGHT}
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_WEIGHT}
 
 volumes:
     data:
