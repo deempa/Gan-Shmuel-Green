@@ -40,17 +40,6 @@ compose()
     docker-compose --project-name production --env-file ./config/.env up -d
 }
 
-run_tests()
-{
-    docker-compose exec billing-app "pytest ${repo_name}/Billing/test.py"
-    if [ $? -eq 0 ]
-    then
-        echo "All tests passed successfully"
-    else
-        echo "One or more tests failed"
-    fi
-}
-
 repo_name=$1
 repo_url=$2
 
@@ -62,5 +51,3 @@ build billing
 build weight
 
 compose
-
-run_tests

@@ -3,12 +3,11 @@ services:
         image: billing_image
         ports:
           - "${BILLING_PORT}:5000"
-        networks:
-          - allnetwork
         restart: unless-stopped
         depends_on:
           billing-db:
               condition: service_healthy
+              
     billing-db:
         image: mysql:5.7
         platform: linux/x86_64
@@ -20,8 +19,6 @@ services:
             MYSQL_USER: billdbuser
             MYSQL_PASSWORD: billdbpass
             MYSQL_DATABASE: billdb
-        networks:
-        - allnetwork
         hostname: mysql-server
         restart: unless-stopped
         healthcheck:
@@ -36,8 +33,6 @@ services:
         depends_on:
             - "weight-db"
         restart: on-failure
-        networks:
-          - allnetwork
     
     weight-db:
         image: mysql:5.7
@@ -48,12 +43,8 @@ services:
         environment:
             MYSQL_DATABASE: billdb
             MYSQL_ROOT_PASSWORD: 123
-        networks:
-          - allnetwork
 
 volumes:
     data:
     db_data:
   
-networks:
-    allnetwork:

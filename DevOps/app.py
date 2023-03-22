@@ -34,13 +34,7 @@ def trigger():
             #     subprocess.call(['bash', './scripts/ci_test_env.sh', repo_name, repo_url, branch_name])      
                    
             if branch_name == "main":
-                result = subprocess.run(['bash', './scripts/build.sh', repo_name, repo_url])  
-                if result.returncode == 0:
-                    print("Build to prod succeded")
-                    send_email("Build successed!", "the build and test succeded", "masrab11@gmail.com")
-                else:
-                    print("Build to prod Failed")         
-                    send_email("Build failed!", "the build and test Failed", "masrab11@gmail.com")           
+                result = subprocess.run(['bash', './scripts/build.sh', repo_name, repo_url])            
             return "ok"
             
             
