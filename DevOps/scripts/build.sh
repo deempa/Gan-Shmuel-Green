@@ -67,10 +67,15 @@ compose_to_test()
 }
 
 run_e2e_test()
-{
+(
     echo "Running E2E tests...."
-    echo "Test success"
-}
+    echo "Billing Testing"
+    cd "${repo_name}/Billing/"
+    pytest test.py
+    echo $?
+    exit 1
+    echo "Billing Tests success"
+)
 
 terminate_test(){
     docker-compose --project-name test down --rmi local --remove-orphans
