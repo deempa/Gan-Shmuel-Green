@@ -135,30 +135,24 @@
 				<label for="product_delivered">Product Delivered:</label>
 				<input type="text" id="product_delivered" name="product_delivered"><br>
 
-				<label for="truck_bruto_weight">Truck Bruto Weight:</label>
+				<label for="truck_bruto_weight">Truck Weight:</label>
 				<input type="text" id="truck_bruto_weight" name="truck_bruto_weight">
 				<select id="unit_of_measure_1" name="unit_of_measure_1">
 					<option value="kg">KG</option>
 					<option value="lbs">LBS</option>
 				</select>
 
-				<label for="truck_neto_weight">Truck Neto Weight:</label>
-				<input type="text" id="truck_neto_weight" name="truck_neto_weight">
-				<select id="unit_of_measure_2" name="unit_of_measure_2">
-					<option value="kg">KG</option>
-					<option value="lbs">LBS</option>
-					
-				</select><br>
 
 				<label for="force">Force:</label>
 				<select id="force" name="force">
 					<option value="True">True</option>
 					<option value="False">False</option>
-					<input type="submit" name="action" value="submit">
+					
 				</select><br><br> <br>
+				<button onclick='postForm'>submit</button>
 
 
-				<div">
+				<div>
 					<h2>CSV Upload</h2>
 					<div class="upload-btn-wrapper">
 					<a href="/batch-weight">Upload files</a>				
@@ -175,5 +169,21 @@
 	<div class="separator"></div>
 
 </body>
+<script>
+	function postForm(){
+		fetch('http://localhost:5000/weight', {
+			method: 'POST',
+			headers: {
+			  'Content-Type': 'application/json'
+			}
+		  })
+		  .then(response => response.json())
+		  .then(data => console.log(data))
+		  .catch(error => console.error(error))
+
+	}
+	
+
+</script>
 </html>
 
