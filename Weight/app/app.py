@@ -9,7 +9,7 @@ import connections
 UPLOAD_FOLDER = '../in'
 
 ALLOWED_EXTENSIONS = set(['csv','json'])
-
+#test comment
 def has_numbers(inputString):
     return any(char.isdigit() for char in inputString)
 #8083
