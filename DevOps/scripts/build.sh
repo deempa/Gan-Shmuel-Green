@@ -73,7 +73,7 @@ run_e2e_test()
 }
 
 terminate_test(){
-    docker-compose --project-name down -d
+    docker-compose --project-name  down --rmi --remove-orphans
 }
 
 compose_to_production()
