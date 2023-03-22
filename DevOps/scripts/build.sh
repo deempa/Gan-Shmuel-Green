@@ -57,7 +57,7 @@ cleaning()
 compose_to_test()
 {
     echo "Delpoying to test"
-    docker-compose --project-name test --env-file ./config/.env up -d
+    docker-compose --project-name test --env-file ./config/.env.test up -d
         if [[ $? -eq 0 ]]; then
         echo "Deploy Test env was Successful."
     else
@@ -78,9 +78,8 @@ terminate_test(){
 
 compose_to_production()
 {
-
     echo "Delpoying to production"
-    docker-compose --project-name production --env-file ./config/.env up -d
+    docker-compose --project-name production --env-file ./config/.env.prod up -d
     if [[ $? -eq 0 ]]; then
         echo "Deploy Production env was Successful."
     else

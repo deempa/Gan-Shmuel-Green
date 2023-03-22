@@ -44,7 +44,7 @@ def trigger():
                     print("Something in ci got wrong. ")
                     send_email(committer_email, "CI / CD Failed.", "Something broke with your commit.")  
                     for mail in devops_mails:
-                       send_email(committer_email, "CI / CD Failed.", "Something broke with your commit.")           
+                       send_email(mail, "CI / CD Failed.", "Something broke with your commit.")           
             return "ok"
             
             
