@@ -53,8 +53,6 @@ def send_email(subject, message, to_mail):
     # Send the email
     server.sendmail('ganshmuelgreen@gmail.com', to_mail, msg.as_string())
     server.quit()
-
-def basic_health_checks():
     
         
 @app.route("/health", methods=["GET"])
