@@ -7,7 +7,7 @@ services:
         depends_on:
           billing-db:
               condition: service_healthy
-              
+
     billing-db:
         image: mysql:5.7
         platform: linux/x86_64
@@ -27,7 +27,10 @@ services:
           retries: 20
         
     weight-app:
-        image: weight_image 
+        # image: weight_image 
+        build:
+          context: ./schemas
+          dockerfile: dockerfile
         ports:
             - "${WEIGHT_PORT}:5000"
         depends_on:
