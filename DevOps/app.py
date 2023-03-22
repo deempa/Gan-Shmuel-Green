@@ -87,15 +87,12 @@ def index():
     return render_template('index.html', service1_status=service1_status, service2_status=service2_status)
 
 def check_service_status(url):
-    try:
-        response = requests.get(url)
-        print(response.status_code)
-        if response.status_code == 200:
-            return 'active'
-        else:
-            return 'inactive'
-    except requests.exceptions.RequestException:
-        return 'Error'
+    response = requests.get(url)
+    print(response.status_code)
+    if response.status_code == 200:
+        return 'active'
+    else:
+        return 'inactive'
 
 
 @app.route("/health", methods=["GET"])
