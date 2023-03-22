@@ -50,20 +50,17 @@ def send_email(subject, message, to_mail):
     msg['Subject'] = subject
     msg['From'] = 'ganshmuelgreen@gmail.com'
     msg['To'] = to_mail
+    
+        # Send the email
+    server.sendmail('ganshmuelgreen@gmail.com', to_mail, msg.as_string())
+    server.quit()
 
-<<<<<<< HEAD
 
 @app.route("/monitoring", methods=["GET"])
 def monitor():
     return render_template('index.html'), Response("ok", status=200)
 
-=======
-    # Send the email
-    server.sendmail('ganshmuelgreen@gmail.com', to_mail, msg.as_string())
-    server.quit()
-    
->>>>>>> 0e90eac47f59b6e81a95e77d871f36c13686642a
-        
+
 @app.route("/health", methods=["GET"])
 def health():
     return Response("ok", status=200)
