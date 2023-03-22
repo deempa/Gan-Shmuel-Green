@@ -42,7 +42,7 @@ def post_provider():
     if request.is_json and request.method == "POST":
       data=request.json
       provider_name=data.get('name')
-      if isproviderexist(provider_name):
+      if is_provider_exist(provider_name):
           return make_response("Provider exists", 400)
       else:
            conn=engine.connect()
@@ -75,21 +75,18 @@ def update_provider_name(id):
 
 @app.route('/truck', methods=["POST"])
 def post_truck():
-    if request.is_json:
+    if request.is_json and request.method == "POST":
         data=request.json
         provider_id = data.get('provider')
         truck_id = data.get('id')
         if not provider_id or not truck_id:
             return make_response("Missing provider or truck ID", 400)
-        conn=engine.connect()
-        provider_exists = conn.execute(sqlalchemy.text(f"select id from Provider id={provider_id}")).first()
-        if not provider_exists:
-            conn.close()
+        if not is_provider_id_exist(provider_id) :
             return make_response("Provider not found", 404)
         truck_exists = conn.execute(sqlalchemy.text(f"select id from truck license_plate='{truck_id}'")).first()
-        if truck_exists:
-            conn.close()
+        if not is_truck_id_exist(truck_id):
             return make_response("Truck already registered", 400)
+        conn=engine.connect()
         conn.execute(sqlalchemy.text(f"Insert into truck (provider_id, license_plate) VALUES ('{provider_id}', '{truck_id}')"))
         conn.commit()
         getid=conn.execute(sqlalchemy.text(f"Select id from Truck license_plate='{truck_id}'"))
