@@ -94,9 +94,9 @@ def test_post_truck_bad_requst():
 ## GET TRUCK FULL QUERY TEST
 
 ## PUT TRUCK TEST
-def tesst_put_truck():
-    payload={"provider":"10002"}
-    request=requests.put(ENDPOINT + "/provider/90909090", json=payload)
+def test_put_truck():
+    payload={"provider":"10001"}
+    request=requests.put(ENDPOINT + "/truck/90909090", json=payload)
     assert request.status_code == 200
 
 ## PUT TRUCK BAD REQUEST TEST
