@@ -35,13 +35,15 @@ cleaning()
     docker rmi -f weight_image &> /dev/null
 }
 
-
 compose()
 {
-    # docker-compose -f "${repo_name}/Weight/Docker-compose.yaml" up -d
-    # docker-compose -f "${repo_name}/Billing/docker-compose.yml" up -d
-    docker-compose --env-file ./config/.env up -d
+    docker-compose --project-name production --env-file ./config/.env up -d
 }
+
+# run_tests()
+# {
+#     docker-compose exec billing-app "pytest ${repo_name}/Billing/test.py"
+# }
 
 repo_name=$1
 repo_url=$2
@@ -53,6 +55,6 @@ cleaning
 build billing
 build weight
 
-echo $(pwd)
-
 compose
+
+# run_tests

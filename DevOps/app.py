@@ -34,28 +34,29 @@ def trigger():
             #     subprocess.call(['bash', './scripts/ci_test_env.sh', repo_name, repo_url, branch_name])      
                    
             if branch_name == "main":
-                subprocess.call(['bash', './scripts/build.sh', repo_name, repo_url])                   
+                result = subprocess.run(['bash', './scripts/build.sh', repo_name, repo_url])  
+                if result.returncode == 0:
+                    print("Build to prod succeded")
+                    send_email("Build successed!", "the build and compose successed", "masrab11@gmail.com")
+                                
             return "ok"
             
             
-def mailing_Feature():
-    def send_email(subject, message, to_mail):
-        # Set up the connection to the Gmail SMTP server
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login('ganshmuelgreen@gmail.com', 'ganshmuel13!')
+def send_email(subject, message, to_mail):
+    # Set up the connection to the Gmail SMTP server
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login('ganshmuelgreen@gmail.com', 'ganshmuel13!')
 
-        # Create the message and set the recipient
-        msg = MIMEText(message)
-        msg['Subject'] = subject
-        msg['From'] = 'ganshmuelgreen@gmail.com'
-        msg['To'] = to_mail
+    # Create the message and set the recipient
+    msg = MIMEText(message)
+    msg['Subject'] = subject
+    msg['From'] = 'ganshmuelgreen@gmail.com'
+    msg['To'] = to_mail
 
-        # Send the email
-        server.sendmail('ganshmuelgreen@gmail.com', to_mail, msg.as_string())
-        server.quit()
-
-    pass
+    # Send the email
+    server.sendmail('ganshmuelgreen@gmail.com', to_mail, msg.as_string())
+    server.quit()
 
         
 @app.route("/health", methods=["GET"])

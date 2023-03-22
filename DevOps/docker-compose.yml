@@ -1,5 +1,5 @@
 services:
-    app:
+    billing-app:
         image: billing_image
         ports:
           - "${BILLING_PORT}:5000"
@@ -7,9 +7,9 @@ services:
           - allnetwork
         restart: unless-stopped
         depends_on:
-          mysql:
+          billing-db:
               condition: service_healthy
-    mysql:
+    billing-db:
         image: mysql:5.7
         platform: linux/x86_64
         volumes:
@@ -29,17 +29,17 @@ services:
           timeout: 5s
           retries: 20
         
-    flask-app:
+    weight-app:
         image: weight_image 
         ports:
             - "${WEIGHT_PORT}:5000"
         depends_on:
-            - "db"
+            - "weight-db"
         restart: on-failure
         networks:
           - allnetwork
     
-    db:
+    weight-db:
         image: mysql:5.7
         platform: linux/x86_64
         volumes:
