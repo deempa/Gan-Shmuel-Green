@@ -39,13 +39,13 @@ def is_truck_id_exist(id):
 @app.route('/provider', methods=["POST"])
 def post_provider():
     if not request.is_json and request.method != "POST":
-           return make_response("Bad Request",400)
+        return make_response("Bad Request",400)
     data=request.json
     provider_name=data.get('name')
     if provider_name==None:
-         return make_response("Bad Request",400)
+        return make_response("Bad Request",400)
     if is_provider_exist(provider_name):
-          return make_response("Provider exists", 400)
+        return make_response("Provider exists", 400)
     conn=engine.connect()
     conn.execute(sqlalchemy.text(f"INSERT INTO Provider (name) VALUES ('{provider_name}')"))
     conn.commit()
@@ -62,7 +62,7 @@ def update_provider_name(id):
     data=request.json
     name_to_update = data.get('name')
     if name_to_update==None:
-         return make_response("Bad Request",400)
+        return make_response("Bad Request",400)
     if not is_provider_id_exist(id):
         return make_response("id does not exist",400)
     conn=engine.connect()
@@ -100,7 +100,7 @@ def get_put_truck(id):
     if request.method != "PUT" and not is_truck_id_exist(id):
         return make_response("Bad Request", 400)
     if not request.is_json:
-            return make_response("Bad Request: Content is not json", 400)
+        return make_response("Bad Request: Content is not json", 400)
     data=request.json
     provider_id=data.get('provider_id')
     if provider_id==None:
