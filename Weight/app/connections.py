@@ -38,35 +38,35 @@ def register_container(container_id,wieght,unit):
 
 def insert_transaction(direction,truck,containers, truck_bruto,
                        unit_of_measure_bruto,produce,datetime,force):
-    if direction=="in":
-        
-        
-        db=get_connection()
-        cursor=db.cursor()
-        sql = "INSERT INTO transactions (direction, truck, containers, bruto, truckTara, neto, produce, datetime) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        containers_str=",".join(containers)
     
-        val=(direction,truck,containers_str,truck_bruto,-1,-1,produce,datetime)
-        
-        cursor.execute(sql,val)
-        db.commit
         
         
-        for i in containers:
-            register_container(container_id=i,wieght=-1,unit=unit_of_measure_bruto)
+    db=get_connection()
+    cursor=db.cursor()
+    sql = "INSERT INTO transactions (direction, truck, containers, bruto, truckTara, neto, produce, datetime) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    containers_str=",".join(containers)
 
-            
-        sql= "SELECT * FROM transactions"
-        cursor.execute(sql)
-        data=cursor.fetchall()
-        for row in data:
-            print (row)
+    val=(direction,truck,containers_str,truck_bruto,-1,-1,produce,datetime)
+    
+    cursor.execute(sql,val)
+    db.commit
+    
+    
+    for i in containers:
+        register_container(container_id=i,wieght=-1,unit=unit_of_measure_bruto)
 
-        sql= "SELECT * FROM containers_registered"
-        cursor.execute(sql)
-        data= cursor.fetchall()
-        for i in data:
-            print(i)
+        
+    sql= "SELECT * FROM transactions"
+    cursor.execute(sql)
+    data=cursor.fetchall()
+    for row in data:
+        print (row)
+
+    sql= "SELECT * FROM containers_registered"
+    cursor.execute(sql)
+    data= cursor.fetchall()
+    for i in data:
+        print(i)
 
 
 def unknown():

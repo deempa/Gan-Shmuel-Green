@@ -6,6 +6,9 @@ import mysql.connector
 from werkzeug.utils import secure_filename
 import re
 import connections
+from check import check_if_exists_in_file # <------- call this fuction to check if the container exist in the files
+                                          #   pass container_id as argument, returns None if does not exist,
+                                          # if exists, returns weight in kgs   
 UPLOAD_FOLDER = '../in'
 
 ALLOWED_EXTENSIONS = set(['csv','json'])
@@ -38,6 +41,9 @@ def root():
     return redirect(url_for('post_weight'))
 
 
+
+
+
 @app.route("/batch-weight", methods=["GET", "POST"])
 def bw():
     if request.method == 'GET':
@@ -51,22 +57,13 @@ def bw():
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            ext=filename.split(".")[-1]
+            
         
 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return "File uploaded"
 
-            if ext =='csv':
-
-                with open(f'../in/{filename}', 'r') as file:
-                    reader = csv.reader(file)
-                    for row in reader:
-                        rows = print(row)
-                return (f"{rows}")
-            elif ext=='json':
-                with open(f'../in/{filename}', 'r') as file:
-                    data=json.load(file)  
-                return (f"{data}")    
+            
         else:
                 return "Invalid file type"
 
