@@ -3,56 +3,45 @@ import requests
 
 app = Flask(__name__)
 
-health_status = True
-
-@app.route('/unknown')
-def healthcheck():
-    url = '   '
-    get = requests.get({url})
-    if health_status == 200:
-        return(f"{url}: Is Healthy. status code: 200")
-    else:
-        return(f"{url}: Could Not Connect To The Database. status code: 500")
-
-
-@app.route('/weight')
-def healthcheck():
-    url = '  '
-    get = requests.get({url})
-    if health_status == 200:
-        return(f"{url}: Is Healthy. status code: 200")
-    else:
-        return(f"{url}: Could Not Connect To The Database. status code: 500")
-
-
-@app.route('/item')
-def healthcheck():
-    url = '  '
-    get = requests.get({url})
-    if health_status == 200:
-        return(f"{url}: Is Healthy. status code: 200")
-    else:
-        return(f"{url}: Could Not Connect To The Database. status code: 500")
-
-
-@app.route('/session')
-def healthcheck():
-    url = '  '
-    get = requests.get({url})
-    if health_status == 200:
-        return(f"{url}: Is Healthy. status code: 200")
-    else:
-        return(f"{url}: Could Not Connect To The Database. status code: 500")
-
+#GET /unknown (called by admin)
+#GET /weight (report by time)
+#GET /item/<id> (truck/container report)
+#GET /session/<id> (weighing report)
+#GET /health
 
 @app.route('/health')
 def healthcheck():
-    url = 'localhost:5000/weight'
-    get = requests.get({url})
-    if health_status == 200:
-        return(f"{url}: Is Healthy. status code: 200")
-    else:
-        return(f"{url}: Could Not Connect To The Database. status code: 500")
+    
+    try:
+        u = requests.get('localhost:5000/unknown')
+        if u.status_code == 200:
+            return(f"{u}: Is Healthy. status code: 200")
+    except:
+            return(f"{u}: Could Not Connect To The Database. status code: 500")
+
+
+    try:
+        w = requests.get('localhost:5000/weight')
+        if w.status_code == 200:
+            return(f"{w}: Is Healthy. status code: 200")
+    except:
+            return(f"{w}: Could Not Connect To The Database. status code: 500")
+
+
+    try:
+        i = requests.get('localhost:5000/item/<id>')
+        if i.status_code == 200:
+            return(f"{i}: Is Healthy. status code: 200")
+    except:
+            return(f"{i}: Could Not Connect To The Database. status code: 500")
+
+
+    try:
+        s = requests.get('localhost:5000/session/<id>')
+        if s.status_code == 200:
+            return(f"{s}: Is Healthy. status code: 200")
+    except:
+            return(f"{s}: Could Not Connect To The Database. status code: 500")
 
 
 if __name__ == '__main__':
