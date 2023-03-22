@@ -74,7 +74,7 @@ def send_email(recipient, subject, message):
 
 @app.route("/monitoring", methods=["GET"])
 def monitor():
-    res = requests.get('http://3.76.109.165:8081/monitoring')
+    res = requests.get('http://3.76.109.165:8081/health')
     code = res.status_code
     if res:
         status = "active"
