@@ -2,6 +2,7 @@ from flask import Flask, request, Response, render_template
 import docker
 from git import Repo
 import os
+import requests
 import subprocess
 import smtplib
 from email.mime.text import MIMEText
@@ -36,30 +37,41 @@ def trigger():
                     
                 else:
                     print("Something in ci got wrong. ")
-                    print("senting email!")            
+                    send_email(com)            
             return "ok"
             
             
-def send_email(subject, message, to_mail):
+def send_email(recipient, subject, message):
     # Set up the connection to the Gmail SMTP server
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
-    server.login('ganshmuelgreen@gmail.com', 'ganshmuel13!')
+ #setting up the email env + app_pswd
+    email = 'ganshmuelgreen@gmail.com'
+    password = "lbpncwxiuyolntwp"
+    server.login(email, password)
 
     # Create the message and set the recipient
     msg = MIMEText(message)
     msg['Subject'] = subject
-    msg['From'] = 'ganshmuelgreen@gmail.com'
-    msg['To'] = to_mail
+    msg['From'] = email
+    msg['To'] = recipient
     
-        # Send the email
-    server.sendmail('ganshmuelgreen@gmail.com', to_mail, msg.as_string())
+     # Send the email
+    server.sendmail(email, recipient, msg.as_string())
     server.quit()
 
+    return 'Email sent successfully!'
+    
 
 @app.route("/monitoring", methods=["GET"])
 def monitor():
-    return render_template('index.html'), Response("ok", status=200)
+    res = requests.get('http://3.76.109.165:8081/health')
+    code = res.status_code
+    if res:
+        status = "active"
+    else:    
+        status = "inactive"
+    return render_template('index.html', code=code, status=status)
 
 
 @app.route("/health", methods=["GET"])
