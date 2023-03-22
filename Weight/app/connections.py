@@ -16,76 +16,26 @@ def get_connection():
 
 
 
-def register_truck(container_id,wieght,unit):
+def register_container(container_id,wieght,unit):
     db=get_connection()
     cursor=db.cursor()
     sql = "INSERT INTO containers_registered (container_id, weight, unit) VALUES (%s, %s, %s)"
     val= (container_id, wieght, unit)
-    try:
-        cursor.execute(sql, val)
-        db.commit
     
-        print(cursor.rowcount, "record inserted")
-    except Exception:
-        print("insertion failed")
+    cursor.execute(sql, val)
+    db.commit
+    
+    
+        
 
 
-
-
-
-# def Database_check():
-#     mycur=connection.cursor()
-#     mycur.execute("SHOW DATABASES")
-# # Fetch all the rows in a list of lists result
-#     result = mycur.fetchall()
-#     for r in result:
-#         if "weight" not in r:
-#             with open('weightdb.sql','r') as f:
-#                 sql_command = f.read()
-#                 mycur.execute(sql_command,multi=True)
-#                 connection.commit()
-#                 connection.close()
-#         else:
-#             mycur.execute("use weight")
-# def execute(query):
-#     conn = get_connection()
-#     cur = conn.cursor()
-#     cur.execute(str(query))
-#     cur.close()
-#     conn.close()
-
-# def execute_commit(query):
-#     conn = get_connection()
-#     cur = conn.cursor()
-#     cur.execute(str(query))
-#     conn.commit()
-#     cur.close()
-#     conn.close()
-
-# def fetchall(query):
-#     conn = get_connection()
-#     cur = conn.cursor()
-#     cur.execute(str(query))
-#     res = cur.fetchall()
-#     cur.close()
-#     conn.close()
-#     return res
-
-# def fetchone(query):
-#     conn = get_connection()
-#     cur = conn.cursor()
-#     cur.execute(str(query))
-#     res = cur.fetchone()
-#     cur.close()
-#     conn.close()
-#     return res
-
-# def db_health_check():
-#     try:
-#         with get_connection().cursor() as cursor:
-#             sql = "select 1"
-#             cursor.execute(sql)
-
-#         return True
-#     except Exception:
-#         return False
+def insert_transaction_in(direction,truck,containers, truck_bruto,unit_of_measure_bruto,produce,datetime):
+    db=get_connection()
+    cursor=db.cursor()
+    sql = "INSERT INTO transactions (direction, truck, containers, bruto, truckTara, neto, produce, datetime) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    val=(direction,truck,containers,truck_bruto,-1,-1,produce,datetime)
+    
+    cursor.execute(sql,val)
+    db.commit
+    register_container(container_id=containers,wieght=-1,unit=unit_of_measure_bruto)   
+    

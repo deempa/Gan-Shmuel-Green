@@ -77,26 +77,28 @@ def post_weight():
 
             direction = request.form['direction']
             truck = request.form['truck_license'] 
-            product_delivered = request.form['product_delivered']
-            bruto = request.form['truck_bruto_weight']
+            produce = request.form['product_delivered']
+            truck_bruto = request.form['truck_bruto_weight']
             unit_of_measure_bruto = request.form['unit_of_measure_1']
-            truck_tara = request.form['truck_neto_weight']
+            truck_neto = request.form['truck_neto_weight']
             unit_of_measure_neto = request.form['unit_of_measure_2']
             date_time = datetime.now().strftime(r"%Y%m%d%H%M%S")
-            container_id=request.form['container_id']
-            if truck is None or truck is "":
-                return "Truck license plate is empty, please insert a truck license number"
-            if product_delivered.isnumeric() or has_numbers(product_delivered):
-                return "Invalid product! you cnnot have numbers in product's names"
-            if re.search('[a-zA-Z]', bruto) or bruto is None or bruto is "":
-                return "Invalid weight inserted to bruto weight"
-            if re.search('[a-zA-Z]', bruto) or bruto is None or bruto is "":
-                return "Invalid weight inserted to neto weight"
-            if direction == "In":
-                pass
+            containers=request.form['container_id']
             
-            connections.register_truck(container_id=container_id,wieght=bruto,unit=unit_of_measure_bruto)
-                
+            # if truck is None or truck is "":
+            #     return "Truck license plate is empty, please insert a truck license number"
+            # if product_delivered.isnumeric() or has_numbers(product_delivered):
+            #     return "Invalid product! you cnnot have numbers in product's names"
+            # if re.search('[a-zA-Z]', truck_bruto) or truck_bruto is None or truck_bruto is "":
+            #     return "Invalid weight inserted to bruto weight"
+            # if re.search('[a-zA-Z]', truck_bruto) or truck_bruto is None or truck_bruto is "":
+            #     return "Invalid weight inserted to neto weight"
+            # if direction == "In":
+            #     pass
+            
+            
+            connections.insert_transaction_in(direction=direction,truck=truck,containers=containers,truck_bruto=truck_bruto,unit_of_measure_bruto=unit_of_measure_bruto,produce=produce,datetime=date_time)
+
             return redirect(url_for("post_weight"))
             
                 
