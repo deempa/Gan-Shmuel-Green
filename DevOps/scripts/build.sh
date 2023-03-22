@@ -97,16 +97,35 @@ repo_name=$1
 repo_url=$2
 
 clone $repo_name $repo_url
+if [[ $? -eq 1 ]]; then
+    exit 1
+fi
 
 cleaning
 
 build billing
+if [[ $? -eq 1 ]]; then
+    exit 1
+fi
+
 build weight
+if [[ $? -eq 1 ]]; then
+    exit 1
+fi
 
 compose_to_test
+if [[ $? -eq 1 ]]; then
+    exit 1
+fi
 
 run_e2e_test
+if [[ $? -eq 1 ]]; then
+    exit 1
+fi
 
 terminate_test
 
 compose_to_production
+if [[ $? -eq 1 ]]; then
+    exit 1
+fi

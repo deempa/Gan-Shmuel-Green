@@ -24,7 +24,7 @@ def trigger():
             branch_name = data['ref'].split('/')[-1]
             repo_url = data['repository']['clone_url']
             repo_name = data['repository']['name']    
-            pusher = data['pusher']['name']
+            # pusher = data['pusher']['name']
             committer_email = data['commits'][0]['committer']['email']
               
             # Delete Cloned Repo If Exists.
