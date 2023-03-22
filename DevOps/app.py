@@ -38,14 +38,14 @@ def trigger():
                 result = subprocess.run(['bash', './scripts/build.sh', repo_name, repo_url]) 
                 if result.returncode == 0:
                     print("Deployed to production.")
-                    send_email(committer_email, "CI / CD Success.", "Everything is good with your commit.")  
+                    # send_email(committer_email, "CI / CD Success.", "Everything is good with your commit.")  
                     for mail in devops_mails:
-                        send_email(mail, "CI / CD Success.", "Everything is good with your commit.")  
+                        send_email(mail, "CI / CD Success.", f"Merge to branch {branch_name} was success.\nIt passed all the tests")  
                 else:
                     print("Something in ci got wrong. ")
-                    send_email(committer_email, "CI / CD Failed.", "Something broke with your commit.")  
+                    # send_email(committer_email, "CI / CD Failed.", "Something broke with your commit.")  
                     for mail in devops_mails:
-                       send_email(mail, "CI / CD Failed.", "Something broke with your commit.")           
+                       send_email(mail, "CI / CD Failed.", f"Merge to branch {branch_name} was failed.\nIt unpassed all the tests")           
             return "ok"
             
             
