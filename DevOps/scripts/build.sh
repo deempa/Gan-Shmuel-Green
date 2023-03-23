@@ -70,8 +70,8 @@ run_e2e_test()
 (
     echo "Running E2E tests...."
     echo "Billing Testing"
-    cd "${repo_name}/"
-    pytest --pyargs Billing 
+    cd "${repo_name}/Billing/"
+    pytest
     echo $?
     exit 1
     echo "Billing Tests success"
