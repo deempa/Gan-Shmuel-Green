@@ -87,6 +87,10 @@ def post_weight():
             return "Invalid product! you cnnot have numbers in product's names"
         if re.search(r'\D', truck_bruto):
             return "Invalid weight inserted to bruto weight"
+        if truck_bruto == '':
+            return 'You must enter truck weight'
+        if truck == '':
+            return 'You must enter truck license'
         if direction == "in":
             return connections.handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
         if direction == "out":
@@ -96,6 +100,10 @@ def post_weight():
     elif request.method == 'GET':
         return render_template('index.html')
 
+@app.route("/unknown")
+def show_unknown():
+   conts= connections.unknown()
+   return conts
 
 @app.route("/health")
 def healthcheck():
