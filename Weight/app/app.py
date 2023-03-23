@@ -8,7 +8,7 @@ import re
 import connections
 import requests
 
-UPLOAD_FOLDER = '../in'
+UPLOAD_FOLDER = '/in'
 
 ALLOWED_EXTENSIONS = set(['csv','json'])
 #test comment1
@@ -45,7 +45,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def root():
-    pass
+    return redirect(url_for('post_weight'))
 
 
 @app.route("/batch-weight", methods=["GET", "POST"])
@@ -104,7 +104,7 @@ def post_weight():
         if direction == "in":
             return connections.handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
         if direction == "out":
-            return 'hi'
+            return connections.handle_out(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
         return "hello"
 
     elif request.method == 'GET':
@@ -113,7 +113,7 @@ def post_weight():
 
 @app.route("/health")
 def healthcheck():
-	return ""
+	return "", 200
 
 
 if __name__ == "__main__":

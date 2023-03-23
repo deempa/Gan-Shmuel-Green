@@ -1,6 +1,6 @@
 import mysql.connector
 from datetime import datetime, date
-
+import check
 
 def get_connection():
     db = mysql.connector.connect(
@@ -150,15 +150,15 @@ def handle_container_weight_calculation_from_files(containers, neto_weight = Fal
     for container in containers:
         # TODO: do the logic that searches in the file - VLAD PART
         # TODO: update found weight to the founding from the csv file - VLAD PART
-        found_weight = 0 
-        if found_weight:
-            containers_with_weight[container] = found_weight
-            total_weight += found_weight
+        result = check.check_if_exists_in_file(container)
+        if result is not False:
+            containers_with_weight[container] = result
+            total_weight += int(result)
         else:
             unknown_containers.append(container)
         
     if(neto_weight and len(unknown_containers) == 1):
-        containers_with_weight[unknown_containers[0]] = neto_weight - found_weight
+        containers_with_weight[unknown_containers[0]] = neto_weight - result
     return containers_with_weight
 
 def calculate_container_weight():
@@ -240,7 +240,7 @@ def handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,co
     
 
 
-def handle_out(truck_license,product_delivered,truck_bruto_weight,unit_of_measure_bruto,truck_neto_weight,unit_of_measure_neto,timestamp,container_id):
+def handle_out(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers):
     # this function will handle all logic needed for out action
     #you need to check the container status - if in -> continue, if none - return an error
     #if the status is out -> check if force = true, if force =false return an error
@@ -254,7 +254,16 @@ def handle_out(truck_license,product_delivered,truck_bruto_weight,unit_of_measur
     #    "truckTara": <int>,
     #    "neto": <int> or "na" // na if some of containers have unknown tara
     #  }
-    # TODO:
+    # TODO: 1. validate errors
+        # TODO: 1.a if there's no 'in' to said container
+        # TODO: 1.b if the force is 'off' and container status is 'out'
+        # TODO: 1.c if the weight given to the truck is bigger at 'out' then at 'in'
+        # TODO: 1.d if the truck at status 'out' does not match any truck at status 'in' (meaning the truck never came in)
+    
+    
+    # TODO: 2. normal response (this is an out followed by a normal in)
+    # TODO: 3. an out followed by out with force on (rewrite last out of the same container)
+    # TODO: 4. configuring the weight to be the truck weight
     return ''
 
 
