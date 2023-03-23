@@ -7,19 +7,9 @@ from werkzeug.utils import secure_filename
 import re
 import connections
 
-# from check import check_if_exists_in_file # <------- call this fuction to check if the container exist in the files
-                                          #   pass container_id as argument, returns None if does not exist,
-                                          # if exists, returns weight in kgs   
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-
 UPLOAD_FOLDER = os.path.join(current_dir, '..', 'in')
-
-
-
-
-
-
 
 
 ALLOWED_EXTENSIONS = set(['csv','json'])
@@ -61,8 +51,6 @@ def root():
 
 
 
-
-
 @app.route("/batch-weight", methods=["GET", "POST"])
 def bw():
     if request.method == 'GET':
@@ -73,16 +61,12 @@ def bw():
         file = request.files['file']
         if file.filename == '':
             return "No selected file"
-
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            
-        
 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return "File uploaded"
 
-            
         else:
                 return "Invalid file type"
 
@@ -108,22 +92,30 @@ def post_weight():
             return "Invalid product! you cnnot have numbers in product's names"
         if re.search(r'\D', truck_bruto):
             return "Invalid weight inserted to bruto weight"
+        if truck_bruto == '':
+            return 'You must enter truck weight'
+        if truck == '':
+            return 'You must enter truck license'
         if direction == "in":
             return connections.handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
         if direction == "out":
-            return 'hi'
+            return connections.handle_out(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
         return "hello"
 
 
     elif request.method == 'GET':
         return render_template('index.html')
 
+@app.route("/unknown")
+def show_unknown():
+   conts= connections.unknown()
+   return conts
 
 
 
 @app.route("/health")
 def healthcheck():
-	return ""
+	return "", 200
 
 @app.route("/unknown")
 def show_unknown():
