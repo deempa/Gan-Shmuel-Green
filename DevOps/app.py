@@ -45,7 +45,7 @@ def trigger():
                     print("Something in ci got wrong. ")
                     # send_email(committer_email, "CI / CD Failed.", "Something broke with your commit.")  
                     for mail in devops_mails:
-                       send_email(mail, "CI / CD Failed.", f"Merge to branch {branch_name} was failed.\nIt unpassed all the tests")           
+                       send_email(mail, "CI / CD Failed.", f"Merge to branch {branch_name} was failed.\nIt unpassed all the tests\nPlease revert to the last commit of {branch_name} branch.")           
             return "ok"
             
             
