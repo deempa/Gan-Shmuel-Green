@@ -110,7 +110,7 @@ def show_unknown():
 @app.route("/health")
 def healthcheck():
     try:
-         db = get_connection()
+         db = connections.get_connection()
          cursor = db.cursor()
          sql = "SELECT 1"
          cursor.execute(sql)
