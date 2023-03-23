@@ -7,7 +7,7 @@ import subprocess
 import smtplib
 from email.mime.text import MIMEText
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static' )
 
 client = docker.from_env()
 
@@ -71,16 +71,20 @@ def send_email(recipient, subject, message):
 @app.route('/monitoring')
 def index():
     # Check status of services
-    service1_status = check_service_status("http://3.76.109.165:8082/health")
-    service2_status = check_service_status("http://3.76.109.165:8083/health")
+    billing_status = check_server_status("http://3.76.109.165:8082/health")
+    weight_status = check_server_status("http://3.76.109.165:8083/health")
     # Render HTML template with status information
-    return render_template('index.html', service1_status=service1_status, service2_status=service2_status)
+    return render_template('index.html', billing_status=billing_status, weight_status=weight_status)
 
-def check_service_status(service_url):
-    response = requests.get(service_url)
-    if response.status_code == 200:
-        return 'active'
-    else:
+def check_server_status(service_url):
+    try:
+        response = requests.get(service_url)
+        print("CONTENT: ", response.text)
+        if response.status_code == 200:
+            return 'active'
+        elif response.status_code == 503:
+            return 'db_inactive'
+    except:
         return 'inactive'
 
 
