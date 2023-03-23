@@ -108,10 +108,18 @@ def post_weight():
 @app.route("/health")
 def healthcheck():
     try:
-        db.is_connected
-        return "The Server Is Healthy", 200
-    except Exception:
-        return "Could Not Connect To The Database", 500
+         db = get_connection()
+         cursor = db.cursor()
+         sql = "SELECT 1"
+         cursor.execute(sql)
+         return make_response("OK", 200)
+         #db.is_connected
+#         return "The Server Is Healthy", 200
+
+    except:
+        return make_response("Failure", 503)
+    #return make_response("OK", 200)
+#         return "Could Not Connect To The Database", 500
 
 
 if __name__ == "__main__":
