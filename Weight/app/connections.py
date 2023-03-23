@@ -1,5 +1,5 @@
 import mysql.connector
-
+import check
 from datetime import datetime, date
 
 
@@ -154,15 +154,15 @@ def handle_container_weight_calculation_from_files(containers, neto_weight = Fal
     for container in containers:
         # TODO: do the logic that searches in the file - VLAD PART
         # TODO: update found weight to the founding from the csv file - VLAD PART
-        found_weight = 0 
-        if found_weight:
-            containers_with_weight[container] = found_weight
-            total_weight += found_weight
+        result=check.check_if_exists_in_file(container)
+        if result is not False:
+            containers_with_weight[container] = result
+            total_weight += int(result)
         else:
             unknown_containers.append(container)
         
     if(neto_weight and len(unknown_containers) == 1):
-        containers_with_weight[unknown_containers[0]] = neto_weight - found_weight
+        containers_with_weight[unknown_containers[0]] = neto_weight - result
     return containers_with_weight
 
 def calculate_container_weight():
@@ -260,38 +260,6 @@ def handle_out(truck_license,product_delivered,truck_bruto_weight,unit_of_measur
     #  }
     # TODO:
     return ''
-
-def insert_transaction(direction,truck,containers, truck_bruto,
-                       unit_of_measure_bruto,produce,datetime,force):
-    
-        
-        
-    db=get_connection()
-    cursor=db.cursor()
-    sql = "INSERT INTO transactions (direction, truck, containers, bruto, truckTara, neto, produce, datetime) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-    containers_str=",".join(containers)
-
-    val=(direction,truck,containers_str,truck_bruto,-1,-1,produce,datetime)
-    
-    cursor.execute(sql,val)
-    db.commit
-    
-    
-    for i in containers:
-        register_container(container_id=i,wieght=-1,unit=unit_of_measure_bruto)
-
-        
-    sql= "SELECT * FROM transactions"
-    cursor.execute(sql)
-    data=cursor.fetchall()
-    for row in data:
-        print (row)
-
-    sql= "SELECT * FROM containers_registered"
-    cursor.execute(sql)
-    data= cursor.fetchall()
-    for i in data:
-        print(i)
 
 
 def unknown():
