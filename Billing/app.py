@@ -234,7 +234,7 @@ def js_name(provider_id):
     return prov_name
 
 
-def js_truckCount(provider_id):
+def js_truckCount(provider_id,t1,t2):
     conn=engine.connect()
 
     #count the trucks
@@ -247,19 +247,27 @@ def js_truckCount(provider_id):
     conn.close()
     
     #send the ids to weight
-    #
-    #
+
+    # ------------------------------------------- #
+    #  Send a list of truck_ids and t1,t2. get a  #
+    #  number(int) of how many sessions they did  #
+    # ------------------------------------------- #
+
 
     return truck_count, truck_sess
 
 
-def js_prod_sess(product_id):
-    #
-    #
+def js_prod_sess(product_id,t1,t2):
+    
+    # ------------------------------------------- #
+    #  Send the product_id and t1, t2 and get     #
+    #  a number (str!) of sessions thay had and   #
+    #  the how many (in kg) came in all of them   #
+    # ------------------------------------------- #
 
     return prod_sess, amount_kg
 
-def js_prod_and_pay(provider_id):
+def js_prod_and_pay(provider_id,t1,t2):
     #set total_pay and products_list
     total_pay = 0
 
@@ -272,7 +280,7 @@ def js_prod_and_pay(provider_id):
  
     for row in result:
         prod_id = row[0]
-        prod_sess, amount_kg = js_prod_sess(prod_id)
+        prod_sess, amount_kg = js_prod_sess(prod_id,t1,t2)
         rate_res=conn.execute(sqlalchemy.text(f"SELECT rate FROM Rates WHERE product_id = '{prod_id}'")).fetchone()
         rate = rate_res[0]
         pay = amount_kg * rate
@@ -312,8 +320,8 @@ def get_bill(id):
     prov_name = js_name(prov_id)
     time_1 = datetime.datetime.strptime(t1, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
     time_2 = datetime.datetime.strptime(t2, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
-    truck_count, session_count = js_truckCount(prov_id)
-    products, total_pay = js_prod_and_pay(prov_id)
+    truck_count, session_count = js_truckCount(prov_id,t1,t2)
+    products, total_pay = js_prod_and_pay(prov_id,t1,t2)
 
     # Create the dictionary
     bill = {
