@@ -1,0 +1,37 @@
+services:
+    app:
+        build:
+            context: .
+        ports:
+          - "8082:5000"
+        networks:
+          - networkgreen
+        restart: unless-stopped
+        volumes:
+          - /billing-in/test:/app/in
+        depends_on:
+          mysql:
+              condition: service_healthy
+    mysql:
+        image: mysql:5.7
+        volumes:
+          - db_data:/var/lib/mysql
+          - ./dbsample:/docker-entrypoint-initdb.d
+        environment:
+            MYSQL_ROOT_PASSWORD: rootpass 
+            MYSQL_USER: billdbuser
+            MYSQL_PASSWORD: billdbpass
+            MYSQL_DATABASE: billdb
+        networks:
+          - networkgreen
+        hostname: mysql-server
+        restart: unless-stopped
+        healthcheck:
+          test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+          timeout: 5s
+          retries: 20
+        
+volumes:
+    db_data:
+networks:
+    networkgreen:

@@ -1,0 +1,50 @@
+services:
+    billing-app:
+        image: billing_image
+        ports:
+          - "${BILLING_PORT}:5000"
+        restart: unless-stopped
+        depends_on:
+          billing-db:
+              condition: service_healthy
+
+    billing-db:
+        image: mysql:5.7
+        platform: linux/x86_64
+        volumes:
+          - db_data:/var/lib/mysql
+          - ./dbsample:/docker-entrypoint-initdb.d
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_BILLING} 
+            MYSQL_USER: ${MYSQL_USER_BILLING}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD_BILLING}
+            MYSQL_DATABASE: ${MYSQL_DATABASE_BILLING}
+        hostname: mysql-server
+        restart: unless-stopped
+        healthcheck:
+          test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+          timeout: 5s
+          retries: 20
+        
+    weight-app:
+        image: weight_image 
+        ports:
+            - "${WEIGHT_PORT}:5000"
+        depends_on:
+            - "weight-db"
+        restart: on-failure
+    
+    weight-db:
+        image: mysql:5.7
+        platform: linux/x86_64
+        volumes:
+            - data:/var/lib/mysql
+            - ./schemas:/docker-entrypoint-initdb.d
+        environment:
+            MYSQL_DATABASE: ${MYSQL_DATABASE_WEIGHT}
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_WEIGHT}
+
+volumes:
+    data:
+    db_data:
+  

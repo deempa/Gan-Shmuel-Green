@@ -109,7 +109,18 @@ def show_unknown():
 
 @app.route("/health")
 def healthcheck():
-	return "", 200
+    try:
+         db = get_connection()
+         cursor = db.cursor()
+         sql = "SELECT 1"
+         cursor.execute(sql)
+         return make_response("OK", 200)
+         #db.is_connected
+#         return "The Server Is Healthy", 200
+    except:
+        return make_response("Database inactive", 503)
+    
+#         return "Could Not Connect To The Database", 500
 
 
 if __name__ == "__main__":
