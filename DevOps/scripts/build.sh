@@ -68,6 +68,7 @@ compose_to_test()
 
 run_e2e_test()
 (
+    sleep 5
     echo "Running E2E tests...."
     echo "Billing Testing"
     cd "${repo_name}/Billing/tests"
