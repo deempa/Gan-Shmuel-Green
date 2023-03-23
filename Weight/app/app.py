@@ -8,7 +8,8 @@ import re
 import connections
 import requests
 
-UPLOAD_FOLDER = '/in'
+current_dir = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(current_dir, '..', 'in')
 
 ALLOWED_EXTENSIONS = set(['csv','json'])
 #test comment1
@@ -58,25 +59,10 @@ def bw():
         file = request.files['file']
         if file.filename == '':
             return "No selected file"
-
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            ext=filename.split(".")[-1]
-        
-
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-            if ext =='csv':
-
-                with open(f'../in/{filename}', 'r') as file:
-                    reader = csv.reader(file)
-                    for row in reader:
-                        rows = print(row)
-                return (f"{rows}")
-            elif ext=='json':
-                with open(f'../in/{filename}', 'r') as file:
-                    data=json.load(file)  
-                return (f"{data}")    
+            return "File uploaded"
         else:
                 return "Invalid file type"
 
