@@ -13,7 +13,7 @@ services:
         platform: linux/x86_64
         volumes:
           - db_data:/var/lib/mysql
-          - ${DUMP_PATH}:/docker-entrypoint-initdb.d
+          - /devopsapp/Gan-Shmuel-Green/Billing/dbsample:/docker-entrypoint-initdb.d
         environment:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_BILLING} 
             MYSQL_USER: ${MYSQL_USER_BILLING}
