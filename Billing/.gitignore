@@ -6,12 +6,9 @@ __pycache__/
 tests/__pycache__/
 ## ignore in contents and keep the folder:
 /in
-<<<<<<< HEAD
 ## ignore .pytest_cache
 .pytest_cache/
 ## ignore del_vol
 del_vol
-=======
-## ignnor bill test file
-bill.py
->>>>>>> 09f7f51 (almost finish bill for god sake)
+
+
