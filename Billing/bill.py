@@ -16,20 +16,21 @@ def js_name(prov_id):
 def js_truckCount(provider_id,per):
     conn=engine.connect()
 
-    if per == "trk":
-        result = conn.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM Trucks WHERE provider_id = {provider_id}")).fetchone()
-        truck_count = result[0]
-        conn.close()
-        return truck_count
-   
-    elif per == "sess":
-        result = conn.execute(sqlalchemy.text(f"SELECT id FROM Trucks WHERE provider_id = {provider_id}")).fetchall()
-        truck_ids = [{r[0]} for r in result]
-        conn.close()
-        return truck_ids 
+    #count the trucks
+    count_result = conn.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM Trucks WHERE provider_id = {provider_id}")).fetchone()
+    truck_count = count_result[0]
+
+    #check the ids
+    ids_result = conn.execute(sqlalchemy.text(f"SELECT id FROM Trucks WHERE provider_id = {provider_id}")).fetchall()
+    truck_ids = [{r[0]} for r in ids_result]
+    conn.close()
+
+    #send the ids to weight
+    
+    return truck_count, truck_ids 
 
 
-def js_prod_and_pay(provider_id,per):
+def js_prod_and_pay(provider_id):
     #set total_pay and products_list
     total_pay = 0
 
@@ -52,10 +53,8 @@ def js_prod_and_pay(provider_id,per):
     
     conn.close()
 
-    if per == "prod":
-        return products
-    elif per == "total":
-        return total_pay 
+    return products_list, total_pay
+   
 
 #main
 prov_id = input("enter the id: ")
@@ -73,8 +72,7 @@ time_1 = datetime.datetime.strptime(t1, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M
 time_2 = datetime.datetime.strptime(t2, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
 truck_count = js_truckCount(prov_id,"trk")
 session_count = js_truckCount(prov_id,"sess")
-products = js_prod_and_pay(prov_id,"prod")
-total_pay = js_prod_and_pay(prov_id,"total")
+products, total_pay = js_prod_and_pay(prov_id)
 
 # Create the dictionary
 bill = {

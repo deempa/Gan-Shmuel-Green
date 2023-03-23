@@ -210,39 +210,15 @@ def rates():
         return make_response("Method is not allowed", 405)
             
 
-def js_name(id):
+
+def js_name(prov_id):
     conn=engine.connect()
-    result=conn.execute(sqlalchemy.text(f"SELECT name FROM Provider where id = {id}")).fetchone()
+    result=conn.execute(sqlalchemy.text(f"SELECT name FROM Provider WHERE id = {prov_id}")).fetchone()
     conn.close()
     prov_name=result[0]  
     return prov_name
 
 
-def js_truckCount(provider_id,per):
-
-    conn=engine.connect()
-
-    if per == "trk":
-        result = conn.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM Trucks WHERE provider_id = {provider_id}")).fetchone()
-        truck_count = result[0]
-        conn.close()
-        return truck_count
-   
-    elif per == "sess":
-        result = conn.execute(sqlalchemy.text(f"SELECT id FROM Trucks WHERE provider_id = {provider_id}")).fetchall()
-        truck_ids = [{r[0]} for r in result]
-        conn.close()
-        return truck_ids 
-
-
-def js_prod_and_pay(id,per):
-
-    
-
-    if per == "prod":
-        return products
-    elif per == "total":
-        return total_pay 
 
 
 @app.route('/bill/<id>', methods=["GET"])
@@ -251,14 +227,15 @@ def get_bill(id):
     if not is_provider_id_exist(prov_id):
         return make_response("provider did not found", 404)
 
-    #defult time for the bill
-    t1=datetime.datetime.now().strftime("%Y%m01000000")
-    t2=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    if t1 == "" or t2 == "":
+        #defult time for the bill
+        t1=datetime.datetime.now().strftime("%Y%m01000000")
+        t2=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     
     #vars
     prov_name = js_name(prov_id)
-    time_1 = t1
-    time_2 = t2
+    time_1 = datetime.datetime.strptime(t1, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
+    time_2 = datetime.datetime.strptime(t2, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
     truck_count = js_truckCount(prov_id,"trk")
     session_count = js_truckCount(prov_id,"sess")
     products = js_prod_and_pay(prov_id,"prod")
