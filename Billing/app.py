@@ -1,13 +1,9 @@
 from flask import Flask, make_response, request, jsonify, send_from_directory
 import sqlalchemy
-<<<<<<< HEAD
 from openpyxl import Workbook, load_workbook
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, select
 import os
-
-=======
 import datetime
->>>>>>> 99db41a (addind get truck)
 
 app = Flask(__name__)
 
@@ -107,6 +103,19 @@ def post_truck():
         return make_response("Truck added successfully", 200)
     else:
         return make_response("Method not allowed",405)
+    
+@app.route('/truck/<id>', methods=["GET"])
+def truck_tara_and_sessions(id):
+    #id is the truck license.
+    if not is_truck_id_exist(id):
+        return make_response("The truck id is not exist", 404)
+    
+    t1=request.args.get('from')
+    t2=request.args.get('to')
+    response = request.get(f'http://localhost:5000/item/{id}?from={t1}&to={t2}')
+    json_data = response.json()
+    return jsonify.json_data
+
         
 @app.route('/truck/<id>', methods=["PUT"])
 def put_truck(id):
@@ -131,7 +140,6 @@ def put_truck(id):
     return make_response("Updated truck provider",200)
 
 
-<<<<<<< HEAD
 @app.route('/rates', methods=["GET","POST"])
 def rates():
     # define database metadata
@@ -199,22 +207,7 @@ def rates():
     else:
         return make_response("Method is not allowed", 405)
             
-        
-=======
-@app.route('/truck/<id>', methods=["GET"])
-def truck_tara_and_sessions(id):
-    #id is the truck license.
-    if not is_truck_id_exist(id):
-        return make_response("The truck id is not exist", 404)
-    
-    t1=request.args.get('from')
-    t2=request.args.get('to')
-    response = request.get(f'http://localhost:5000/item/{id}?from={t1}&to={t2}')
-    json_data = response.json()
-    return jsonify.json_data
 
-
->>>>>>> 99db41a (addind get truck)
 @app.route('/health', methods=["GET"])
 def check_health():
     try:
