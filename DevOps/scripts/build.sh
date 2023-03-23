@@ -72,9 +72,12 @@ run_e2e_test()
     echo "Billing Testing"
     cd "${repo_name}/Billing/tests"
     pytest test.py
-    echo $?
-    exit 1
-    echo "Billing Tests success"
+    if [[ $? -eq 0 ]]; then
+        echo "Billing Tests success"
+    else
+        echo "Billing Tests Failed"
+        exit 1
+    
 )
 
 terminate_test(){
