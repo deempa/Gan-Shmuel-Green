@@ -1,10 +1,13 @@
 import os
 import json
 import csv
-from app import app
 
-UPLOAD_FOLDER = '../in'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+UPLOAD_FOLDER = os.path.join(current_dir, '..', 'in')
+
+
+
 
 def lbs_to_kgs(weight_lbs):
 
@@ -13,12 +16,12 @@ def lbs_to_kgs(weight_lbs):
 
 
 def check_if_exists_in_file(container_id):
-    for filename in os.listdir(app.config['UPLOAD_FOLDER']):
-        if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
+    for filename in os.listdir(UPLOAD_FOLDER):
+        if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
             ext = filename.split(".")[-1]
             if ext == 'csv':
 
-                with open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'r') as file:
+                with open(os.path.join(UPLOAD_FOLDER, filename), 'r') as file:
                     reader = csv.reader(file)
                     unit = ''
                     for row in reader:
@@ -36,7 +39,7 @@ def check_if_exists_in_file(container_id):
                                 return weight
             if ext == 'json':
 
-                with open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'r') as file:
+                with open(os.path.join(UPLOAD_FOLDER, filename), 'r') as file:
                     data = json.load(file)
                     for line in data:
                         weight = line['weight']
@@ -53,3 +56,4 @@ def check_if_exists_in_file(container_id):
 
 
 
+print(check_if_exists_in_file("C-40277"))

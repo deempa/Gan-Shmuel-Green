@@ -6,10 +6,15 @@ import mysql.connector
 from werkzeug.utils import secure_filename
 import re
 import connections
-from check import check_if_exists_in_file # <------- call this fuction to check if the container exist in the files
+# from check import check_if_exists_in_file # <------- call this fuction to check if the container exist in the files
                                           #   pass container_id as argument, returns None if does not exist,
                                           # if exists, returns weight in kgs   
-UPLOAD_FOLDER = '../in'
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+UPLOAD_FOLDER = os.path.join(current_dir, '..', 'in')
+
+
 
 ALLOWED_EXTENSIONS = set(['csv','json'])
 
