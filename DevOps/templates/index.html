@@ -111,7 +111,7 @@
         <div class="card-body">
           <p class="card-text">
             <h2>App Status</h2>
-            {% if weight_status == 'active' or billing_status == 'db_inactive' %}<h2 class="statusGreen"><span class="dotGreen"></span>Active</h2>
+            {% if weight_status == 'active' or weight_status == 'db_inactive' %}<h2 class="statusGreen"><span class="dotGreen"></span>Active</h2>
             {% else %}<h2 class="statusRed"><span class="dotRed"></span>Inactive</h2>
             {% endif %}</p>
         </div>
