@@ -115,10 +115,9 @@ def healthcheck():
          return make_response("OK", 200)
          #db.is_connected
 #         return "The Server Is Healthy", 200
-
     except:
-        pass
-    return make_response("OK", 200)
+        return make_response("Database inactive", 503)
+    
 #         return "Could Not Connect To The Database", 500
 
 
