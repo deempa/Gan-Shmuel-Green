@@ -1,5 +1,5 @@
 from flask import Flask, make_response, request, jsonify, send_from_directory
-import sqlalchemy, datetime, os, json
+import sqlalchemy, datetime, os, json, requests
 from openpyxl import Workbook, load_workbook
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, select
 import os
@@ -114,11 +114,27 @@ def truck_tara_and_sessions(id):
     
     t1=request.args.get('from')
     t2=request.args.get('to')
-    response = request.get(f'http://localhost:5000/item/{id}?from={t1}&to={t2}')
+
+    if t1 == "" or t2 == "":
+        #defult time for the bill
+        t1=datetime.datetime.now().strftime("%Y%m01000000")
+        t2=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    else:
+        #check the right format
+        try: 
+            time_1 = datetime.datetime.strptime(t1, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
+            time_2 = datetime.datetime.strptime(t2, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
+            if time_1 > time_2:
+                return make_response("Inadmissible times", 400)
+
+        except ValueError:
+            return make_response("Data format unaccepable", 400)
+    
+    response = requests.get(f'http://localhost:5000/item/{id}?from={t1}&to={t2}')
     json_data = response.json()
     return jsonify.json_data
 
-        
+
 @app.route('/truck/<id>', methods=["PUT"])
 def put_truck(id):
     if request.method != "PUT":
@@ -210,15 +226,62 @@ def rates():
         return make_response("Method is not allowed", 405)
             
 
-
-def js_name(prov_id):
+def js_name(provider_id):
     conn=engine.connect()
-    result=conn.execute(sqlalchemy.text(f"SELECT name FROM Provider WHERE id = {prov_id}")).fetchone()
+    result=conn.execute(sqlalchemy.text(f"SELECT name FROM Provider WHERE id = {provider_id}")).fetchone()
     conn.close()
     prov_name=result[0]  
     return prov_name
 
 
+def js_truckCount(provider_id):
+    conn=engine.connect()
+
+    #count the trucks
+    count_result = conn.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM Trucks WHERE provider_id = {provider_id}")).fetchone()
+    truck_count = count_result[0]
+
+    #check the ids
+    ids_result = conn.execute(sqlalchemy.text(f"SELECT id FROM Trucks WHERE provider_id = {provider_id}")).fetchall()
+    truck_ids = [{r[0]} for r in ids_result]
+    conn.close()
+    
+    #send the ids to weight
+    #
+    #
+
+    return truck_count, truck_sess
+
+
+def js_prod_sess(product_id):
+    #
+    #
+
+    return prod_sess, amount_kg
+
+def js_prod_and_pay(provider_id):
+    #set total_pay and products_list
+    total_pay = 0
+
+    products_list = []
+
+    conn=engine.connect()
+
+    #making dictionaries of products
+    result=conn.execute(sqlalchemy.text(f"SELECT product_id FROM Rates WHERE scope = {provider_id} OR scope = 'All'")).fetchall()
+ 
+    for row in result:
+        prod_id = row[0]
+        prod_sess, amount_kg = js_prod_sess(prod_id)
+        rate_res=conn.execute(sqlalchemy.text(f"SELECT rate FROM Rates WHERE product_id = '{prod_id}'")).fetchone()
+        rate = rate_res[0]
+        pay = amount_kg * rate
+        total_pay += pay
+        products_list.append({"product": prod_id, "count": prod_sess, "amount": amount_kg, "rate": rate, "pay": pay})
+    
+    conn.close()
+
+    return products_list, total_pay
 
 
 @app.route('/bill/<id>', methods=["GET"])
@@ -227,19 +290,30 @@ def get_bill(id):
     if not is_provider_id_exist(prov_id):
         return make_response("provider did not found", 404)
 
+    t1=request.args.get('from')
+    t2=request.args.get('to')
+
     if t1 == "" or t2 == "":
         #defult time for the bill
         t1=datetime.datetime.now().strftime("%Y%m01000000")
         t2=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    
+    else:
+        #check the right format
+        try: 
+            time_1 = datetime.datetime.strptime(t1, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
+            time_2 = datetime.datetime.strptime(t2, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
+            if time_1 > time_2:
+                return make_response("Inadmissible times", 400)
+
+        except ValueError:
+            return make_response("Data format unaccepable", 400)
+
     #vars
     prov_name = js_name(prov_id)
     time_1 = datetime.datetime.strptime(t1, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
     time_2 = datetime.datetime.strptime(t2, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
-    truck_count = js_truckCount(prov_id,"trk")
-    session_count = js_truckCount(prov_id,"sess")
-    products = js_prod_and_pay(prov_id,"prod")
-    total_pay = js_prod_and_pay(prov_id,"total")
+    truck_count, session_count = js_truckCount(prov_id)
+    products, total_pay = js_prod_and_pay(prov_id)
 
     # Create the dictionary
     bill = {
