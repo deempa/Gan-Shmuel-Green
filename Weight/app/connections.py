@@ -1,8 +1,6 @@
 import mysql.connector
 import check
 from datetime import datetime, date
-import check
-
 
 def get_connection():
     db = mysql.connector.connect(
@@ -33,7 +31,6 @@ def insert_transaction(direction, truck, bruto, produce, truckTara=None):
 
 
 
-
 def register_container(container_id,weight=None,unit=None):
     # adds a new container containers_registered table
     # this function returns the id of the new container
@@ -42,7 +39,6 @@ def register_container(container_id,weight=None,unit=None):
     cursor.execute(sql, input_data)
     db.commit()
     print(cursor.lastrowid, 'new_container_id creation')
-
 
 def update_container(container_id,weight=None,unit=None):
     #updates container data in containers_registered table

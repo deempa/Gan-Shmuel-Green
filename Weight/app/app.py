@@ -106,10 +106,6 @@ def post_weight():
     elif request.method == 'GET':
         return render_template('index.html')
 
-@app.route("/unknown")
-def show_unknown():
-   conts= connections.unknown()
-   return conts
 
 
 
