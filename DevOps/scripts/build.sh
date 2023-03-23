@@ -77,7 +77,7 @@ run_e2e_test()
     else
         echo "Billing Tests Failed"
         exit 1
-    
+    fi
 )
 
 terminate_test(){
