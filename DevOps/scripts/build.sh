@@ -1,6 +1,6 @@
 #!/bin/bash
 
-clone ()
+clone_repo ()
 {
     local repo_name=$1
     local repo_url=$2
@@ -48,20 +48,20 @@ build() (
     fi
 )
 
-cleaning()
+clean_images()
 {
-    docker rmi -f billing_image &> /dev/null
-    docker rmi -f weight_image &> /dev/null
+    echo "Cleaning up Docker images..."
+    docker rmi -f billing_image weight_image &> /dev/null || true
 }
 
-compose_to_test()
+deploy_to_test()
 {
-    echo "Delpoying to test"
+    echo "Deploying to test environment..."
     docker-compose --project-name test --env-file ./config/.env.test up -d
         if [[ $? -eq 0 ]]; then
-        echo "Deploy Test env was Successful."
+        echo "Deployment to test environment was successful."
     else
-        echo "Deploy Test env was Failed."
+        echo "Deployment to test environment was failed."
         exit 1
     fi
 }
@@ -83,43 +83,46 @@ run_e2e_test()
 
 )
 
-terminate_test(){
+cleanup_test_env(){
+    echo "Cleaning up test environment..."
     docker-compose --project-name test --env-file ./config/.env.test down --rmi local --remove-orphans -v
+    echo "Cleanup of test environment was successful."
 }
 
-compose_to_production()
+deploy_to_production()
 {
     echo "Delpoying to production"
     docker-compose --project-name production --env-file ./config/.env.prod up -d
     if [[ $? -eq 0 ]]; then
-        echo "Deploy Production env was Successful."
+        echo "Deployment to production environment was successful."
     else
-        echo "Deploy Production env was Failed."
+        echo "Deployment to production environment was failed."
         exit 1
     fi
 }
 
+# Main Script
 
-repo_name=$1
-repo_url=$2
+repo_name="$1"
+repo_url="$2"
 
-clone $repo_name $repo_url
+clone_repo "${repo_name}" "${repo_url}"
 if [[ $? -eq 1 ]]; then
     exit 1
 fi
 
-cleaning
+clean_images
 
 build billing || exit $?
 
 build weight || exit $?
 
-compose_to_test || exit $?
+deploy_to_test || exit $?
 
 run_e2e_test || exit $?
 
-terminate_test || exit $?
+cleanup_test_env || exit $?
 
-compose_to_production || exit $?
+deploy_to_production || exit $?
 
 
