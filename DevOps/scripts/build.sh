@@ -78,7 +78,7 @@ run_e2e_test()
 )
 
 terminate_test(){
-    docker-compose --project-name test down --rmi local --remove-orphans -v
+    docker-compose --project-name test --env-file ./config/.env.test down --rmi local --remove-orphans -v
 }
 
 compose_to_production()
