@@ -68,17 +68,21 @@ compose_to_test()
 
 run_e2e_test()
 (
+    sleep 5
     echo "Running E2E tests...."
     echo "Billing Testing"
     cd "${repo_name}/Billing/tests"
     pytest test.py
-    echo $?
-    exit 1
-    echo "Billing Tests success"
+    if [[ $? -eq 0 ]]; then
+        echo "Billing Tests success"
+    else
+        echo "Billing Tests Failed"
+        exit 1
+    fi
 )
 
 terminate_test(){
-    docker-compose --project-name test down --rmi local --remove-orphans
+    docker-compose --project-name test --env-file ./config/.env.test down --rmi local --remove-orphans -v
 }
 
 compose_to_production()
