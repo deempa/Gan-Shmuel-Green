@@ -36,6 +36,7 @@ def is_truck_id_exist(id):
     else:
         return False
 
+
 @app.route('/provider', methods=["POST"])
 def post_provider():
     if request.method != "POST":
@@ -103,7 +104,8 @@ def post_truck():
         return make_response("Truck added successfully", 200)
     else:
         return make_response("Method not allowed",405)
-    
+
+
 @app.route('/truck/<id>', methods=["GET"])
 def truck_tara_and_sessions(id):
     #id is the truck license.
@@ -207,6 +209,13 @@ def rates():
     else:
         return make_response("Method is not allowed", 405)
             
+@app.route('/bill', methods=["GET"])
+def get_bill():
+    
+
+
+
+
 
 @app.route('/health', methods=["GET"])
 def check_health():
