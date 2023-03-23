@@ -42,6 +42,7 @@ def trigger():
                     for mail in devops_mails:
                         send_email(mail, "CI / CD Success.", f"Merge to branch {branch_name} was success.\nIt passed all the tests")  
                 else:
+                    subprocess.run(['bash', './scripts/terminatetest.sh']) 
                     print("Something in ci got wrong. ")
                     # send_email(committer_email, "CI / CD Failed.", "Something broke with your commit.")  
                     for mail in devops_mails:
