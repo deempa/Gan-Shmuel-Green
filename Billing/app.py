@@ -237,7 +237,7 @@ def js_name(provider_id):
     return prov_name
 
 
-def js_truckCount(provider_id,t1,t2):
+def js_truckCount(provider_id):
     conn=engine.connect()
 
     #count the trucks
@@ -272,7 +272,7 @@ def js_prod_sess(product_id,truck_ids,t1,t2):
     sessions=request.json()['sessions']
     for session in sessions:
         request=requests.get(f"http://localhost:8081/session/{session}")
-        if request.json()['neto']!=None and request.json()['truck'] in truck_ids:
+        if request.json()['neto']!=None and request.json()['neto']!="na" and request.json()['truck'] in truck_ids:
                 sumkg+=int(request.json()['neto'])
                 sessioncount+=1
     return sessioncount, sumkg
@@ -337,8 +337,8 @@ def get_bill(id):
 
     #vars
     prov_name = js_name(prov_id)
-    truck_count, truck_ids = js_truckCount(prov_id,t1,t2)
-    truck_sessions_count=js_truck_session_count(truck_ids)
+    truck_count, truck_ids = js_truckCount(prov_id)
+    truck_sessions_count=js_truck_session_count(truck_ids,t1,t2)
     products, total_pay = js_prod_and_pay(prov_id,truck_ids,t1,t2)
 
     # Create the dictionary
