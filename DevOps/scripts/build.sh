@@ -79,8 +79,16 @@ run_e2e_test()
         echo "Billing Tests Failed"
         exit 1
     fi
-    echo "Weight Testing"
 
+    echo "Weight Testing"
+    cd "../../Weight/app/test"
+    pytest --quiet test.py
+    if [[ $? -eq 0 ]]; then
+        echo "Weight Tests success"
+    else
+        echo "Weight Tests Failed"
+        exit 1
+    fi
 )
 
 cleanup_test_env(){
