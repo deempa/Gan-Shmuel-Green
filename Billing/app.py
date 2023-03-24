@@ -276,9 +276,9 @@ def js_prod_sess(product_id,truck_ids,t1,t2):
     for session in sessions:
         request=requests.get(f"http://localhost:8081/session/{session}")
         if request.json()['neto']!="na" and request.json()['truck'] in truck_ids:
-            sumkg+=float(request.json()['neto'])
+            sumkg+=int(request.json()['neto'])
             sessioncount+=1
-    return sessioncount, sumkg
+    return str(sessioncount), sumkg
 
 
 def js_prod_and_pay(provider_id,truck_ids,t1,t2):
