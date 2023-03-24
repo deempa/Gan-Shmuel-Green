@@ -245,16 +245,14 @@ def js_truckCount(provider_id,t1,t2):
     ids_result = conn.execute(sqlalchemy.text(f"SELECT id FROM Trucks WHERE provider_id = {provider_id}")).fetchall()
     truck_ids = [{r[0]} for r in ids_result]
     conn.close()
-    
-    #send the ids to weight
+    totalsessions=0
+    for id in truck_ids:
+        request=requests.get(f"http://localhost:8081/item/{id}?from={t1}&to={t2}")
+        sessionlist=request.json()["sessions"]
+        totalsessions+=len(sessionlist)
+    return truck_count,totalsessions
 
-    # ------------------------------------------- #
-    #  Send a list of truck_ids and t1,t2. get a  #
-    #  number(int) of how many sessions they did  #
-    # ------------------------------------------- #
-
-
-    return truck_count, truck_sess
+def js_get_prod_sessions
 
 
 def js_prod_sess(product_id,t1,t2):
@@ -276,16 +274,25 @@ def js_prod_and_pay(provider_id,t1,t2):
     conn=engine.connect()
 
     #making dictionaries of products
-    result=conn.execute(sqlalchemy.text(f"SELECT product_id FROM Rates WHERE scope = {provider_id} OR scope = 'All'")).fetchall()
- 
-    for row in result:
-        prod_id = row[0]
-        prod_sess, amount_kg = js_prod_sess(prod_id,t1,t2)
-        rate_res=conn.execute(sqlalchemy.text(f"SELECT rate FROM Rates WHERE product_id = '{prod_id}'")).fetchone()
+    
+    result_exact_id=conn.execute(sqlalchemy.text(f"SELECT product_id, scope FROM Rates WHERE scope='{provider_id}'")).fetchall()
+    result_all=conn.execute(sqlalchemy.text(f"SELECT product_id, scope FROM Rates WHERE scope='All'")).fetchall()
+    #making sure that if a product_id has scope=All and Scope=provider_id
+    #the rate that will be selected is the one with Scope=provider_id
+    prod_id_scope_dict=dict()
+    for row in result_exact_id:
+        prod_id_scope_dict[row[0]] = row[1]
+    for row in result_all:
+        if row[0] not in prod_id_scope_dict:
+            prod_id_scope_dict[row[0]] = row[1]
+
+    for key in prod_id_scope_dict:
+        prod_sess, amount_kg = js_prod_sess(key,t1,t2)
+        rate_res=conn.execute(sqlalchemy.text(f"SELECT rate FROM Rates WHERE product_id='{key}' AND scope='{prod_id_scope_dict[key]}'")).fetchone()
         rate = rate_res[0]
         pay = amount_kg * rate
         total_pay += pay
-        products_list.append({"product": prod_id, "count": prod_sess, "amount": amount_kg, "rate": rate, "pay": pay})
+        products_list.append({"product": key, "count": prod_sess, "amount": amount_kg, "rate": rate, "pay": pay})
     
     conn.close()
 
@@ -310,17 +317,15 @@ def get_bill(id):
         try: 
             time_1 = datetime.datetime.strptime(t1, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
             time_2 = datetime.datetime.strptime(t2, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
-            if time_1 > time_2:
-                return make_response("Inadmissible times", 400)
 
         except ValueError:
             return make_response("Data format unaccepable", 400)
+        if time_1 > time_2:
+            return make_response("Inadmissible times", 400)
 
     #vars
     prov_name = js_name(prov_id)
-    time_1 = datetime.datetime.strptime(t1, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
-    time_2 = datetime.datetime.strptime(t2, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
-    truck_count, session_count = js_truckCount(prov_id,t1,t2)
+    truck_count, truck_sessions_count = js_truckCount(prov_id,t1,t2)
     products, total_pay = js_prod_and_pay(prov_id,t1,t2)
 
     # Create the dictionary
@@ -330,7 +335,7 @@ def get_bill(id):
         "from": time_1, 
         "to": time_2, 
         "truckCount": truck_count, 
-        "sessionCount": session_count, 
+        "sessionCount": truck_sessions_count, 
         "products": products,
         "total": total_pay 
     }
