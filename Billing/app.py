@@ -115,7 +115,7 @@ def truck_tara_and_sessions(id):
     t1=request.args.get('from')
     t2=request.args.get('to')
 
-    if t1 == "" or t2 == "":
+    if t1 == "" or t2 == "" or t1==None or t2==None:
         #defult time for the bill
         t1=datetime.datetime.now().strftime("%Y%m01000000")
         t2=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
@@ -320,7 +320,7 @@ def get_bill(id):
     t1=request.args.get('from')
     t2=request.args.get('to')
 
-    if t1 == "" or t2 == "":
+    if t1 == "" or t2 == "" or t1==None or t2==None:
         #defult time for the bill
         t1=datetime.datetime.now().strftime("%Y%m01000000")
         t2=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
