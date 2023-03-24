@@ -206,7 +206,10 @@ def rates():
         filename = os.path.join(folder_path, file)
         if not os.path.isfile(filename):
             return make_response("Bad Request: specified file doesn't exist", 400)
-        wb = load_workbook(filename=filename, read_only=True)
+        try:
+            wb = load_workbook(filename=filename, read_only=True)
+        except:
+            return make_response("Bad Request: File type is not supported", 400)
 
         # delete all records from Rates table
         with engine.connect() as conn:
