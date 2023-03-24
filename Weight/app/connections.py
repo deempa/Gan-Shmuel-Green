@@ -31,6 +31,7 @@ def insert_transaction(direction, truck, bruto, produce, truckTara=None):
 
 
 
+
 def register_container(container_id,weight=None,unit=None):
     # adds a new container containers_registered table
     # this function returns the id of the new container
@@ -200,8 +201,6 @@ def handle_container_weight_calculation_from_files(containers, neto_weight = Fal
     if(neto_weight and len(unknown_containers) == 1):
         containers_with_weight[unknown_containers[0]] = neto_weight - result
 
-    return {'liat':5}
-
     return containers_with_weight
 
 def calculate_container_weight():
@@ -219,7 +218,6 @@ def handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,co
     #  }
     
     containers = [c.strip() for c in containers_string.split(',')]
-    print(containers)
     # a list of containers, each value represent a container id
     
     errors = []
@@ -230,6 +228,9 @@ def handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,co
     
     new_containers = []
     #a list of containers that are new and needs to be registered
+    if(unit_of_measure_bruto == 'lbs'):
+        unit_of_measure_bruto = 'kg'
+        truck_bruto = int(truck_bruto) * 0.45359237 
 
     
     for container in containers:
@@ -256,7 +257,7 @@ def handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,co
         print(errors)
         #if containers are not valid - return this errors
         return '<br/>'.join(errors)
-    
+
     containers_weight_found_in_files = handle_container_weight_calculation_from_files(containers) 
     #  containers_weight_found_in_files is a dictionary of all the containers that were found in files
     
@@ -312,6 +313,9 @@ def handle_out(direction,truck,produce,truck_tara,unit_of_measure_bruto,force,co
     
     neto = ''
     #for output - dictinoary of the container id as key and their weight as the value
+    if(unit_of_measure_bruto == 'lbs'):
+        unit_of_measure_bruto = 'kg'
+        truck_tara = int(truck_tara) * 0.45359237 
 
    # TODO: 1. validate errors 
     transaction_id_in = find_transaction_id(containers[0], 'in')
@@ -325,7 +329,7 @@ def handle_out(direction,truck,produce,truck_tara,unit_of_measure_bruto,force,co
         return 'Truck weight in was not inserted' 
     
     containers_weight = truck_weight_in - int(truck_tara)
-    if containers_weight < 0:
+    if containers_weight <= 0:
         return 'Truck Weight In is smaller than Truck Weight Out - not possible'
     
     for container in containers:
@@ -352,7 +356,7 @@ def handle_out(direction,truck,produce,truck_tara,unit_of_measure_bruto,force,co
         print(errors)
         #if containers are not valid - return this errors
         return '<br/>'.join(errors)
-    
+
     # create new transaction and return the transaction id
     new_transaction_id =  insert_transaction(direction, truck, truck_weight_in, produce, truck_tara)
     containers_weight_found_in_files = handle_container_weight_calculation_from_files(containers) 
@@ -401,6 +405,12 @@ def handle_out(direction,truck,produce,truck_tara,unit_of_measure_bruto,force,co
 
 
     return { "id":new_transaction_id , "truck": truck or "na", "bruto": truck_weight_in, "truckTara": truck_tara, "neto": neto}
+
+def handle_none(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers):
+    # "none" after "in" will generate error
+    #if truck -> error
+    #if force off -> and container registerd -> error
+    pass
 
 def unknown():
     arr=[]

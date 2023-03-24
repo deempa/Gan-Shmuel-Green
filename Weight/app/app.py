@@ -100,6 +100,8 @@ def post_weight():
             return connections.handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
         if direction == "out":
             return connections.handle_out(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
+        if direction == "none":
+            return connections.handle_none(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
         return "hello"
 
 
