@@ -132,7 +132,7 @@ def truck_tara_and_sessions(id):
     
     response = requests.get(f'http://localhost:5000/item/{id}?from={t1}&to={t2}')
     json_data = response.json()
-    return jsonify.json_data
+    return make_response(jsonify(json_data), response.status_code)
 
 
 @app.route('/truck/<id>', methods=["PUT"])
@@ -268,14 +268,18 @@ def js_prod_sess(product_id,truck_ids,t1,t2):
     # ------------------------------------------- #
     sumkg=0
     sessioncount=0
-    request=requests.get(f"http://localhost:8081/item/{product_id}?from={t1}&to={t2}")
-    sessions=request.json()['sessions']
+    request=requests.get(f"http://localhost:8081/weight?from={t1}&to={t2}&filter=out")
+    sessions=[]
+    for item in request:
+        if product_id in item["produce"]:
+            sessions.append(item["id"])
     for session in sessions:
         request=requests.get(f"http://localhost:8081/session/{session}")
-        if request.json()['neto']!=None and request.json()['neto']!="na" and request.json()['truck'] in truck_ids:
-                sumkg+=int(request.json()['neto'])
-                sessioncount+=1
+        if request.json()['neto']!="na" and request.json()['truck'] in truck_ids:
+            sumkg+=float(request.json()['neto'])
+            sessioncount+=1
     return sessioncount, sumkg
+
 
 def js_prod_and_pay(provider_id,truck_ids,t1,t2):
     #set total_pay and products_list
@@ -299,7 +303,7 @@ def js_prod_and_pay(provider_id,truck_ids,t1,t2):
             prod_id_scope_dict[row[0]] = row[1]
 
     for key in prod_id_scope_dict:
-        prod_sess, amount_kg = js_prod_sess(key,t1,t2)
+        prod_sess, amount_kg = js_prod_sess(key,truck_ids,t1,t2)
         rate_res=conn.execute(sqlalchemy.text(f"SELECT rate FROM Rates WHERE product_id='{key}' AND scope='{prod_id_scope_dict[key]}'")).fetchone()
         rate = rate_res[0]
         pay = amount_kg * rate
