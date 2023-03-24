@@ -13,40 +13,7 @@
 <head>
 	<title>Weight Hub</title>
 	<style>
-		body {
-			font-family: Arial, sans-serif;
-			background-color: #f2f2f2;
-		}
-		h1 {
-			text-align: center;
-			margin-top: 20px;
-		}
-		form {
-			background-color: #fff;
-			padding: 20px;
-			border-radius: 5px;
-			box-shadow: 0px 0px 10px #ccc;
-			max-width: 600px;
-			margin: 0 auto;
-		}
-		label {
-			display: inline-block;
-			width: 240px;
-			text-align: right;
-			margin-right: 10px;
-		}
-		input[type="text"], select {
-			width: 150px;
-			padding: 5px;
-			margin-bottom: 10px;
-			border: 1px solid #ccc;
-			border-radius: 3px;
-			box-shadow: inset 0px 1px 3px #ddd;
-		}
-		select {
-			margin-left: 10px;
-		}
-		input[type="submit"] {
+		button{
 			background-color: #4CAF50;
 			color: white;
 			padding: 10px 20px;
@@ -55,101 +22,172 @@
 			cursor: pointer;
 			margin-top: 10px;
 			margin-left: 250px;
-		}
-		input[type="submit"]:hover {
-			background-color: #45a049;
-		}
-		.upload-btn-wrapper {
-			position: relative;
-			overflow: hidden;
-			display: inline-block;
-			margin-top: 20px;
-		}
-		.btn {
-			background-color: #4CAF50;
-			color: white;
-			padding: 10px 20px;
-			border: none;
-			border-radius: 4px;
 			cursor: pointer;
+			transition: transform 0.2s ease-out;
 		}
-		.upload-btn-wrapper input[type=file] {
-			font-size: 100px;
-			position: absolute;
-			left: 0;
-			top: 0;
-			opacity: 0;
-			cursor: pointer;
+		button:hover{
+			background-color: #38E169;
+			padding: 50px 100px;
+			animation: spin 1s ease-in-out;
+			animation-fill-mode: forwards;
 		}
-		.upload-label {
-			font-size: 16px;
-			font-weight: bold;
-			margin-left: 10px;
-		}
-		.file-name {
-			margin-left: 10px;
-		}
-		.separator {
-			margin-top: 50px;
-			margin-bottom: 50px;
-			height: 2px;
-			background-color: #ccc;
-			width: 100%;
-		}
-		.container {
-			display: flex;
-			flex-wrap: wrap;
-			justify-content: space-around;
-		}
-		.section {
-			flex-basis: 45%;
-			margin-bottom: 50px;
-		}
-		@media (max-width: 768px) {
-			.section {
-				flex-basis: 100%;
+		@keyframes spin {
+			0% {
+			  transform: rotate(0deg);
 			}
+			100% {
+			  transform: rotate(360deg);
+			}
+		  }
+
+		main{
+			display: flex;
+			justify-content: center;
+			font-family: sans-serif;
+			color: #3C463F;
+
 		}
+		.section{
+			display:flex;
+			justify-content: center;
+		}
+		.container{
+			border: 1px solid #8D9B91;
+			border-radius: 10px;
+			box-shadow: 10px 10px 10px #B3BFB6;
+			padding:50px;
+			background-color: #CCF4D7;
+	
+
+		}
+		label{
+			font-weight: 600;
+			padding-right: 10px;
+			
+		}
+		.submit{
+			display:flex;
+			text-align: center;
+			
+		}
+		h1{
+			font-weight: 900;
+
+		}
+		select{
+			padding:10px;
+			border-radius: 10px;
+			border-radius: 10px;
+			border: transparent;
+			font-weight: 800 !important;
+			font-family: sans-serif !important;
+			color: #3C463F !important;
+			position: relative;
+			margin-bottom:10px;
+
+			
+
+		}
+		input{
+			padding:10px;
+			border: #3C463F;
+			border-radius: 10px;
+
+
+		}
+		.inputs {
+			position: relative;
+			margin-bottom:10px;
+			
+		  }
+		  
+		.inputs input {
+			padding-top: 20px;
+		}
+		  
+		.inputs label {
+			position: absolute;
+			top: 0;
+			left: 0;
+			padding: 5px;
+			color: #999;
+			pointer-events: none;
+			transition: 0.2s ease all;
+		}
+		  
+		.inputs input:focus + label,
+		.inputs input:not(:placeholder-shown) + label {
+			top: -20px;
+			left: 0;
+			font-size: 14px;
+			color: #4CAF50;
+		  }
+
+		  
+
 	</style>
 </head>
 <body>
-	<h1>Weight Hub</h1>
+	<main>
+	
 	<div class="container">
+		<h1>Weight Hub</h1>
 		<div class="section">
-			<h2>Form</h2>
 			<form method="post" enctype="multipart/form-data"  >
-				<label for="direction">Direction:</label>
-				<select id="direction" name="direction">
-					<option value="in">In</option>
-					<option value="out">Out</option>
-					<option value="None">None</option>
-                </select><br>
-
-				<label for="container_id">Container ID:</label>
-				<input type="text" id="container_id" name="container_id"><br>
-
-				<label for="truck_license">Truck License:</label>
-				<input type="text" id="truck_license" name="truck_license"><br>
-
-
-				<label for="product_delivered">Product Delivered:</label>
-				<input type="text" id="product_delivered" name="product_delivered"><br>
-
-				<label for="truck_bruto_weight">Truck Weight:</label>
-				<input type="text" id="truck_bruto_weight" name="truck_bruto_weight">
-				<select id="unit_of_measure_1" name="unit_of_measure_1">
-					<option value="kg">KG</option>
-					<option value="lbs">LBS</option>
-				</select>
+				<div class ='selects'>
+					<label for="direction">Direction</label>
+					<select id="direction" name="direction">
+						<option value="in">In</option>
+						<option value="out">Out</option>
+						<option value="none">None</option>
+					</select><br>
+				</div>
+				
+				<div class ='inputs'>
+					<label for="container_id">Container ID</label>
+					<input type="text" id="container_id" name="container_id"><br>
+				</div>
 
 
-				<label for="force">Force:</label>
-				<select id="force" name="force">
-					<option value="True">True</option>
-					<option value="False">False</option>
-					
-				</select><br><br> <br>
-				<button onclick='postForm'>submit</button>
+				<div class ='inputs'>
+					<label for="truck_license">Truck License</label>
+					<input type="text" id="truck_license" name="truck_license"><br>
+				</div>
+				
+				<div class ='inputs'>
+					<label for="product_delivered">Product Delivered:</label>
+					<input type="text" id="product_delivered" name="product_delivered"><br>
+				</div>
+				
+
+				<div class ='' style="display: inline-flex; margin-right: 10px">
+					<div class ='inputs' style="margin-right: 10px;">
+						<label for="truck_bruto_weight">Truck Weight</label>
+						<input type="text" id="truck_bruto_weight" name="truck_bruto_weight">
+					</div>
+					<select id="unit_of_measure_1" name="unit_of_measure_1">
+						<option value="kg">KG</option>
+						<option value="lbs">LBS</option>
+					</select>
+				</div>
+
+
+
+				<div class ='selects'>
+					<label for="force">Force:</label>
+					<select id="force" name="force">
+						<option value="True">True</option>
+						<option value="False">False</option>
+						
+					</select><br><br> <br>
+
+				</div>
+
+
+				<div class ='submit'>
+					<button onclick='postForm'>submit</button>
+				</div>
+
 
 
 				<div>
@@ -167,7 +205,7 @@
 		
 	</div>
 	<div class="separator"></div>
-
+</main>
 </body>
 <script>
 	function postForm(){

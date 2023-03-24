@@ -89,18 +89,32 @@ def post_weight():
             return "Invalid weight inserted to bruto weight"
         if truck_bruto == '':
             return 'You must enter truck weight'
-        if truck == '':
-            return 'You must enter truck license'
         if direction == "in":
             return connections.handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
         if direction == "out":
             return connections.handle_out(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
-        if direction == "none":
+        elif direction == "none":
             return connections.handle_none(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
+        
         return "hello"
 
     elif request.method == 'GET':
-        return render_template('index.html')
+        now = datetime.now()
+        from_date = request.args.get('from') 
+        if from_date is None:
+            from_date = datetime.combine(now.date(), datetime.min.time()).strftime('%Y%m%d%H%M%S')
+        to_date = request.args.get('to') 
+        if to_date is None:
+            to_date = now.strftime('%Y%m%d%H%M%S')
+        filter_str = request.args.get('filter') 
+        if filter_str is None:
+            filter_str = "in,out,none"
+        print(from_date,to_date,filter_str)
+        return connections.handle_get_data_between_dates(from_date, to_date, filter_str)
+
+@app.route("/new-transaction")
+def new_transaction():
+   return render_template('index.html')
 
 @app.route("/unknown")
 def show_unknown():
@@ -110,6 +124,27 @@ def show_unknown():
 @app.route("/health")
 def healthcheck():
 	return "", 200
+
+@app.route("/session/<id>")
+def sessiondata(id):
+    output = connections.get_session_data(id)
+    if output == '404':
+        return "", 404
+    return output
+
+@app.route("/item/<id>")
+def get_items(id):
+    now = datetime.now()
+    from_date = request.args.get('from') 
+    if from_date is None:
+        from_date = datetime.combine(now.date(), datetime.min.time()).strftime('%Y%m%d%H%M%S')
+    to_date = request.args.get('to') 
+    if to_date is None:
+        to_date = now.strftime('%Y%m%d%H%M%S')
+    output = connections.handle_get_item(id, from_date, to_date)
+    if output == '404':
+        return "", 404
+    return output
 
 
 if __name__ == "__main__":
