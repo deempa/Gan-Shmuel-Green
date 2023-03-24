@@ -43,7 +43,7 @@ def test_put_provider():
 def test_put_provider_bad_request():
     bad_id_payload={"name":"test"}
     request=requests.put(ENDPOINT + "/provider/12000",json=bad_id_payload)
-    assert request.status_code == 400
+    assert request.status_code == 404
     no_value_payload={"name":""}
     request=requests.put(ENDPOINT + "/provider/10001",json=no_value_payload)
     assert request.status_code == 400
@@ -103,7 +103,7 @@ def test_put_truck():
 def test_put_truck_bad_request():
     bad_id_payload={"provider":"10001"}
     request=requests.put(ENDPOINT + "/truck/1321312", json=bad_id_payload)
-    assert request.status_code == 400
+    assert request.status_code == 404
     no_value_payload={"provider":""}
     request=requests.put(ENDPOINT + "/truck/80909090",json=no_value_payload)
     assert request.status_code == 400

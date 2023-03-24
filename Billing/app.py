@@ -73,7 +73,7 @@ def update_provider_name(id):
     if name_to_update==None or name_to_update=="":
         return make_response("Bad Request",400)
     if not is_provider_id_exist(id):
-        return make_response("id does not exist",400)
+        return make_response("id does not exist",404)
     conn=engine.connect()
     conn.execute(sqlalchemy.text(f"UPDATE Provider SET name='{name_to_update}' WHERE id={id}"))
     conn.commit()
@@ -140,7 +140,7 @@ def put_truck(id):
     if request.method != "PUT":
         return make_response("Method not allowed", 405)
     if not is_truck_id_exist(id):
-        return make_response("Bad Request: truck doesn't exist", 400)
+        return make_response("truck doesn't exist", 404)
     if not request.is_json:
         return make_response("Bad Request: Content is not json", 400)
     data=request.json
@@ -296,7 +296,7 @@ def js_prod_and_pay(provider_id,t1,t2):
 def get_bill(id):
     prov_id=id
     if not is_provider_id_exist(prov_id):
-        return make_response("provider did not found", 404)
+        return make_response("provider was not found", 404)
 
     t1=request.args.get('from')
     t2=request.args.get('to')
