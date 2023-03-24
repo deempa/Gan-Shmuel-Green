@@ -81,7 +81,7 @@ run_e2e_test()
     fi
 
     echo "Weight Testing"
-    cd "../../Weight/app/test"
+    cd "../../Weight/app/tests"
     pytest --quiet test.py
     if [[ $? -eq 0 ]]; then
         echo "Weight Tests success"
