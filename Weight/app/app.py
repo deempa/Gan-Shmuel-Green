@@ -6,32 +6,21 @@ import mysql.connector
 from werkzeug.utils import secure_filename
 import re
 import connections
-
+import requests
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(current_dir, '..', 'in')
-
 
 ALLOWED_EXTENSIONS = set(['csv','json'])
 #test comment1
 def has_numbers(inputString):
     return any(char.isdigit() for char in inputString)
 #8083
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    port=3300,
-    password="123",
-    database="weight"
-)
+
 
 #test comment1
 #test comment 2
-isconnected=0
-try:
-    db=connections.get_connection()
-except Exception:
-    db=None
+
 
 
 app = Flask(__name__)
@@ -50,7 +39,6 @@ def root():
     return redirect(url_for('post_weight'))
 
 
-
 @app.route("/batch-weight", methods=["GET", "POST"])
 def bw():
     if request.method == 'GET':
@@ -63,17 +51,14 @@ def bw():
             return "No selected file"
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return "File uploaded"
-
         else:
                 return "Invalid file type"
 
 @app.route("/weight", methods=["GET", "POST"])
 def post_weight():
     if request.method == 'POST':
-
         direction = request.form['direction']
         truck = request.form['truck_license']
         produce = request.form['product_delivered']
@@ -83,19 +68,19 @@ def post_weight():
         force =  request.form['force']
         containers=request.form['container_id']
         if truck is None or truck == '' and direction != 'none':
-            return 'Standalone containers must be inserted with Direction as none'
+            return ('Standalone containers must be inserted with Direction as none',400)
         if containers == '':
-            return 'Container id is required'
+            return ('Container id is required',401)
         if produce == '':
             produce = 'na'
         if has_numbers(produce):
-            return "Invalid product! you cnnot have numbers in product's names"
+            return ("Invalid product! you cnnot have numbers in product's names",402)
         if re.search(r'\D', truck_bruto):
-            return "Invalid weight inserted to bruto weight"
+            return ("Invalid weight inserted to bruto weight",403)
         if truck_bruto == '':
-            return 'You must enter truck weight'
+            return ('You must enter truck weight',403)
         if truck == '':
-            return 'You must enter truck license'
+            return ('You must enter truck license',400)
         if direction == "in":
             return connections.handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
         if direction == "out":
@@ -104,21 +89,28 @@ def post_weight():
             return connections.handle_none(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
         return "hello"
 
-
     elif request.method == 'GET':
         return render_template('index.html')
-
-
-
-
-@app.route("/health")
-def healthcheck():
-	return "", 200
 
 @app.route("/unknown")
 def show_unknown():
    conts= connections.unknown()
    return conts
+
+@app.route("/health")
+def healthcheck():
+    try:
+        db=connections.get_connection()
+        cursor = db.cursor()
+        cursor.execute("SELECT 1")
+        cursor.fetchall()
+        cursor.close()
+        db.close()
+        return ("Connection established",200)
+    except:
+        return ("Connection failed",503)
+
+
 
 
 if __name__ == "__main__":

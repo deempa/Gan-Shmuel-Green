@@ -1,6 +1,6 @@
 import mysql.connector
-import check
 from datetime import datetime, date
+import check
 
 def get_connection():
     db = mysql.connector.connect(
@@ -188,10 +188,8 @@ def handle_container_weight_calculation_from_files(containers, neto_weight = Fal
     #a dictionary which each key is an container is and value is it's weighht we found
     
     for container in containers:
-
         # TODO: csv input here
         result = check.check_if_exists_in_file(container)
-
         if result is not False:
             containers_with_weight[container] = result
             total_weight += int(result)
@@ -200,7 +198,6 @@ def handle_container_weight_calculation_from_files(containers, neto_weight = Fal
         
     if(neto_weight and len(unknown_containers) == 1):
         containers_with_weight[unknown_containers[0]] = neto_weight - result
-
     return containers_with_weight
 
 def calculate_container_weight():
@@ -320,7 +317,7 @@ def handle_out(direction,truck,produce,truck_tara,unit_of_measure_bruto,force,co
    # TODO: 1. validate errors 
     transaction_id_in = find_transaction_id(containers[0], 'in')
     if transaction_id_in is False:
-        return 'You have to enter the truck in before you out'
+        return ('You have to enter the truck in before you out',400)
     if not check_if_truck_id_is_the_same(truck, transaction_id_in):
         return 'The truck id you gave isnnot matching the giver containers'
     
@@ -403,7 +400,6 @@ def handle_out(direction,truck,produce,truck_tara,unit_of_measure_bruto,force,co
         # TODO: 3.c return the needed json
         
 
-
     return { "id":new_transaction_id , "truck": truck or "na", "bruto": truck_weight_in, "truckTara": truck_tara, "neto": neto}
 
 def handle_none(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers):
@@ -422,6 +418,5 @@ def unknown():
     for i in data:
         if i[1]==-1:
             arr.append(i[0])
-
 
     return arr
