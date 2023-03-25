@@ -250,8 +250,7 @@ def js_truckCount(provider_id):
     ids_result = conn.execute(sqlalchemy.text(f"SELECT id FROM Trucks WHERE provider_id = {provider_id}")).fetchall()
     truck_ids = set()
     for id in ids_result:
-        truck_id = id[0]
-        truck_ids.add(truck_id)
+        truck_ids.add(id[0])
     conn.close()
     return truck_count,truck_ids
 
@@ -264,17 +263,13 @@ def js_truck_session_count(truck_ids,t1,t2):
     return totalsessions
 
 def js_prod_sess(product_id,truck_ids,t1,t2):
-    # ------------------------------------------- #
-    #  Send the product_id and t1, t2 and get     #
-    #  a number (str!) of sessions thay had and   #
-    #  the how many (in kg) came in all of them   #
-    # ------------------------------------------- #
+
     sumkg=0
     sessioncount=0
     request=requests.get(f"http://3.76.109.165:8083/weight?from={t1}&to={t2}&filter=out")
     sessions=[]
-    for item in request:
-        if product_id in item[4]:
+    for item in request.json():
+        if product_id in item["produce"]:
             sessions.append(item["id"])
     for session in sessions:
         request=requests.get(f"http://3.76.109.165:8083/session/{session}")
@@ -311,7 +306,8 @@ def js_prod_and_pay(provider_id,truck_ids,t1,t2):
         rate = rate_res[0]
         pay = amount_kg * rate
         total_pay += pay
-        products_list.append({"product": key, "count": prod_sess, "amount": amount_kg, "rate": rate, "pay": pay})
+        if int(prod_sess) > 0:
+            products_list.append({"product": key, "count": prod_sess, "amount": amount_kg, "rate": rate, "pay": pay})
     
     conn.close()
 
@@ -344,6 +340,8 @@ def get_bill(id):
 
     #vars
     prov_name = js_name(prov_id)
+    time_1 = datetime.datetime.strptime(t1, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
+    time_2 = datetime.datetime.strptime(t2, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
     truck_count, truck_ids = js_truckCount(prov_id)
     truck_sessions_count=js_truck_session_count(truck_ids,t1,t2)
     products, total_pay = js_prod_and_pay(prov_id,truck_ids,t1,t2)
