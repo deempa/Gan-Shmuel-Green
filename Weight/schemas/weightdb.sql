@@ -30,10 +30,12 @@ CREATE TABLE IF NOT EXISTS `container_in_transaction` (
   `container_id` varchar(50) DEFAULT NULL,
   `transaction_id_in` varchar(50) DEFAULT NULL,
   `transaction_id_out` varchar(50) DEFAULT NULL,
+  `transaction_id_none` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`container_id`) REFERENCES `containers_registered` (`container_id`),
   FOREIGN KEY (`transaction_id_in`) REFERENCES `transactions` (`id`),
-  FOREIGN KEY (`transaction_id_out`) REFERENCES `transactions` (`id`)
+  FOREIGN KEY (`transaction_id_out`) REFERENCES `transactions` (`id`),
+  FOREIGN KEY (`transaction_id_none`) REFERENCES `transactions` (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=10001;
 
 

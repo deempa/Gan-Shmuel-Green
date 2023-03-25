@@ -56,6 +56,7 @@ def check_if_exists_in_file(container_id):
                                 return weight
                             else:
                                 return weight
+
     return False
 
 
