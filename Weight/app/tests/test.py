@@ -46,7 +46,7 @@ def test_post_bad_request():
             'truck_bruto_weight': '12000', 'unit_of_measure_1': 'kg', 'force': 'True',
               'container_id': ''}
     response = requests.post(ENDPOINT +'/weight', data=payload)
-    assert response.status_code == 401
+    assert response.status_code == 400
     
      #invalid product 
     payload = {'direction': 'in', 'truck_license': 'lic10', 'product_delivered': '123', 
