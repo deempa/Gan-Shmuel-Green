@@ -128,15 +128,21 @@ def test_put_truck_bad_request():
     assert request.status_code == 405
 
 
-## GET RATES NO DATA TEST
-
 ## POST RATES TEST
+# def test_post_rates():
+#     payload={"file": "rates.xlsx"}
+#     request=requests.post(ENDPOINT + "/rates",json=payload)
+#     assert request.status_code==200
 
 ## POST RATES BAD REQUEST
 
-## POST RATES UNSUPPORTED FILE TEST
+## GET RATES
+def test_get_rates():
+    request=requests.get(ENDPOINT + "/rates")
+    assert request.status_code==200
 
-## GET RATES TEST
+
+## POST RATES UNSUPPORTED FILE TEST
 
 
 ## GET BILL TEST
