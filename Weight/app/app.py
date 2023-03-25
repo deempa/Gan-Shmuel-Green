@@ -9,7 +9,7 @@ import connections
 import requests
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(current_dir, '..', 'in')
+UPLOAD_FOLDER = os.path.join(current_dir, '.', 'in')
 
 ALLOWED_EXTENSIONS = set(['csv','json'])
 #test comment1
