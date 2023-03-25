@@ -151,7 +151,7 @@ def get_container_weight(container_id):
     return result[0]
     
 
-def get_neto_weight(transaction_id):
+def get_neto_weight(transaction_id,neto_weight = -1):
     containers_weights = get_container_weights(transaction_id)
     total_weight = 0
     for weight in containers_weights:
@@ -327,7 +327,7 @@ def check_container_status(container_id):
     return ['in', result[0]]
     
 
-def handle_container_weight_calculation_from_files(containers, neto_weight = False):
+def handle_container_weight_calculation_from_files(containers, neto_weight = -1):
     
     total_weight = 0
     # the sum of all the weight mof the containers we found
@@ -346,9 +346,8 @@ def handle_container_weight_calculation_from_files(containers, neto_weight = Fal
             total_weight += int(result)
         else:
             unknown_containers.append(container)
-        
-    if(neto_weight and len(unknown_containers) == 1):
-        containers_with_weight[unknown_containers[0]] = neto_weight - result
+    if(neto_weight != -1  and len(unknown_containers) == 1):
+        containers_with_weight[unknown_containers[0]] = int(neto_weight) - total_weight
     return containers_with_weight
 
 
@@ -510,12 +509,14 @@ def handle_out(direction,truck,produce,truck_tara,unit_of_measure_bruto,force,co
 
     # create new transaction and return the transaction id
     new_transaction_id =  insert_transaction(direction, truck, truck_weight_in, produce, truck_tara)
-    containers_weight_found_in_files = handle_container_weight_calculation_from_files(containers) 
+    containers_weight_found_in_files = handle_container_weight_calculation_from_files(containers,truck_tara) 
     
     if len(containers) == 1:
         new_container_weight = containers_weight_found_in_files.get(containers[0], 'na')
         if new_container_weight == 'na':
-            new_container_weight = containers_weight 
+            new_container_weight = containers_weight
+        else:
+            update_container(container, new_container_weight, 'kg') 
     else:   
         for container in containers:
             new_container_weight_from_csv = containers_weight_found_in_files.get(container, -1)
@@ -529,7 +530,7 @@ def handle_out(direction,truck,produce,truck_tara,unit_of_measure_bruto,force,co
         handle_force(container, direction, new_transaction_id)
 
         
-    neto = get_neto_weight(transaction_id_in)
+    neto = get_neto_weight(transaction_id_in,truck_tara)
     
     return { "id":in_transaction_id , "truck": truck or "na", "bruto": truck_weight_in, "truckTara": truck_tara, "neto": neto}
 
