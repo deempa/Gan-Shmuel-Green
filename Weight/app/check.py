@@ -4,7 +4,7 @@ import csv
 from app import app
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(current_dir, '..', 'in')
+UPLOAD_FOLDER = os.path.join(current_dir, '.', 'in')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def lbs_to_kgs(weight_lbs):
