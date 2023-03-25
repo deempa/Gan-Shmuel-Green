@@ -29,7 +29,7 @@ def is_provider_id_exist(id):
 
 def is_truck_id_exist(id):
     conn=engine.connect()
-    is_exist=conn.execute(sqlalchemy.text(f"select id from Trucks where id={id}"))
+    is_exist=conn.execute(sqlalchemy.text(f"select id from Trucks where id='{id}'"))
     conn.close()
     if is_exist.first() != None:
         return True
