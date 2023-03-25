@@ -47,7 +47,7 @@ def post_provider():
     if not isinstance(data,dict):
         return make_response("Bad Request",400)
     provider_name=data.get('name')
-    if provider_name==None or provider_name=="":
+    if provider_name==None or provider_name=="" or len(provider_name)>255:
         return make_response("Bad Request",400)
     if is_provider_exist(provider_name):
         return make_response("Provider exists", 400)
@@ -70,7 +70,7 @@ def update_provider_name(id):
     if not isinstance(data,dict):
         return make_response("Bad Request",400)
     name_to_update = data.get('name')
-    if name_to_update==None or name_to_update=="":
+    if name_to_update==None or name_to_update=="" or len(name_to_update)>255:
         return make_response("Bad Request",400)
     if not is_provider_id_exist(id):
         return make_response("id does not exist",404)
@@ -91,7 +91,7 @@ def post_truck():
             return make_response("Bad Request",400)
         provider_id = data.get('provider')
         truck_id = data.get('id')
-        if provider_id==None or truck_id==None or provider_id=="" or truck_id=="":
+        if provider_id==None or truck_id==None or provider_id=="" or truck_id=="" or  len(truck_id)>10:
             return make_response("Missing provider or truck ID", 400)
         if not is_provider_id_exist(provider_id) :
             return make_response("Provider not found", 404)
@@ -221,6 +221,8 @@ def rates():
             product_id = row[0].value
             rate = row[1].value
             scope = row[2].value
+            if len(product_id) > 50 or len(rate) > 11 or len(scope) > 50:
+                return make_response("Bad request: file values exceeded the allowed length", 400)
             with engine.connect() as conn:
                 conn.execute(rates_table.insert().values(product_id=product_id, rate=rate, scope=scope))
         
