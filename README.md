@@ -33,4 +33,4 @@
 - API routes:
   - `GET /health`: Returns status of the service.
   - `POST /trigger`: Triggers the CI workflow. The request body contains useful JSON data from GitHub.
-  - `GET /monitoring: Monitor the service Healthy on a UI page.
+  - `GET /monitoring`: Monitor the service Healthy on a UI page.
