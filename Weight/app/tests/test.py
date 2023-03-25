@@ -53,20 +53,20 @@ def test_post_bad_request():
             'truck_bruto_weight': '12000', 'unit_of_measure_1': 'kg', 'force': 'True',
               'container_id': 'T-123'}
     response = requests.post(ENDPOINT +'/weight', data=payload)
-    assert response.status_code == 402
+    assert response.status_code == 400
 
 #invalid weight
     payload = {'direction': 'in', 'truck_license': 'lic10', 'product_delivered': 'apples', 
             'truck_bruto_weight': 'asd', 'unit_of_measure_1': 'kg', 'force': 'True',
               'container_id': 'T-123'}
     response = requests.post(ENDPOINT +'/weight', data=payload)
-    assert response.status_code == 403
+    assert response.status_code == 400
 #empty weight
     payload = {'direction': 'in', 'truck_license': 'lic10', 'product_delivered': 'apples', 
             'truck_bruto_weight': '', 'unit_of_measure_1': 'kg', 'force': 'True',
               'container_id': 'T-123'}
     response = requests.post(ENDPOINT +'/weight', data=payload)
-    assert response.status_code == 403
+    assert response.status_code == 400
 
     payload = {'direction': 'out', 'truck_license': '131313131', 'product_delivered': 'apples', 
             'truck_bruto_weight': '12000', 'unit_of_measure_1': 'kg', 'force': 'True',
