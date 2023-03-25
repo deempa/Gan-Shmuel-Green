@@ -249,7 +249,7 @@ def js_truckCount(provider_id):
     #check the ids
     ids_result = conn.execute(sqlalchemy.text(f"SELECT id FROM Trucks WHERE provider_id = {provider_id}")).fetchall()
     truck_ids = set()
-    for id in ids_result():
+    for id in ids_result:
         truck_id = id[0]
         truck_ids.add(truck_id)
     conn.close()
