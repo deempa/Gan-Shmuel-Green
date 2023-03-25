@@ -9,7 +9,7 @@ import connections
 import requests
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(current_dir, '..', 'in')
+UPLOAD_FOLDER = os.path.join(current_dir, '.', 'in')
 
 ALLOWED_EXTENSIONS = set(['csv','json'])
 #test comment1
@@ -68,25 +68,25 @@ def post_weight():
         force =  request.form['force']
         containers=request.form['container_id']
         if truck is None or truck == '' and direction != 'none':
-            return ('Standalone containers must be inserted with Direction as none',400)
+
+            return 'Standalone containers must be inserted with Direction as none',400
         if containers == '':
-            return ('Container id is required',401)
+            return 'Container id is required', 400
         if produce == '':
             produce = 'na'
         if has_numbers(produce):
-            return ("Invalid product! you cnnot have numbers in product's names",402)
+            return "Invalid product! you cnnot have numbers in product's names", 400
         if re.search(r'\D', truck_bruto):
-            return ("Invalid weight inserted to bruto weight",403)
+            return "Invalid weight inserted to bruto weight", 400
         if truck_bruto == '':
-
-            return ('You must enter truck weight',403)
+            return 'You must enter truck weight', 400
 
         if direction == "in":
-            return connections.handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
+            return connections.handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers), 200
         if direction == "out":
-            return connections.handle_out(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
+            return connections.handle_out(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers), 200
         elif direction == "none":
-            return connections.handle_none(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
+            return connections.handle_none(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers), 200
         
         return "hello"
 

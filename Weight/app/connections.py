@@ -152,7 +152,7 @@ def get_container_weight(container_id):
     return result[0]
     
 
-def get_neto_weight(transaction_id):
+def get_neto_weight(transaction_id,neto_weight = -1):
     containers_weights = get_container_weights(transaction_id)
     total_weight = 0
     for weight in containers_weights:
@@ -160,6 +160,7 @@ def get_neto_weight(transaction_id):
             return 'na'
         else:
             total_weight += weight
+    print(total_weight, 'total')
     return total_weight
 
     
@@ -328,7 +329,7 @@ def check_container_status(container_id):
     return ['in', result[0]]
     
 
-def handle_container_weight_calculation_from_files(containers, neto_weight = False):
+def handle_container_weight_calculation_from_files(containers, neto_weight = -1):
     
     total_weight = 0
     # the sum of all the weight mof the containers we found
@@ -347,9 +348,8 @@ def handle_container_weight_calculation_from_files(containers, neto_weight = Fal
             total_weight += int(result)
         else:
             unknown_containers.append(container)
-        
-    if(neto_weight and len(unknown_containers) == 1):
-        containers_with_weight[unknown_containers[0]] = neto_weight - result
+    if(neto_weight != -1  and len(unknown_containers) == 1):
+        containers_with_weight[unknown_containers[0]] = int(neto_weight) - total_weight
     return containers_with_weight
 
 
@@ -511,12 +511,15 @@ def handle_out(direction,truck,produce,truck_tara,unit_of_measure_bruto,force,co
 
     # create new transaction and return the transaction id
     new_transaction_id =  insert_transaction(direction, truck, truck_weight_in, produce, truck_tara)
-    containers_weight_found_in_files = handle_container_weight_calculation_from_files(containers) 
+    containers_neto = int(truck_weight_in) - int(truck_tara)
+    containers_weight_found_in_files = handle_container_weight_calculation_from_files(containers,containers_neto) 
     
     if len(containers) == 1:
         new_container_weight = containers_weight_found_in_files.get(containers[0], 'na')
         if new_container_weight == 'na':
-            new_container_weight = containers_weight 
+            new_container_weight = containers_weight
+        else:
+            update_container(container, new_container_weight, 'kg') 
     else:   
         for container in containers:
             new_container_weight_from_csv = containers_weight_found_in_files.get(container, -1)
@@ -529,8 +532,8 @@ def handle_out(direction,truck,produce,truck_tara,unit_of_measure_bruto,force,co
     for container in force_containers:
         handle_force(container, direction, new_transaction_id)
 
-        
-    neto = get_neto_weight(transaction_id_in)
+
+    neto = get_neto_weight(transaction_id_in,containers_neto)
     
     return { "id":in_transaction_id , "truck": truck or "na", "bruto": truck_weight_in, "truckTara": truck_tara, "neto": neto}
 
@@ -586,15 +589,14 @@ def handle_none(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,
             update_container(container,new_container_weight, 'kg')
             handle_force(container, 'none', new_transaction_id )
             
-        return {"id":new_transaction_id , "truck": 'none', "bruto": truck_bruto}
+        neto = get_neto_weight(new_transaction_id)  
+        return {"id":new_transaction_id , "truck": 'none', "bruto": neto}
 
 
-    conainer_weight_sum = 0
     
     for container in new_containers:
         #create new container(adds weight and unit if found in files)
         new_container_weight = containers_weight_found_in_files.get(container, -1)
-        conainer_weight_sum += new_container_weight
         register_container(container, new_container_weight, 'kg')
         
         #connect container to transaction
@@ -602,11 +604,11 @@ def handle_none(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,
 
     for container in force_containers:
         new_container_weight = containers_weight_found_in_files.get(container, -1)
-        conainer_weight_sum += new_container_weight
         update_container(container,new_container_weight, unit_of_measure_bruto)
         handle_force(container, 'none', new_transaction_id )
-
-    return { "id":new_transaction_id , "truck": 'none', "bruto": conainer_weight_sum}
+        
+    neto = get_neto_weight(new_transaction_id)
+    return { "id":new_transaction_id , "truck": 'none', "bruto": neto}
 
 def get_session_data(session_id):
     in_transaction_data = get_transaction_data(session_id)
@@ -629,8 +631,8 @@ def handle_get_data_between_dates(start_date, end_date, filter):
     for transaction in transactions:
         containers = get_containers_from_transaction(transaction['id'])
         neto = get_neto_weight(transaction['id'])
-        results.append(f"id: {transaction['id']}, direction: {transaction['direction']}, bruto: {transaction['bruto']}, neto: {neto}, produce: {transaction['produce']}, containers: {containers}")
-    return '<br/>'.join(results)
+        results.append({"id": transaction['id'], "direction": transaction['direction'], "bruto": transaction['bruto'], "neto": neto, "produce": transaction['produce'], "containers": containers})
+    return results
 
 
 def handle_get_item(id,start_date, end_date):
@@ -647,10 +649,10 @@ def handle_get_item(id,start_date, end_date):
     else:
         tara = get_container_weight(id)
         if container[0] == 'none' or 'in':
-            transaction_in_date = check_if_container_transaction_between_dates(container[1])
+            transaction_in_date = check_if_container_transaction_between_dates(container[1],start_date, end_date)
             sessions = [container[1]]
         elif container[0] == 'out':
-            transaction_in_date = check_if_container_transaction_between_dates(container[1])
+            transaction_in_date = check_if_container_transaction_between_dates(container[1],start_date, end_date)
             sessions = [container[2]]
         else:
             sessions = [container[1]]
