@@ -37,6 +37,7 @@ def trigger():
             if branch_name == "main":
                 result = subprocess.run(['bash', './scripts/build.sh', repo_name, repo_url]) 
                 if result.returncode == 0:
+                    subprocess.run(['bash', './scripts/terminatetest.sh']) 
                     print("Deployed to production.")
                     # send_email(committer_email, "CI / CD Success.", "Everything is good with your commit.")  
                     for mail in devops_mails:

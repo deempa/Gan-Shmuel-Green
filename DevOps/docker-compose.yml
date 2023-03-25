@@ -4,6 +4,8 @@ services:
         ports:
           - "${BILLING_PORT}:5000"
         restart: unless-stopped
+        volumes:
+            - /billing-in:/app/in
         depends_on:
           billing-db:
               condition: service_healthy
