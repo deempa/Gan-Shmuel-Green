@@ -271,23 +271,29 @@ def js_truck_session_count(truck_ids,t1,t2):
     return totalsessions
 
 def js_prod_sess(product_id,truck_ids,t1,t2):
-    #one one
     sumkg=0
     sessioncount=0
     truckdict={}
     for id in truck_ids:
         request=requests.get(f"http://3.76.109.165:8083/item/{id}?from={t1}&to={t2}")
-        if request.json()["sessions"]!=None:
-            truckdict[id]=set(request.json()["sessions"])
+        try:
+            json_response = request.json()
+            if json_response["sessions"] is not None:
+                truckdict[id] = set(json_response["sessions"])
+        except ValueError as e:
+            print(f"Error decoding JSON response: {e}")
     request=requests.get(f"http://3.76.109.165:8083/weight?from={t1}&to={t2}&filter=out")
-    for item in request.json():
-        if product_id in item["produce"]:
-            for key in truckdict:
-                if item["id"] in truckdict[key] and item["neto"]!="na":
-                    sessioncount+=1
-                    sumkg+=int(item["neto"])
-    
-    return str(sessioncount), sumkg
+    try:
+        json_response = request.json()
+        for item in json_response:
+            if product_id in item["produce"]:
+                for key in truckdict:
+                    if item["id"] in truckdict[key] and item["neto"]!="na":
+                        sessioncount+=1
+                        sumkg+=int(item["neto"])
+    except ValueError as e:
+        print(f"Error decoding JSON response: {e}")
+    return sumkg, sessioncount
 
 
 def js_prod_and_pay(provider_id,truck_ids,t1,t2):
