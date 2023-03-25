@@ -79,7 +79,7 @@ def post_weight():
             return ("Invalid weight inserted to bruto weight",403)
         if truck_bruto == '':
 
-            return 'You must enter truck weight'
+            return ('You must enter truck weight',403)
 
         if direction == "in":
             return connections.handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
@@ -103,7 +103,7 @@ def post_weight():
         if filter_str is None:
             filter_str = "in,out,none"
         print(from_date,to_date,filter_str)
-        return connections.handle_get_data_between_dates(from_date, to_date, filter_str)
+        return  connections.handle_get_data_between_dates(from_date, to_date, filter_str)
 
 @app.route("/new-transaction")
 def new_transaction():
@@ -134,7 +134,7 @@ def healthcheck():
 def sessiondata(id):
     output = connections.get_session_data(id)
     if output == '404':
-        return "", 404
+        return "not found", 404
     return output
 
 @app.route("/item/<id>")
