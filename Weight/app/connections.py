@@ -509,7 +509,8 @@ def handle_out(direction,truck,produce,truck_tara,unit_of_measure_bruto,force,co
 
     # create new transaction and return the transaction id
     new_transaction_id =  insert_transaction(direction, truck, truck_weight_in, produce, truck_tara)
-    containers_weight_found_in_files = handle_container_weight_calculation_from_files(containers,truck_tara) 
+    containers_neto = int(truck_weight_in) - int(truck_tara)
+    containers_weight_found_in_files = handle_container_weight_calculation_from_files(containers,containers_neto) 
     
     if len(containers) == 1:
         new_container_weight = containers_weight_found_in_files.get(containers[0], 'na')
@@ -529,8 +530,8 @@ def handle_out(direction,truck,produce,truck_tara,unit_of_measure_bruto,force,co
     for container in force_containers:
         handle_force(container, direction, new_transaction_id)
 
-        
-    neto = get_neto_weight(transaction_id_in,truck_tara)
+
+    neto = get_neto_weight(transaction_id_in,containers_neto)
     
     return { "id":in_transaction_id , "truck": truck or "na", "bruto": truck_weight_in, "truckTara": truck_tara, "neto": neto}
 
