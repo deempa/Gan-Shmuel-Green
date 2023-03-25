@@ -130,7 +130,7 @@ def truck_tara_and_sessions(id):
         except ValueError:
             return make_response("Data format unaccepable", 400)
     
-    response = requests.get(f'http://localhost:5000/item/{id}?from={t1}&to={t2}')
+    response = requests.get(f'http://3.76.109.165:8083/item/{id}?from={t1}&to={t2}')
     json_data = response.json()
     return make_response(jsonify(json_data), response.status_code)
 
@@ -250,14 +250,15 @@ def js_truckCount(provider_id):
     ids_result = conn.execute(sqlalchemy.text(f"SELECT id FROM Trucks WHERE provider_id = {provider_id}")).fetchall()
     truck_ids = set()
     for id in ids_result():
-        truck_ids.add(id)
+        truck_id = id[0]
+        truck_ids.add(truck_id)
     conn.close()
     return truck_count,truck_ids
 
 def js_truck_session_count(truck_ids,t1,t2):
     totalsessions=0
     for id in truck_ids:
-        request=requests.get(f"http://localhost:8081/item/{id}?from={t1}&to={t2}")
+        request=requests.get(f"http://3.76.109.165:8083/item/{id}?from={t1}&to={t2}")
         sessionlist=request.json()["sessions"]
         totalsessions+=len(sessionlist)
     return totalsessions
@@ -270,13 +271,13 @@ def js_prod_sess(product_id,truck_ids,t1,t2):
     # ------------------------------------------- #
     sumkg=0
     sessioncount=0
-    request=requests.get(f"http://localhost:8081/weight?from={t1}&to={t2}&filter=out")
+    request=requests.get(f"http://3.76.109.165:8083/weight?from={t1}&to={t2}&filter=out")
     sessions=[]
     for item in request:
         if product_id in item["produce"]:
             sessions.append(item["id"])
     for session in sessions:
-        request=requests.get(f"http://localhost:8081/session/{session}")
+        request=requests.get(f"http://3.76.109.165:8083/session/{session}")
         if request.json()['neto']!="na" and request.json()['truck'] in truck_ids:
             sumkg+=int(request.json()['neto'])
             sessioncount+=1
