@@ -268,6 +268,8 @@ def js_prod_sess(product_id,truck_ids,t1,t2):
     sessioncount=0
     request=requests.get(f"http://3.76.109.165:8083/weight?from={t1}&to={t2}&filter=out")
     sessions=[]
+    if not request.json():
+        return 0,0
     for item in request.json():
         if product_id in item["produce"]:
             sessions.append(item["id"])
@@ -359,7 +361,7 @@ def get_bill(id):
     }
 
     # return the JSON string
-    return make_response(jsonify(bill), 200)
+    return make_response(jsonify(bill),200)
 
 
 
