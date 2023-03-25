@@ -98,6 +98,7 @@
 		.inputs {
 			position: relative;
 			margin-bottom:10px;
+			display: block;
 			
 		  }
 		  
@@ -130,10 +131,11 @@
 <body>
 	<main>
 	
+	
 	<div class="container">
+		<form action="/weight" method='post'>
 		<h1>Weight Hub</h1>
 		<div class="section">
-			<form method="post" enctype="multipart/form-data"  >
 				<div class ='selects'>
 					<label for="direction">Direction</label>
 					<select id="direction" name="direction">
@@ -185,7 +187,7 @@
 
 
 				<div class ='submit'>
-					<button onclick='postForm'>submit</button>
+					<button type='submit'>submit</button>
 				</div>
 
 
@@ -198,22 +200,18 @@
 					
 				</div>
         
-				
-			
-			</form>
 		</div>
-		
+	</form>
 	</div>
-	<div class="separator"></div>
 </main>
 </body>
 <script>
 	function postForm(){
-		fetch('http://localhost:5000/weight', {
+		fetch('/weight', {
 			method: 'POST',
 			headers: {
 			  'Content-Type': 'application/json'
-			}
+			},
 		  })
 		  .then(response => response.json())
 		  .then(data => console.log(data))
