@@ -6,7 +6,7 @@ import json
 
 import requests
 
-ENDPOINT="https://3.76.109.165:8089"
+ENDPOINT="http://3.76.109.165:8089"
 # ENDPOINT="http://127.0.0.1:5000"
 
 ## HEALTH TEST
