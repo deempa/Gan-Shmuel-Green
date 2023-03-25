@@ -277,7 +277,10 @@ def js_prod_sess(product_id,truck_ids,t1,t2):
     truckdict={}
     for id in truck_ids:
         request=requests.get(f"http://3.76.109.165:8083/item/{id}?from={t1}&to={t2}")
-        truckdict[id]=set(request.json()["sessions"])   
+        try:
+            truckdict[id]=set(request.json()["sessions"])
+        except:
+            continue   
     request=requests.get(f"http://3.76.109.165:8083/weight?from={t1}&to={t2}&filter=out")
     if not request.json():
         return 0,0
