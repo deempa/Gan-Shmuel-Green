@@ -648,10 +648,10 @@ def handle_get_item(id,start_date, end_date):
     else:
         tara = get_container_weight(id)
         if container[0] == 'none' or 'in':
-            transaction_in_date = check_if_container_transaction_between_dates(container[1])
+            transaction_in_date = check_if_container_transaction_between_dates(container[1], start_date, end_date)
             sessions = [container[1]]
         elif container[0] == 'out':
-            transaction_in_date = check_if_container_transaction_between_dates(container[1])
+            transaction_in_date = check_if_container_transaction_between_dates(container[1], start_date, end_date)
             sessions = [container[2]]
         else:
             sessions = [container[1]]
