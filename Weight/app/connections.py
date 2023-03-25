@@ -4,9 +4,9 @@ import check
 
 def get_connection():
     db = mysql.connector.connect(
-        host="localhost",
+        host="weight-db",
         user="root",
-        port=3300,
+        port=3306,
         password="123",
         database="weight"
     )
