@@ -630,8 +630,8 @@ def handle_get_data_between_dates(start_date, end_date, filter):
     for transaction in transactions:
         containers = get_containers_from_transaction(transaction['id'])
         neto = get_neto_weight(transaction['id'])
-        results.append(f"id: {transaction['id']}, direction: {transaction['direction']}, bruto: {transaction['bruto']}, neto: {neto}, produce: {transaction['produce']}, containers: {containers}")
-    return '<br/>'.join(results)
+        results.append({"id": transaction['id'], "direction": transaction['direction'], "bruto": transaction['bruto'], "neto": neto, "produce": transaction['produce'], "containers": containers})
+    return results
 
 
 def handle_get_item(id,start_date, end_date):
@@ -648,10 +648,10 @@ def handle_get_item(id,start_date, end_date):
     else:
         tara = get_container_weight(id)
         if container[0] == 'none' or 'in':
-            transaction_in_date = check_if_container_transaction_between_dates(container[1])
+            transaction_in_date = check_if_container_transaction_between_dates(container[1],start_date, end_date)
             sessions = [container[1]]
         elif container[0] == 'out':
-            transaction_in_date = check_if_container_transaction_between_dates(container[1])
+            transaction_in_date = check_if_container_transaction_between_dates(container[1],start_date, end_date)
             sessions = [container[2]]
         else:
             sessions = [container[1]]
