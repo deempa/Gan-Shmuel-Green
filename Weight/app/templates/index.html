@@ -13,118 +13,144 @@
 <head>
 	<title>Weight Hub</title>
 	<style>
-		button{
-			background-color: #4CAF50;
-			color: white;
-			padding: 10px 20px;
-			border: none;
-			border-radius: 4px;
-			cursor: pointer;
-			margin-top: 10px;
-			margin-left: 250px;
-			cursor: pointer;
-			transition: transform 0.2s ease-out;
-		}
-		button:hover{
-			background-color: #38E169;
-			padding: 50px 100px;
-			animation: spin 1s ease-in-out;
-			animation-fill-mode: forwards;
-		}
-		@keyframes spin {
-			0% {
-			  transform: rotate(0deg);
-			}
-			100% {
-			  transform: rotate(360deg);
-			}
-		  }
+		/* Team Green colors */
+      :root {
+        --main-bg-color: #CCF4D7;
+        --main-text-color: #000000;
+        --form-bg-color: #FFFFFF;
+        --form-border-color: #8D9B91;
+        --form-shadow-color: #B3BFB6;
+        --form-button-color: #4CAF50;
+        --form-button-hover-color: #38E169;
+      }
 
-		main{
-			display: flex;
-			justify-content: center;
-			font-family: sans-serif;
-			color: #3C463F;
+      /* Body */
+      body {
+        background-color: var(--main-bg-color);
+        color: var(--main-text-color);
+        font-family: sans-serif;
+      }
 
-		}
-		.section{
-			display:flex;
-			justify-content: center;
-		}
-		.container{
-			border: 1px solid #8D9B91;
-			border-radius: 10px;
-			box-shadow: 10px 10px 10px #B3BFB6;
-			padding:50px;
-			background-color: #CCF4D7;
-	
+      /* Form container */
+      .container {
+        border: 1px solid var(--form-border-color);
+        border-radius: 10px;
+        box-shadow: 10px 10px 10px var(--form-shadow-color);
+        padding: 50px;
+        background-color: var(--form-bg-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-		}
-		label{
-			font-weight: 600;
-			padding-right: 10px;
-			
-		}
-		.submit{
-			display:flex;
-			text-align: center;
-			
-		}
-		h1{
-			font-weight: 900;
+      /* Form labels */
+      label {
+        font-weight: bold;
+        padding-right: 10px;
+        margin-bottom: 5px;
+      }
 
-		}
-		select{
-			padding:10px;
-			border-radius: 10px;
-			border-radius: 10px;
-			border: transparent;
-			font-weight: 800 !important;
-			font-family: sans-serif !important;
-			color: #3C463F !important;
-			position: relative;
-			margin-bottom:10px;
+      /* Form inputs */
+      input,
+      select {
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+        margin-bottom: 10px;
+		background: #A6DAB5;
+		border:1px dashed black;
+      }
 
-			
+      select {
+        font-weight: bold;
+        font-family: sans-serif;
+        color: var(--main-text-color);
+		background: #A6DAB5;
+		border:1px dashed black;
 
-		}
-		input{
-			padding:10px;
-			border: #3C463F;
-			border-radius: 10px;
+      }
 
+      /* Submit button */
+      button {
+        background-color: var(--form-button-color);
+        color: var(--main-text-color);
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: transform 0.2s ease-out;
+        margin: auto;
+      }
 
-		}
-		.inputs {
-			position: relative;
-			margin-bottom:10px;
-			display: block;
-			
-		  }
-		  
-		.inputs input {
-			padding-top: 20px;
-		}
-		  
-		.inputs label {
-			position: absolute;
-			top: 0;
-			left: 0;
-			padding: 5px;
-			color: #999;
-			pointer-events: none;
-			transition: 0.2s ease all;
-		}
-		  
-		.inputs input:focus + label,
-		.inputs input:not(:placeholder-shown) + label {
-			top: -20px;
-			left: 0;
-			font-size: 14px;
-			color: #4CAF50;
-		  }
+      button:hover {
+        background-color: var(--form-button-hover-color);
+        animation: dance 0.5s ease-in-out;
+        animation-iteration-count: 2;
+      }
 
-		  
+      @keyframes dance {
+        0% {
+          transform: rotate(0deg);
+        }
+        20% {
+          transform: rotate(-20deg);
+        }
+        40% {
+          transform: rotate(20deg);
+        }
+        60% {
+          transform: rotate(-20deg);
+        }
+        80% {
+          transform: rotate(20deg);
+        }
+        100% {
+          transform: rotate(0deg);
+        }
+      }
+
+      /* Upload button */
+      .upload-btn-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        margin-top: 20px;
+      }
+
+      .btn {
+        color: var(--main-text-color);
+        background-color: var(--form-button-color);
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .upload-btn-wrapper input[type="file"] {
+        font-size: 100px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+      }
+
+      /* Title */
+      h1 {
+        font-weight: 900;
+        text-align: center;
+      }
+
+      /* Main container */
+      main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+	  }
+	  .submit{
+		display:flex;
+	  }
 
 	</style>
 </head>
@@ -135,6 +161,11 @@
 	<div class="container">
 		<form action="/weight" method='post'>
 		<h1>Weight Hub</h1>
+		<div>
+			<img src="https://s3-media0.fl.yelpcdn.com/bphoto/7PtBq3rKSShNyNevOcBEGg/348s.jpg"  alt="Site Logo" width="400" height="200">
+
+		</div>
+		
 		<div class="section">
 				<div class ='selects'>
 					<label for="direction">Direction</label>
