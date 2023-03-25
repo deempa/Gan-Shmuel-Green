@@ -258,8 +258,9 @@ def js_truck_session_count(truck_ids,t1,t2):
     totalsessions=0
     for id in truck_ids:
         request=requests.get(f"http://3.76.109.165:8083/item/{id}?from={t1}&to={t2}")
-        sessionlist=request.json()["sessions"]
-        totalsessions+=len(sessionlist)
+        if request.json()["sessions"]:
+            sessionlist=request.json()["sessions"]
+            totalsessions+=len(sessionlist)
     return totalsessions
 
 def js_prod_sess(product_id,truck_ids,t1,t2):
