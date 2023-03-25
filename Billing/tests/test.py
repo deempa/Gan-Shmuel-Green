@@ -1,7 +1,7 @@
 import requests
 
-ENDPOINT="http://3.76.109.165:8088"
-
+#ENDPOINT="http://3.76.109.165:8088"
+ENDPOINT="http://localhost:8082"
 
 ## HEALTH TEST
 def test_health():
@@ -141,7 +141,8 @@ def test_get_rates():
     assert request.status_code==200
 
 
-## POST RATES UNSUPPORTED FILE TEST
-
-
 ## GET BILL TEST
+def test_get_bill():
+    request=requests.get(ENDPOINT + "/bill/10001")
+    assert request.status_code==200
+
