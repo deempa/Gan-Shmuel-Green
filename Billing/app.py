@@ -274,7 +274,7 @@ def js_prod_sess(product_id,truck_ids,t1,t2):
     request=requests.get(f"http://3.76.109.165:8083/weight?from={t1}&to={t2}&filter=out")
     sessions=[]
     for item in request:
-        if product_id in item["produce"]:
+        if product_id in item[4]:
             sessions.append(item["id"])
     for session in sessions:
         request=requests.get(f"http://3.76.109.165:8083/session/{session}")
