@@ -115,9 +115,10 @@ def truck_tara_and_sessions(id):
     t1=request.args.get('from')
     t2=request.args.get('to')
 
-    if t1 == "" or t2 == "" or t1==None or t2==None:
+    if t1 == "" or t1==None: 
         #defult time for the bill
         t1=datetime.datetime.now().strftime("%Y%m01000000")
+    if t2 == "" or t2==None:
         t2=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     else:
         #check the right format
@@ -129,10 +130,14 @@ def truck_tara_and_sessions(id):
 
         except ValueError:
             return make_response("Data format unaccepable", 400)
-    
-    response = requests.get(f'http://3.76.109.165:8083/item/{id}?from={t1}&to={t2}')
-    json_data = response.json()
-    return make_response(jsonify(json_data), response.status_code)
+    time_1 = datetime.datetime.strptime(t1, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
+    time_2 = datetime.datetime.strptime(t2, "%Y%m%d%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
+    try:
+        response = requests.get(f'http://3.76.109.165:8083/item/{id}?from={time_1}&to={time_2}')
+        json_data = response.json()
+        return make_response(jsonify(json_data), 200)
+    except:
+        return make_response(jsonify("{ }"), response.status_code)
 
 
 @app.route('/truck/<id>', methods=["PUT"])
@@ -258,9 +263,11 @@ def js_truck_session_count(truck_ids,t1,t2):
     totalsessions=0
     for id in truck_ids:
         request=requests.get(f"http://3.76.109.165:8083/item/{id}?from={t1}&to={t2}")
-        if request.json()["sessions"]:
+        try:
             sessionlist=request.json()["sessions"]
             totalsessions+=len(sessionlist)
+        except:
+            continue
     return totalsessions
 
 def js_prod_sess(product_id,truck_ids,t1,t2):
@@ -326,9 +333,10 @@ def get_bill(id):
     t1=request.args.get('from')
     t2=request.args.get('to')
 
-    if t1 == "" or t2 == "" or t1==None or t2==None:
+    if t1 == "" or t1==None: 
         #defult time for the bill
         t1=datetime.datetime.now().strftime("%Y%m01000000")
+    if t2 == "" or t2==None:
         t2=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     else:
         #check the right format
