@@ -123,7 +123,16 @@ def show_unknown():
 
 @app.route("/health")
 def healthcheck():
-	return "", 200
+    try:
+        db=connections.get_connection()
+        cursor = db.cursor()
+        cursor.execute("SELECT 1")
+        cursor.fetchall()
+        cursor.close()
+        db.close()
+        return ("Connection established",200)
+    except:
+        return ("Connection failed",503)
 
 @app.route("/session/<id>")
 def sessiondata(id):
