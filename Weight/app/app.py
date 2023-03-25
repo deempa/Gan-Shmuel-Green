@@ -44,9 +44,9 @@ def allowed_file(filename):
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
-@app.route('/')
-def root():
-    return redirect(url_for('post_weight'))
+# @app.route('/')
+# def root():
+#     return redirect(url_for('new_transaction'))
 
 
 @app.route("/batch-weight", methods=["GET", "POST"])
@@ -78,23 +78,23 @@ def post_weight():
         force =  request.form['force']
         containers=request.form['container_id']
         if truck is None or truck == '' and direction != 'none':
-            return 'Standalone containers must be inserted with Direction as none'
+            return 'Standalone containers must be inserted with Direction as none',400
         if containers == '':
-            return 'Container id is required'
+            return 'Container id is required', 400
         if produce == '':
             produce = 'na'
         if has_numbers(produce):
-            return "Invalid product! you cnnot have numbers in product's names"
+            return "Invalid product! you cnnot have numbers in product's names", 400
         if re.search(r'\D', truck_bruto):
-            return "Invalid weight inserted to bruto weight"
+            return "Invalid weight inserted to bruto weight", 400
         if truck_bruto == '':
-            return 'You must enter truck weight'
+            return 'You must enter truck weight', 400
         if direction == "in":
-            return connections.handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
+            return connections.handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers), 200
         if direction == "out":
-            return connections.handle_out(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
+            return connections.handle_out(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers), 200
         elif direction == "none":
-            return connections.handle_none(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
+            return connections.handle_none(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers), 200
         
         return "hello"
 
@@ -114,7 +114,8 @@ def post_weight():
 
 @app.route("/new-transaction")
 def new_transaction():
-   return render_template('index.html')
+    if request.method == 'GET':
+        return render_template('index.html')
 
 @app.route("/unknown")
 def show_unknown():
