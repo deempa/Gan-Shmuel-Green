@@ -124,17 +124,15 @@ def show_unknown():
 @app.route("/health")
 def healthcheck():
     try:
-         db = connections.get_connection()
-         cursor = db.cursor()
-         sql = "SELECT 1"
-         cursor.execute(sql)
-         return make_response("OK", 200)
-         #db.is_connected
-#         return "The Server Is Healthy", 200
+        db=connections.get_connection()
+        cursor = db.cursor()
+        cursor.execute("SELECT 1")
+        cursor.fetchall()
+        cursor.close()
+        db.close()
+        return ("Connection established",200)
     except:
-        return make_response("Database inactive", 503)
-    
-#         return "Could Not Connect To The Database", 500
+        return ("Connection failed",503)
 
 @app.route("/session/<id>")
 def sessiondata(id):
