@@ -360,10 +360,10 @@ def get_bill(id):
         "products": products,
         "total": total_pay 
     }
+    
     bill_json = json.dumps(bill, indent=4)
-
-    # return the JSON string
-    return make_response(jsonify(bill_json),200)
+    
+    return make_response(bill_json,200)
 
 
 
