@@ -90,51 +90,9 @@ def post_weight():
         return "hello"
 
     elif request.method == 'GET':
-        db=connections.get_connection()
-        cursor = db.cursor()
-        t1_str = request.args.get('from', default=datetime.now().strftime('%Y%m%d') + '000000', type=str)
-        t2_str = request.args.get('to', default=datetime.now().strftime('%Y%m%d%H%M%S'), type=str)
-        direction_filter = request.args.get('filter', default='in,out,none', type=str)
-        directions = direction_filter.split(',')
-        t1_obj = datetime.strptime(t1_str, '%Y%m%d%H%M%S')
-        t2_obj = datetime.strptime(t2_str, '%Y%m%d%H%M%S')
-        t1 = datetime.strftime(t1_obj, '%Y-%m-%d %H:%M:%S')
-        t2 = datetime.strftime(t2_obj, '%Y-%m-%d %H:%M:%S')
-
+   
         
-        query = "SELECT * FROM transactions  WHERE datetime>= %s AND datetime<= %s AND direction IN ({})".format(','.join(['%s'] * len(directions)))
-        params = [t1, t2]
-        params.extend(directions)
-        print(f"{t1} , {t2} , {directions}")
-        cursor.execute(query, tuple(params))
-
-
-        results = cursor.fetchall()
-        weights = []
-        for row in results:
-            id=row[0]
-            direction=row[2]
-            bruto=row[4]
-            neto=row[6]
-            produce=row[7]
-            container_query = f"SELECT container_id FROM container_in_transaction  WHERE transaction_id_in ='{id}' OR transaction_id_out ='{id}' "
-            cursor.execute(container_query)
-            containers = [c[0] for c in cursor.fetchall()]
-            weights.append({
-                'id': id,
-                'direction': direction,
-                'bruto': bruto,
-                'neto' : neto if neto is not None else 'na',
-                'produce':produce,
-                'containers': containers
-
-            })
-        return jsonify(weights)
-        
-        
-        
-        
-        # return render_template('index.html')
+        return render_template('index.html')
 
 @app.route("/unknown")
 def show_unknown():
@@ -155,24 +113,7 @@ def healthcheck():
         return ("Connection failed",503)
 
 
-# @app.route('/item/<id>')
-# def get_item(id):
-#     db=connections.get_connection()
-#     cursor=db.cursor()
-#     t1=request.args.get('from', default='1'+'0' *12 ,type=str)
-#     t2=request.args.get('to', default='',type=str)
-    
-#     if t2:
-#         query=f"SELECT * FROM  transactions WHERE id='{id}' AND datetime>='{t1}' AND datetime<='{t2}'"
-#     else:
-#         query = f"SELECT * FROM transactions where id='{id}' AND datetime>='{t1}'"
 
-#     cursor.execute(query)
-#     sessions = [row[0] for row in cursor.fetchall()]
-#     cursor.close()
-
-
-#     if sessions
    
 
 
