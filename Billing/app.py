@@ -263,7 +263,7 @@ def js_truck_session_count(truck_ids,t1,t2):
     return totalsessions
 
 def js_prod_sess(product_id,truck_ids,t1,t2):
-
+    #one one
     sumkg=0
     sessioncount=0
     request=requests.get(f"http://3.76.109.165:8083/weight?from={t1}&to={t2}&filter=out")
