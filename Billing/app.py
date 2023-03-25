@@ -273,7 +273,7 @@ def js_prod_sess(product_id,truck_ids,t1,t2):
             sessions.append(item["id"])
     for session in sessions:
         request=requests.get(f"http://3.76.109.165:8083/session/{session}")
-        if request.json()['neto']!="na" and request.json()['truck'] in truck_ids:
+        if request.json()['neto']!=None and request.json()!="na" and request.json()['truck']!=None and request.json()['truck'] in truck_ids:
             sumkg+=int(request.json()['neto'])
             sessioncount+=1
     return str(sessioncount), sumkg
@@ -358,11 +358,8 @@ def get_bill(id):
         "total": total_pay 
     }
 
-    # convert the dictionary to a JSON string 
-    bill_json = json.dumps(bill, indent=4)
-
     # return the JSON string
-    return bill_json
+    return make_response(jsonify(bill), 200)
 
 
 
