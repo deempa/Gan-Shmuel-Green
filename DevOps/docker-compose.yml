@@ -31,8 +31,9 @@ services:
         ports:
             - "${WEIGHT_PORT}:5000"
         depends_on:
-            - "weight-db"
-        restart: on-failure
+            weight-db:
+                condition: service_healthy
+        restart: unless-stopped
     
     weight-db:
         image: mysql:5.7
@@ -44,6 +45,10 @@ services:
             MYSQL_DATABASE: ${MYSQL_DATABASE_WEIGHT}
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_WEIGHT}
         hostname: weight-db
+        healthcheck:
+          test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+          timeout: 5s
+          retries: 20
 volumes:
     data:
     db_data:
