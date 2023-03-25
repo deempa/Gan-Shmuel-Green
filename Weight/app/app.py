@@ -90,11 +90,11 @@ def post_weight():
         if truck_bruto == '':
             return 'You must enter truck weight', 400
         if direction == "in":
-            return connections.handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers), 200
+            return connections.handle_in(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
         if direction == "out":
-            return connections.handle_out(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers), 200
+            return connections.handle_out(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
         elif direction == "none":
-            return connections.handle_none(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers), 200
+            return connections.handle_none(direction,truck,produce,truck_bruto,unit_of_measure_bruto,force,containers)
         
         return "hello"
 
