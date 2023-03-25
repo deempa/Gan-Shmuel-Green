@@ -1,8 +1,7 @@
 import requests
 
+ENDPOINT="http://3.76.109.165:8088"
 
-#ENDPOINT="http://3.76.109.165:8088"
-ENDPOINT="http://localhost:8082"
 
 ## HEALTH TEST
 def test_health():

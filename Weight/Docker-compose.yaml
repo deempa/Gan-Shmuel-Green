@@ -18,7 +18,7 @@ services:
         volumes:
             - data:/var/lib/mysql
         ports:
-            - "3300:3306"
+            - "3306:3306"
 
 volumes:
     data:
