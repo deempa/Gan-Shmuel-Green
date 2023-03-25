@@ -282,10 +282,13 @@ def js_prod_sess(product_id,truck_ids,t1,t2):
         if product_id in item["produce"]:
             sessions.append(item["id"])
     for session in sessions:
-        request=requests.get(f"http://3.76.109.165:8083/session/{session}")
-        if request.json()['neto']!=None and request.json()!="na" and request.json()['truck']!=None and request.json()['truck'] in truck_ids:
-            sumkg+=int(request.json()['neto'])
-            sessioncount+=1
+        try:
+            request=requests.get(f"http://3.76.109.165:8083/session/{session}")
+            if request.json()['neto']!=None and request.json()!="na" and request.json()['truck']!=None and request.json()['truck'] in truck_ids:
+                sumkg+=int(request.json()['neto'])
+                sessioncount+=1
+        except:
+            continue
     return str(sessioncount), sumkg
 
 
