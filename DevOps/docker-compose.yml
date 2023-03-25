@@ -43,7 +43,7 @@ services:
         environment:
             MYSQL_DATABASE: ${MYSQL_DATABASE_WEIGHT}
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_WEIGHT}
-
+        hostname: weight-db
 volumes:
     data:
     db_data:
