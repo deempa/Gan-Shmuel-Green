@@ -98,6 +98,7 @@
 		.inputs {
 			position: relative;
 			margin-bottom:10px;
+			display: block;
 			
 		  }
 		  
@@ -130,10 +131,11 @@
 <body>
 	<main>
 	
+	
 	<div class="container">
+		<form action="/weight" method='post'>
 		<h1>Weight Hub</h1>
 		<div class="section">
-			<form method="post" enctype="multipart/form-data"  >
 				<div class ='selects'>
 					<label for="direction">Direction</label>
 					<select id="direction" name="direction">
@@ -160,14 +162,6 @@
 				</div>
 				
 
-<<<<<<< HEAD
-				<label for="truck_bruto_weight">Truck Bruto Weight:</label>
-				<input type="text" id="truck_bruto_weight" name="truck_bruto_weight">
-				<select id="unit_of_measure_1" name="unit_of_measure_1">
-					<option value="kg">KG</option>
-					<option value="lbs">LBS</option>
-				</select>
-=======
 				<div class ='' style="display: inline-flex; margin-right: 10px">
 					<div class ='inputs' style="margin-right: 10px;">
 						<label for="truck_bruto_weight">Truck Weight</label>
@@ -178,15 +172,7 @@
 						<option value="lbs">LBS</option>
 					</select>
 				</div>
->>>>>>> Weight
 
-				<label for="truck_neto_weight">Truck Neto Weight:</label>
-				<input type="text" id="truck_neto_weight" name="truck_neto_weight">
-				<select id="unit_of_measure_2" name="unit_of_measure_2">
-					<option value="kg">KG</option>
-					<option value="lbs">LBS</option>
-					
-				</select><br>
 
 
 				<div class ='selects'>
@@ -201,12 +187,12 @@
 
 
 				<div class ='submit'>
-					<button onclick='postForm'>submit</button>
+					<button type='submit'>submit</button>
 				</div>
 
 
 
-				<div">
+				<div>
 					<h2>CSV Upload</h2>
 					<div class="upload-btn-wrapper">
 					<a href="/batch-weight">Upload files</a>				
@@ -214,14 +200,25 @@
 					
 				</div>
         
-				
-			
-			</form>
 		</div>
-		
+	</form>
 	</div>
-	<div class="separator"></div>
 </main>
 </body>
-</html>
+<script>
+	function postForm(){
+		fetch('/weight', {
+			method: 'POST',
+			headers: {
+			  'Content-Type': 'application/json'
+			},
+		  })
+		  .then(response => response.json())
+		  .then(data => console.log(data))
+		  .catch(error => console.error(error))
 
+	}
+	
+
+</script>
+</html>
