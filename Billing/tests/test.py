@@ -1,7 +1,7 @@
 import requests
 
-
 ENDPOINT="http://3.76.109.165:8088"
+
 
 ## HEALTH TEST
 def test_health():
@@ -19,6 +19,9 @@ def test_post_provider():
 def test_post_provider_bad_request():
     exist_payload={"name":"test"}
     request=requests.post(ENDPOINT + "/provider", json=exist_payload)
+    assert request.status_code == 400
+    long_payload={"name":"Lorem ipsum dolor sit amet, nonummy ligula volutpat hac integer nonummy. Suspendisse ultricies, congue etiam tellus, erat libero, nulla eleifend, mauris pellentesque. Suspendisse integer praesent vel, integer gravida mauris, fringilla vehicula lacinia non dfsdf sdfsdf sdf dsf sdf ds"}
+    request=requests.post(ENDPOINT + "/provider", json=long_payload)
     assert request.status_code == 400
     no_value_payload={"name":""}
     request=requests.post(ENDPOINT + "/provider", json=no_value_payload)
@@ -43,6 +46,9 @@ def test_put_provider():
 def test_put_provider_bad_request():
     bad_id_payload={"name":"test"}
     request=requests.put(ENDPOINT + "/provider/12000",json=bad_id_payload)
+    assert request.status_code == 404
+    long_payload={"name":"Lorem ipsum dolor sit amet, nonummy ligula volutpat hac integer nonummy. Suspendisse ultricies, congue etiam tellus, erat libero, nulla eleifend, mauris pellentesque. Suspendisse integer praesent vel, integer gravida mauris, fringilla vehicula lacinia non dfsdf sdfsdf sdf dsf sdf ds"}
+    request=requests.post(ENDPOINT + "/provider", json=long_payload)
     assert request.status_code == 400
     no_value_payload={"name":""}
     request=requests.put(ENDPOINT + "/provider/10001",json=no_value_payload)
@@ -71,6 +77,9 @@ def test_post_truck():
 def test_post_truck_bad_requst():
     exist_payload={"provider":"10001", "id":"90909090"}
     request=requests.post(ENDPOINT + "/truck", json=exist_payload)
+    assert request.status_code == 400
+    long_payload={"provider":"10001","id":"123456789012" }
+    request=requests.post(ENDPOINT + "/truck", json=long_payload)
     assert request.status_code == 400
     no_value_payload={"provider":"", "id":""}
     request=requests.post(ENDPOINT + "/truck", json=no_value_payload)
@@ -103,30 +112,36 @@ def test_put_truck():
 def test_put_truck_bad_request():
     bad_id_payload={"provider":"10001"}
     request=requests.put(ENDPOINT + "/truck/1321312", json=bad_id_payload)
-    assert request.status_code == 400
+    assert request.status_code == 404
     no_value_payload={"provider":""}
-    request=requests.put(ENDPOINT + "/truck/80909090",json=no_value_payload)
+    request=requests.put(ENDPOINT + "/truck/90909090",json=no_value_payload)
     assert request.status_code == 400
     not_json_payload="hello there"
-    request=requests.put(ENDPOINT + "/truck/80909090",data=not_json_payload)
+    request=requests.put(ENDPOINT + "/truck/90909090",data=not_json_payload)
     assert request.status_code == 400
     bad_json_payload={"proder":"10001"}
-    request=requests.put(ENDPOINT + "/truck/80909090",json=bad_json_payload)
+    request=requests.put(ENDPOINT + "/truck/90909090",json=bad_json_payload)
     assert request.status_code == 400
     bad_method_payload={"provider":"10001"}
-    request=requests.post(ENDPOINT + "/truck/80909090", json=bad_method_payload)
+    request=requests.post(ENDPOINT + "/truck/90909090", json=bad_method_payload)
     assert request.status_code == 405
 
 
-## GET RATES NO DATA TEST
-
 ## POST RATES TEST
+# def test_post_rates():
+#     payload={"file": "rates.xlsx"}
+#     request=requests.post(ENDPOINT + "/rates",json=payload)
+#     assert request.status_code==200
 
 ## POST RATES BAD REQUEST
 
-## POST RATES UNSUPPORTED FILE TEST
+## GET RATES
+def test_get_rates():
+    request=requests.get(ENDPOINT + "/rates")
+    assert request.status_code==200
 
-## GET RATES TEST
+
+## POST RATES UNSUPPORTED FILE TEST
 
 
 ## GET BILL TEST

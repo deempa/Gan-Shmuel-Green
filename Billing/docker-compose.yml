@@ -8,7 +8,7 @@ services:
           - networkgreen
         restart: unless-stopped
         volumes:
-          - /billing-in/test:/app/in
+          - /billing-in:/app/in
         depends_on:
           mysql:
               condition: service_healthy

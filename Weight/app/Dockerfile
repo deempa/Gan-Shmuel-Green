@@ -6,6 +6,7 @@ RUN pip install --upgrade pip
 
 RUN pip install flask
 RUN pip install mysql.connector
+RUN pip install requests
 
 COPY . . 
 

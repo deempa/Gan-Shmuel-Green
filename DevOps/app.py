@@ -7,14 +7,15 @@ import subprocess
 import smtplib
 from email.mime.text import MIMEText
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static' )
 
 client = docker.from_env()
 
-#user_dict = {"AvihaiZiv": "avihai40@gmail.com", "OfirAviv": "ofiraviv@gmail.com"}
+#user_dict = {"AvihaiZiv": "avihai40@gmail.com", "OfirAviv": "ofir851@gmail.com"}
 
-devops_mails = ["masrab11@gmail.com", "Michal.dikun13@gmail.com", "theoneandonlypeleg@gmail.com"]
+# devops_mails = ["masrab11@gmail.com", "Michal.dikun13@gmail.com", "theoneandonlypeleg@gmail.com"]
 
+devops_mails = ["masrab11@gmail.com"]
 
 @app.route("/trigger", methods=["GET", "POST"])
 def trigger():
@@ -24,7 +25,7 @@ def trigger():
             branch_name = data['ref'].split('/')[-1]
             repo_url = data['repository']['clone_url']
             repo_name = data['repository']['name']    
-            pusher = data['pusher']['name']
+            # pusher = data['pusher']['name']
             committer_email = data['commits'][0]['committer']['email']
               
             # Delete Cloned Repo If Exists.
@@ -37,14 +38,15 @@ def trigger():
                 result = subprocess.run(['bash', './scripts/build.sh', repo_name, repo_url]) 
                 if result.returncode == 0:
                     print("Deployed to production.")
-                    send_email(committer_email, "CI / CD Success.", "Everything is good with your commit.")  
+                    # send_email(committer_email, "CI / CD Success.", "Everything is good with your commit.")  
                     for mail in devops_mails:
-                        send_email(mail, "CI / CD Success.", "Everything is good with your commit.")  
+                        send_email(mail, "CI / CD Success.", f"Merge to branch {branch_name} was success.\nIt passed all the tests")  
                 else:
+                    #subprocess.run(['bash', './scripts/terminatetest.sh']) 
                     print("Something in ci got wrong. ")
-                    send_email(committer_email, "CI / CD Failed.", "Something broke with your commit.")  
+                    # send_email(committer_email, "CI / CD Failed.", "Something broke with your commit.")  
                     for mail in devops_mails:
-                       send_email(mail, "CI / CD Failed.", "Something broke with your commit.")           
+                       send_email(mail, "CI / CD Failed.", f"Merge to branch {branch_name} was failed.\nIt unpassed all the tests\nPlease revert to the last commit of {branch_name} branch.")           
             return "ok"
             
             
@@ -70,16 +72,20 @@ def send_email(recipient, subject, message):
 @app.route('/monitoring')
 def index():
     # Check status of services
-    service1_status = check_service_status("http://3.76.109.165:8082/health")
-    service2_status = check_service_status("http://3.76.109.165:8083/health")
+    billing_status = check_server_status("http://3.76.109.165:8082/health")
+    weight_status = check_server_status("http://3.76.109.165:8083/health")
     # Render HTML template with status information
-    return render_template('index.html', service1_status=service1_status, service2_status=service2_status)
+    return render_template('index.html', billing_status=billing_status, weight_status=weight_status)
 
-def check_service_status(service_url):
-    response = requests.get(service_url)
-    if response.status_code == 200:
-        return 'active'
-    else:
+def check_server_status(service_url):
+    try:
+        response = requests.get(service_url)
+        print("CONTENT: ", response.text)
+        if response.status_code == 200:
+            return 'active'
+        elif response.status_code == 503:
+            return 'db_inactive'
+    except:
         return 'inactive'
 
 

@@ -468,7 +468,7 @@ def handle_out(direction,truck,produce,truck_tara,unit_of_measure_bruto,force,co
    # TODO: 1. validate errors 
     transaction_id_in = find_transaction_id(containers[0], 'in')
     if transaction_id_in is False:
-        return 'You have to enter the truck in before you out'
+        return 'You have to enter the truck in before you out',400
     if not check_if_truck_id_is_the_same(truck, transaction_id_in):
         return 'The truck id you gave isnnot matching the giver containers'
     
