@@ -284,7 +284,7 @@ def js_prod_sess(product_id,truck_ids,t1,t2):
         except :
             continue
     try:
-        request=requests.get(f"http://3.76.109.165:8083/weight?from={t1}&to={t2}&filter=out")
+        request=requests.get(f"http://3.76.109.165:8083/weight?from={t1}&to={t2}&filter=in")
         json_response = request.json()
         for item in json_response:
             if product_id in item["produce"]:
