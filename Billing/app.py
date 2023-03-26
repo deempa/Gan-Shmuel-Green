@@ -272,6 +272,7 @@ def js_truck_session_count(truck_ids,t1,t2):
     return totalsessions
 
 def js_prod_sess(product_id,truck_ids,t1,t2):
+    ##working
     sumkg=0
     sessioncount=0
     sessions=[]
