@@ -6,6 +6,7 @@ import os
 import datetime
 
 app = Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False
 
 engine = sqlalchemy.create_engine("mysql+pymysql://billdbuser:billdbpass@mysql-server:3306/billdb")
 
@@ -280,8 +281,8 @@ def js_prod_sess(product_id,truck_ids,t1,t2):
             json_response = request.json()
             if json_response["sessions"] is not None:
                 truckdict[id] = set(json_response["sessions"])
-        except ValueError as e:
-            print(f"Error decoding JSON response: {e}")
+        except :
+            continue
     request=requests.get(f"http://3.76.109.165:8083/weight?from={t1}&to={t2}&filter=out")
     try:
         json_response = request.json()
@@ -293,7 +294,7 @@ def js_prod_sess(product_id,truck_ids,t1,t2):
                         sumkg+=int(item["neto"])
     except ValueError as e:
         print(f"Error decoding JSON response: {e}")
-    return sumkg, sessioncount
+    return sessioncount,sumkg
 
 
 def js_prod_and_pay(provider_id,truck_ids,t1,t2):
@@ -376,7 +377,7 @@ def get_bill(id):
         "total": total_pay 
     }
     
-    bill_json = json.dumps(bill, indent=4)
+    bill_json = jsonify(bill)
     
     return make_response(bill_json,200)
 
