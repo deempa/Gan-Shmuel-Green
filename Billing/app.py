@@ -217,23 +217,23 @@ def rates():
         except:
             return make_response("Bad Request: File type is not supported", 400)
         
-        wb = load_workbook(filename=filename, read_only=True)
         # delete all records from Rates table
         with engine.connect() as conn:
             conn.execute(rates_table.delete())
         
         # insert records from Excel file to Rates table
         ws = wb.active
-        if ws is None:
-            return make_response("could not open excel file", 500)
         for row in ws.iter_rows(min_row=2):
             product_id = row[0].value
             rate = row[1].value
             scope = row[2].value
-            if len(str(product_id)) > 50 or len(str(rate)) > 11 or len(str(scope)) > 50:
-                return make_response("Bad request: file values exceeded the allowed length", 400)
-            with engine.connect() as conn:
-                conn.execute(rates_table.insert().values(product_id=product_id, rate=rate, scope=scope))
+            try:
+                if len(str(product_id)) > 50 or len(str(rate)) > 11 or len(str(scope)) > 50:
+                   return make_response("Bad request: file values exceeded the allowed length", 400)
+                with engine.connect() as conn:
+                    conn.execute(rates_table.insert().values(product_id=product_id, rate=rate, scope=scope))
+            except:
+                continue
         
         return make_response("saved", 200)
     else:
