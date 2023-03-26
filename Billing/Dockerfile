@@ -8,6 +8,8 @@ COPY ./requirements.txt .
 
 RUN pip install -r requirements.txt
 
+ENV TZ="Asia/Jerusalem"
+
 COPY . .
 
 EXPOSE 5000
