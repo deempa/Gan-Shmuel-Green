@@ -158,7 +158,7 @@ def put_truck(id):
     if not is_provider_id_exist(provider_id):
         return make_response("Specified provider doesn't exist", 400)
     conn=engine.connect()
-    conn.execute(sqlalchemy.text(f"UPDATE Trucks SET provider_id={provider_id} WHERE id={id}"))
+    conn.execute(sqlalchemy.text(f"UPDATE Trucks SET provider_id={provider_id} WHERE id='{id}'"))
     conn.commit()
     conn.close()
     return make_response("Updated truck provider",200)
