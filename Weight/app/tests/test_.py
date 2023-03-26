@@ -6,7 +6,7 @@ import json
 
 import requests
 
-ENDPOINT="https://3.76.109.165:8089"
+ENDPOINT="http://3.76.109.165:8089"
 # ENDPOINT="http://127.0.0.1:5000"
 
 ## HEALTH TEST
@@ -94,12 +94,12 @@ def test_out_before_in():
 
 
 def test_get_session():
-    response = requests.get(ENDPOINT +'/session/10036')
+    response = requests.get(ENDPOINT +'/session/10001')
     assert response.status_code == 200 
 
 
 def test_get_item():
-    response= requests.get(ENDPOINT + '/item/10032')
+    response= requests.get(ENDPOINT + '/item/10001')
     assert response.status_code == 200 
 
 def test_main():
