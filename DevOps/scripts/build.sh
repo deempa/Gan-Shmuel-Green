@@ -129,7 +129,7 @@ deploy_to_test || exit $?
 
 run_e2e_test || exit $?
 
-#cleanup_test_env || exit $?
+cleanup_test_env || exit $?
 
 deploy_to_production || exit $?
 

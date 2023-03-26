@@ -1,6 +1,4 @@
 from flask import Flask, request, Response, render_template
-import docker
-from git import Repo
 import os
 import requests
 import subprocess
@@ -9,13 +7,7 @@ from email.mime.text import MIMEText
 
 app = Flask(__name__, static_url_path='/static' )
 
-client = docker.from_env()
-
-#user_dict = {"AvihaiZiv": "avihai40@gmail.com", "OfirAviv": "ofir851@gmail.com"}
-
-# devops_mails = ["masrab11@gmail.com", "Michal.dikun13@gmail.com", "theoneandonlypeleg@gmail.com"]
-
-devops_mails = ["masrab11@gmail.com"]
+devops_mails = ["masrab11@gmail.com", "Michal.dikun13@gmail.com", "theoneandonlypeleg@gmail.com"]
 
 @app.route("/trigger", methods=["GET", "POST"])
 def trigger():
@@ -25,8 +17,7 @@ def trigger():
             branch_name = data['ref'].split('/')[-1]
             repo_url = data['repository']['clone_url']
             repo_name = data['repository']['name']    
-            # pusher = data['pusher']['name']
-            committer_email = data['commits'][0]['committer']['email']
+            #committer_email = data['commits'][0]['committer']['email']
               
             # Delete Cloned Repo If Exists.
             try:
@@ -37,14 +28,13 @@ def trigger():
             if branch_name == "main":
                 result = subprocess.run(['bash', './scripts/build.sh', repo_name, repo_url]) 
                 if result.returncode == 0:
+                    subprocess.run(['bash', './scripts/terminatetest.sh']) 
                     print("Deployed to production.")
-                    # send_email(committer_email, "CI / CD Success.", "Everything is good with your commit.")  
                     for mail in devops_mails:
-                        send_email(mail, "CI / CD Success.", f"Merge to branch {branch_name} was success.\nIt passed all the tests")  
+                        send_email(mail, "CI / CD Success.", f"Merge to branch {branch_name} was success.\nIt passed all the tests.\n Deployed to Production.")  
                 else:
-                    #subprocess.run(['bash', './scripts/terminatetest.sh']) 
-                    print("Something in ci got wrong. ")
-                    # send_email(committer_email, "CI / CD Failed.", "Something broke with your commit.")  
+                    subprocess.run(['bash', './scripts/terminatetest.sh']) 
+                    #send_email(committer_email, "CI / CD Failed.", f"Merge to branch {branch_name} was failed.\nIt unpassed all the tests\nPlease revert to the last commit of {branch_name} branch.")           
                     for mail in devops_mails:
                        send_email(mail, "CI / CD Failed.", f"Merge to branch {branch_name} was failed.\nIt unpassed all the tests\nPlease revert to the last commit of {branch_name} branch.")           
             return "ok"
