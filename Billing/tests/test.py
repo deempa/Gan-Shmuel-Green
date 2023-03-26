@@ -94,13 +94,30 @@ def test_post_truck_bad_requst():
     request=requests.put(ENDPOINT + "/truck", json=bad_method_payload)
     assert request.status_code == 405
 
+
+## GET TRUCK ID NOT EXIST:
+def test_truck_id():
+    request=requests.get(ENDPOINT + "/truck/456.565")
+    assert request.status_code == 404
+    assert request.text == 'The truck id is not exist'
+
+
 ## GET TRUCK NO ID TEST
+def test_get_truck_no_id():
+    request=requests.get(ENDPOINT + "/truck")
+    assert request.status_code == 405
 
-## GET TRUCK NO QUERY TEST
+## GET TRUCK BAD FORMS
+def test_get_truck_bad_forms():
+    request=requests.get(ENDPOINT + "/truck/90909090?from=202003&to=202303")
+    assert request.status_code == 400
+    request=requests.get(ENDPOINT + "/truck/90909090?from=2020033000&to=2019032600")
+    assert request.status_code == 400
+    request=requests.get(ENDPOINT + "/truck/90909090?from=3902uy3dd&to=2019yoni")
+    assert request.status_code == 400
+    request=requests.get(ENDPOINT + "/truck/90909090?from=202045450000&to=202103030000")
+    assert request.status_code == 400
 
-## GET TRUCK SEMI QUERY TEST
-
-## GET TRUCK FULL QUERY TEST
 
 ## PUT TRUCK TEST
 def test_put_truck():
