@@ -274,23 +274,27 @@ def js_truck_session_count(truck_ids,t1,t2):
 def js_prod_sess(product_id,truck_ids,t1,t2):
     sumkg=0
     sessioncount=0
-    sessions=[]
+    truckdict={}
+    for id in truck_ids:
+        try:
+            request=requests.get(f"http://3.76.109.165:8083/item/{id}?from={t1}&to={t2}")
+            json_response = request.json()
+            if json_response["sessions"] is not None:
+                truckdict[id] = set(json_response["sessions"])
+        except :
+            continue
     try:
         request=requests.get(f"http://3.76.109.165:8083/weight?from={t1}&to={t2}&filter=in")
-        for item in request.json():
+        json_response = request.json()
+        for item in json_response:
             if product_id in item["produce"]:
-                sessions.append(item["id"])
+                for key in truckdict:
+                    if item["id"] in truckdict[key] and item["neto"]!="na":
+                        sessioncount+=1
+                        sumkg+=int(item["neto"])
     except:
         pass
-    try:
-        for session in sessions:
-            request=requests.get(f"http://3.76.109.165:8083/session/{session}")
-            if request.json()['neto']!="na" and request.json()['neto']==None and request.json()['truck'] in truck_ids:
-                sumkg+=int(request.json()['neto'])
-                sessioncount+=1
-    except:
-        pass
-    return str(sessioncount), sumkg
+    return str(sessioncount),sumkg
 
 
 def js_prod_and_pay(provider_id,truck_ids,t1,t2):
