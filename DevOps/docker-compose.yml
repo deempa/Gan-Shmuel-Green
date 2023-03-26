@@ -5,7 +5,7 @@ services:
           - "${BILLING_PORT}:5000"
         restart: unless-stopped
         volumes:
-            - /billing-in:/app/in
+            - /home/ubuntu/billing-in:/app/in
         depends_on:
           billing-db:
               condition: service_healthy
@@ -36,7 +36,8 @@ services:
             weight-db:
                 condition: service_healthy
         restart: unless-stopped
-    
+        volumes:
+            - /home/ubuntu/weight-in:/app/in
     weight-db:
         image: mysql:5.7
         platform: linux/x86_64

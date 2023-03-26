@@ -1,6 +1,4 @@
 from flask import Flask, request, Response, render_template
-import docker
-from git import Repo
 import os
 import requests
 import subprocess
@@ -8,8 +6,6 @@ import smtplib
 from email.mime.text import MIMEText
 
 app = Flask(__name__, static_url_path='/static' )
-
-client = docker.from_env()
 
 #user_dict = {"AvihaiZiv": "avihai40@gmail.com", "OfirAviv": "ofir851@gmail.com"}
 
