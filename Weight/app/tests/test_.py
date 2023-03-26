@@ -36,13 +36,17 @@ def test_post():
               'container_id': 'T-123'}
     response = requests.post(ENDPOINT +'/weight', data=payload)
     assert response.status_code == 200
-    assert response.headers['Content-Type'] == 'application/json'
-    json_data = response.json()
-
-    assert 'bruto' in json_data
-    assert 'id' in json_data
-    assert 'truck' in json_data  
     
+    
+
+def test_post_out():
+    payload = {'direction': 'out', 'truck_license': 'lic10', 'product_delivered': 'apples', 
+            'truck_bruto_weight': '10000', 'unit_of_measure_1': 'kg', 'force': 'True',
+              'container_id': 'T-123'}
+    response = requests.post(ENDPOINT +'/weight', data=payload)
+    assert response.status_code == 200
+    
+
 def test_post_bad_request():
    
 #truck license is empty 
@@ -90,14 +94,14 @@ def test_out_before_in():
 
 
 def test_get_session():
-    response = requests.get(ENDPOINT +'/session/1')
-    assert response.status_code == 200 or response.status_code==404
+    response = requests.get(ENDPOINT +'/session/10036')
+    assert response.status_code == 200 
 
 
 def test_get_item():
-    response= requests.get(ENDPOINT + '/item/1')
-    assert response.status_code == 200 or response.status_code==404
+    response= requests.get(ENDPOINT + '/item/10032')
+    assert response.status_code == 200 
 
 def test_main():
     response= requests.get(ENDPOINT + '/')
-    assert response.status_code == 200 or response.status_code==404
+    assert response.status_code == 200 

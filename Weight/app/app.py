@@ -34,9 +34,9 @@ def allowed_file(filename):
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
-# @app.route('/')
-# def root():
-#     return redirect(url_for('new_transaction'))
+@app.route('/')
+def root():
+    return redirect(url_for('new_transaction'))
 
 
 @app.route("/batch-weight", methods=["GET", "POST"])
