@@ -227,14 +227,11 @@ def rates():
             product_id = row[0].value
             rate = row[1].value
             scope = row[2].value
-            try:
+            if product_id is not None and rate is not None and scope is not None:
                 if len(str(product_id)) > 50 or len(str(rate)) > 11 or len(str(scope)) > 50:
-                   return make_response("Bad request: file values exceeded the allowed length", 400)
+                    return make_response("Bad request: file values exceeded the allowed length", 400)
                 with engine.connect() as conn:
                     conn.execute(rates_table.insert().values(product_id=product_id, rate=rate, scope=scope))
-            except:
-                continue
-        
         return make_response("saved", 200)
     else:
         return make_response("Method is not allowed", 405)
