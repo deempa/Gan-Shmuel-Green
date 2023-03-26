@@ -6,6 +6,7 @@ import os
 import datetime
 
 app = Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False
 
 engine = sqlalchemy.create_engine("mysql+pymysql://billdbuser:billdbpass@mysql-server:3306/billdb")
 
@@ -262,8 +263,8 @@ def js_truckCount(provider_id):
 def js_truck_session_count(truck_ids,t1,t2):
     totalsessions=0
     for id in truck_ids:
-        request=requests.get(f"http://3.76.109.165:8083/item/{id}?from={t1}&to={t2}")
         try:
+            request=requests.get(f"http://3.76.109.165:8083/item/{id}?from={t1}&to={t2}")
             sessionlist=request.json()["sessions"]
             totalsessions+=len(sessionlist)
         except:
@@ -275,15 +276,15 @@ def js_prod_sess(product_id,truck_ids,t1,t2):
     sessioncount=0
     truckdict={}
     for id in truck_ids:
-        request=requests.get(f"http://3.76.109.165:8083/item/{id}?from={t1}&to={t2}")
         try:
+            request=requests.get(f"http://3.76.109.165:8083/item/{id}?from={t1}&to={t2}")
             json_response = request.json()
             if json_response["sessions"] is not None:
                 truckdict[id] = set(json_response["sessions"])
-        except ValueError as e:
-            print(f"Error decoding JSON response: {e}")
-    request=requests.get(f"http://3.76.109.165:8083/weight?from={t1}&to={t2}&filter=out")
+        except :
+            continue
     try:
+        request=requests.get(f"http://3.76.109.165:8083/weight?from={t1}&to={t2}&filter=out")
         json_response = request.json()
         for item in json_response:
             if product_id in item["produce"]:
@@ -291,9 +292,9 @@ def js_prod_sess(product_id,truck_ids,t1,t2):
                     if item["id"] in truckdict[key] and item["neto"]!="na":
                         sessioncount+=1
                         sumkg+=int(item["neto"])
-    except ValueError as e:
-        print(f"Error decoding JSON response: {e}")
-    return sumkg, sessioncount
+    except:
+        pass
+    return sessioncount,sumkg
 
 
 def js_prod_and_pay(provider_id,truck_ids,t1,t2):
@@ -375,9 +376,10 @@ def get_bill(id):
         "products": products,
         "total": total_pay 
     }
+    if not bill["products"] and truck_sessions_count == 0:
+        bill["error"]="error could not reach weight correctly, partial information only"
     
-    bill_json = json.dumps(bill, indent=4)
-    
+    bill_json = jsonify(bill)
     return make_response(bill_json,200)
 
 
